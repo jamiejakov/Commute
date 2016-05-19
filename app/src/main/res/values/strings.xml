@@ -5,4 +5,12 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="action_settings">Settings</string>
+    <string name="plan_your_journey">Plan Your Journey</string>
+    <string name="commute">Commute</string>
+    <string name="timetables">Timetables</string>
+    <string name="saved_routes">Saved Routes</string>
+    <string name="alerts">Alerts</string>
+    <string name="settings">Settings</string>
+    <string name="application_icon">Application Icon</string>
+    <string name="by_creator">by Vadims Brodskis</string>
 </resources>

@@ -22,10 +22,22 @@
             android:id="@+id/nav_alerts"
             android:icon="@drawable/ic_report_black_24dp"
             android:title="@string/alerts" />
-        <item
-            android:id="@+id/nav_settings"
-            android:icon="@drawable/ic_settings_black_24dp"
-            android:title="@string/settings" />
+        <item android:title="@string/options">
+            <menu>
+                <item
+                    android:id="@+id/nav_settings"
+                    android:icon="@drawable/ic_settings_black_24dp"
+                    android:title="@string/settings" />
+                <item
+                    android:id="@+id/nav_about"
+                    android:icon="@drawable/ic_error_outline_black_24dp"
+                    android:title="@string/about" />
+            </menu>
+        </item>
+
+
     </group>
 
+
 </menu>
+

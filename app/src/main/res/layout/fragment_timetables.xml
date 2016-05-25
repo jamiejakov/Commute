@@ -1,0 +1,23 @@
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/fragment_journey_constraintLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".TimetablesFragment"
+    tools:layout_editor_absoluteX="0dp"
+    tools:layout_editor_absoluteY="81dp">
+
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fragment_timetables_search_fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/fab_margin"
+        android:layout_marginEnd="@dimen/fab_margin"
+        android:src="@drawable/ic_search_black_24dp"
+        android:tint="@color/icons"
+        app:layout_constraintBottom_toBottomOf="@+id/fragment_journey_constraintLayout"
+        app:layout_constraintRight_toRightOf="@+id/fragment_journey_constraintLayout" />
+
+</android.support.constraint.ConstraintLayout>

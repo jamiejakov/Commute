@@ -1,13 +1,302 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/fragment_commute_constraint_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.id11303765.commute.JourneyFragment">
+    tools:layout_editor_absoluteX="0dp"
+    tools:layout_editor_absoluteY="81dp">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <HorizontalScrollView
+        android:id="@+id/fragment_commute_time_horizontal_scroll"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_height="140dp"
+        android:background="@color/greyish_background"
+        app:layout_constraintLeft_toLeftOf="@+id/fragment_commute_constraint_layout"
+        app:layout_constraintRight_toRightOf="@+id/fragment_commute_constraint_layout"
+        app:layout_constraintTop_toTopOf="@+id/fragment_commute_constraint_layout"
+        tools:layout_constraintLeft_creator="0"
+        tools:layout_constraintRight_creator="0"
+        tools:layout_constraintTop_creator="0"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="0dp">
 
-</FrameLayout>
+        <include layout="@layout/commute_timeline" />
+
+    </HorizontalScrollView>
+
+    <LinearLayout
+        android:id="@+id/fragment_commute_center_ll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintLeft_toLeftOf="@+id/fragment_commute_constraint_layout"
+        app:layout_constraintRight_toRightOf="@+id/fragment_commute_constraint_layout"
+        app:layout_constraintTop_toBottomOf="@+id/fragment_commute_time_horizontal_scroll"
+        tools:layout_constraintLeft_creator="0"
+        tools:layout_constraintRight_creator="0"
+        tools:layout_constraintTop_creator="0">
+
+        <LinearLayout
+            android:id="@+id/fragment_commute_center_top_ll"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintLeft_toLeftOf="@+id/fragment_commute_center_ll"
+            app:layout_constraintRight_toRightOf="@+id/fragment_commute_center_ll"
+            app:layout_constraintTop_toTopOf="@+id/fragment_commute_center_ll">
+
+            <LinearLayout
+                android:id="@+id/fragment_commute_center_top_line_ll"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="20dp"
+                android:orientation="horizontal"
+                app:layout_constraintTop_toTopOf="@+id/fragment_commute_center_top_ll">
+
+                <ImageView
+                    android:id="@+id/fragment_commute_transport_mode_image"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:background="@xml/rounded_image_border"
+                    android:contentDescription="@string/transport_mode_image"
+                    android:src="@drawable/tnsw_icon_train"
+                    app:layout_constraintLeft_toLeftOf="@+id/fragment_commute_center_top_line_ll" />
+
+                <FrameLayout
+                    android:id="@+id/fragment_commute_line_number_frame"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginLeft="10dp"
+                    android:background="@xml/route_frame"
+                    app:layout_constraintLeft_toRightOf="@+id/fragment_commute_transport_mode_image">
+
+                    <TextView
+                        android:id="@+id/fragment_commute_line_number_tv"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:gravity="center"
+                        android:text="T2"
+                        android:textColor="@color/icons"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+                </FrameLayout>
+
+                <TextView
+                    android:id="@+id/fragment_commute_line_name_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:layout_marginLeft="10dp"
+                    android:padding="3dp"
+                    android:text="Airport Line"
+                    android:textAlignment="center"
+                    android:textColor="@color/primary_text"
+                    android:textSize="@dimen/line_and_destination_text"
+                    app:layout_constraintLeft_toRightOf="@+id/fragment_commute_line_number_frame" />
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/fragment_commute_commute_destination_tv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="to Central"
+                android:textAlignment="center"
+                android:textColor="@color/primary_text"
+                android:textSize="@dimen/line_and_destination_text"
+                android:textStyle="bold"
+                app:layout_constraintLeft_toLeftOf="@+id/fragment_commute_center_top_ll"
+                app:layout_constraintRight_toRightOf="@+id/fragment_commute_center_top_ll"
+                app:layout_constraintTop_toBottomOf="@+id/fragment_commute_center_top_line_ll" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/fragment_commute_center_bottom_ll"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:gravity="center"
+            android:orientation="horizontal"
+            app:layout_constraintLeft_toLeftOf="@+id/fragment_commute_center_ll"
+            app:layout_constraintRight_toRightOf="@+id/fragment_commute_center_ll"
+            app:layout_constraintTop_toBottomOf="@+id/fragment_commute_center_top_ll">
+
+            <LinearLayout
+                android:id="@+id/fragment_commute_center_bottom_left_ll"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/fragment_commute_station_from_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="Mascot"
+                    android:textColor="@color/secondary_text"
+                    android:textSize="@dimen/station_platform_text" />
+
+                <FrameLayout
+                    android:id="@+id/fragment_commute_platform_from_frame"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:background="@xml/platform_frame"
+                    app:layout_constraintTop_toBottomOf="@+id/fragment_commute_station_from_name">
+
+                    <TextView
+                        android:id="@+id/fragment_commute_platform_from_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:padding="5dp"
+                        android:text="Platorm 1"
+                        android:textColor="@color/secondary_text"
+                        android:textSize="@dimen/station_platform_text" />
+                </FrameLayout>
+
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/fragment_commute_to_station_arrow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginEnd="20dp"
+                android:layout_marginStart="20dp"
+                android:contentDescription="@string/to_station_arrow"
+                android:src="@drawable/ic_towards_black_24dp"
+                android:tint="@color/secondary_text"
+                app:layout_constraintLeft_toRightOf="@+id/fragment_commute_center_bottom_left_ll" />
+
+            <LinearLayout
+                android:id="@+id/fragment_commute_center_bottom_right_ll"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintLeft_toRightOf="@+id/fragment_commute_to_station_arrow"
+                tools:layout_constraintLeft_creator="0">
+
+                <TextView
+                    android:id="@+id/fragment_commute_station_to_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="Central"
+                    android:textColor="@color/secondary_text"
+                    android:textSize="@dimen/station_platform_text" />
+
+                <FrameLayout
+                    android:id="@+id/fragment_commute_platform_to_frame"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:background="@xml/platform_frame"
+                    app:layout_constraintTop_toBottomOf="@+id/fragment_commute_station_to_name">
+
+                    <TextView
+                        android:id="@+id/fragment_commute_platform_to_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:padding="5dp"
+                        android:text="Platorm 21"
+                        android:textColor="@color/secondary_text"
+                        android:textSize="@dimen/station_platform_text" />
+                </FrameLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fragment_journey_search_fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:layout_marginEnd="16dp"
+        android:clickable="true"
+        android:src="@drawable/ic_png_swap_forward"
+        app:layout_constraintBottom_toTopOf="@+id/fragment_commute_bottom_sheet_ll"
+        app:layout_constraintRight_toRightOf="@+id/fragment_commute_constraint_layout"
+        app:layout_constraintTop_toTopOf="@+id/fragment_commute_bottom_sheet_ll" />
+
+    <RelativeLayout
+        android:id="@+id/fragment_commute_bottom_sheet_ll"
+        android:layout_width="match_parent"
+        android:layout_height="220dp"
+        android:background="#52A13F"
+        android:gravity="center"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="@+id/fragment_commute_constraint_layout"
+        app:layout_constraintLeft_toLeftOf="@+id/fragment_commute_constraint_layout"
+        app:layout_constraintRight_toRightOf="@+id/fragment_commute_constraint_layout">
+
+        <ImageButton
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:id="@+id/fragment_commute_prev_service_button"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/ic_keyboard_arrow_left_black_24dp"
+            android:tint="@color/icons"
+            android:background="@xml/swap_button_ripple"
+            android:layout_centerVertical="true"
+            android:scaleType="fitCenter"
+            android:contentDescription="@string/previous_service_button" />
+
+        <LinearLayout
+            android:id="@+id/fragment_commute_bottom_sheet_middle_ll"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:layout_toEndOf="@id/fragment_commute_prev_service_button"
+            android:layout_toRightOf="@id/fragment_commute_prev_service_button"
+            android:layout_toStartOf="@+id/fragment_commute_next_service_button"
+            android:layout_toLeftOf="@+id/fragment_commute_next_service_button">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/icons"
+                android:textSize="@dimen/line_and_destination_text"
+                android:text="Departs at: 10:45 pm"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/line_and_destination_text"
+                android:textColor="@color/icons"
+                android:textStyle="bold"
+                android:layout_marginTop="8dp"
+                android:text="to City Circle via Central"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="45sp"
+                android:layout_marginTop="25dp"
+                android:textColor="@color/icons"
+                android:text="8min 45sec"/>
+        </LinearLayout>
+
+        <ImageButton
+            android:layout_centerVertical="true"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:id="@+id/fragment_commute_next_service_button"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@xml/swap_button_ripple"
+            android:src="@drawable/ic_keyboard_arrow_right_black_24dp"
+            android:tint="@color/icons"
+            android:scaleType="fitCenter"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:contentDescription="@string/next_service_arrow" />
+
+    </RelativeLayout>
+
+
+</android.support.constraint.ConstraintLayout>

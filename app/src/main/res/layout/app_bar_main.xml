@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="false"
-    tools:context="com.id11303765.commute.MainActivity">
+    tools:context="com.id11303765.commute.view.MainActivity">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/app_bar_main_appbar"

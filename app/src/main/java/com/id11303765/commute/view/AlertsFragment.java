@@ -1,4 +1,4 @@
-package com.id11303765.commute;
+package com.id11303765.commute.view;
 
 import android.app.Fragment;
 import android.os.Bundle;
@@ -7,11 +7,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.id11303765.commute.R;
 
-public class SavedRoutesFragment extends Fragment {
+
+public class AlertsFragment extends Fragment {
     View mCustomView;
 
-    public SavedRoutesFragment() {
+    public AlertsFragment() {
         // Required empty public constructor
     }
 
@@ -24,13 +26,13 @@ public class SavedRoutesFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        return inflater.inflate(R.layout.fragment_saved_routes, container, false);
+        return inflater.inflate(R.layout.fragment_alerts, container, false);
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        getActivity().setTitle(R.string.saved_routes);
+        getActivity().setTitle(R.string.alerts);
     }
 
     @Override

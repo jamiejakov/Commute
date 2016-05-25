@@ -1,25 +1,22 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/fragment_journey_constraintLayout"
+    android:id="@+id/fragment_commute_constraint_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".WelcomeFragment"
+    tools:context=".view.WelcomeFragment"
     tools:layout_editor_absoluteX="0dp"
     tools:layout_editor_absoluteY="81dp">
-
-    <!-- TODO: Update blank fragment layout -->
-
 
     <TextView
         android:id="@+id/fragment_welcome_welcome_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="40dp"
-        android:text="Welcome To Commute"
-        app:layout_constraintLeft_toLeftOf="@+id/fragment_journey_constraintLayout"
-        app:layout_constraintRight_toRightOf="@+id/fragment_journey_constraintLayout"
-        app:layout_constraintTop_toTopOf="@+id/fragment_journey_constraintLayout"
+        android:text="@string/welcome_to_commute"
+        app:layout_constraintLeft_toLeftOf="@+id/fragment_commute_constraint_layout"
+        app:layout_constraintRight_toRightOf="@+id/fragment_commute_constraint_layout"
+        app:layout_constraintTop_toTopOf="@+id/fragment_commute_constraint_layout"
         tools:layout_constraintLeft_creator="0"
         tools:layout_constraintRight_creator="0"
         tools:layout_constraintTop_creator="0"
@@ -32,23 +29,24 @@
         android:layout_height="200dp"
         android:layout_marginTop="40dp"
         android:src="@drawable/logo"
-        app:layout_constraintLeft_toLeftOf="@+id/fragment_journey_constraintLayout"
-        app:layout_constraintRight_toRightOf="@+id/fragment_journey_constraintLayout"
+        app:layout_constraintLeft_toLeftOf="@+id/fragment_commute_constraint_layout"
+        app:layout_constraintRight_toRightOf="@+id/fragment_commute_constraint_layout"
         app:layout_constraintTop_toBottomOf="@+id/fragment_welcome_welcome_text_view"
         tools:layout_constraintLeft_creator="0"
         tools:layout_constraintRight_creator="0"
         tools:layout_constraintTop_creator="0"
         tools:layout_editor_absoluteX="78dp"
-        tools:layout_editor_absoluteY="160dp" />
+        tools:layout_editor_absoluteY="160dp"
+        android:contentDescription="@string/application_icon" />
 
     <TextView
         android:id="@+id/fragment_welcome_start_text_view"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="20dp"
-        android:text="To get started, add your Home and Work/School locations."
-        app:layout_constraintLeft_toLeftOf="@+id/fragment_journey_constraintLayout"
-        app:layout_constraintRight_toRightOf="@+id/fragment_journey_constraintLayout"
+        android:text="@string/getting_started"
+        app:layout_constraintLeft_toLeftOf="@+id/fragment_commute_constraint_layout"
+        app:layout_constraintRight_toRightOf="@+id/fragment_commute_constraint_layout"
         app:layout_constraintBottom_toTopOf="@+id/fragment_welcome_setup_button"
         tools:layout_constraintLeft_creator="0"
         tools:layout_constraintRight_creator="0"
@@ -65,9 +63,9 @@
         android:layout_marginBottom="50dp"
         android:paddingStart="20dp"
         android:paddingEnd="20dp"
-        android:text="Set up commute"
-        app:layout_constraintLeft_toLeftOf="@+id/fragment_journey_constraintLayout"
-        app:layout_constraintRight_toRightOf="@+id/fragment_journey_constraintLayout"
-        app:layout_constraintBottom_toBottomOf="@+id/fragment_journey_constraintLayout"/>
+        android:text="@string/set_up_commute"
+        app:layout_constraintLeft_toLeftOf="@+id/fragment_commute_constraint_layout"
+        app:layout_constraintRight_toRightOf="@+id/fragment_commute_constraint_layout"
+        app:layout_constraintBottom_toBottomOf="@+id/fragment_commute_constraint_layout"/>
 
 </android.support.constraint.ConstraintLayout>

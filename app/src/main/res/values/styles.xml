@@ -17,4 +17,8 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+    <style name="JourneySearchButtonsStyle" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
+        <item name="colorAccent">@color/primary_slightly_light</item>
+    </style>
+
 </resources>

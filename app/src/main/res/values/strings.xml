@@ -21,7 +21,12 @@
     <string name="title_activity_about">AboutActivity</string>
     <string name="from">From:</string>
     <string name="to">To:</string>
-    <string name="choose_starting_point">Choose starting point...</string>
-    <string name="choose_destination">Choose destination...</string>
+    <string name="choose_starting_point">Choose starting point…</string>
+    <string name="choose_destination">Choose destination…</string>
     <string name="leave_now">Leave Now</string>
+    <string name="opal_card">Opal Card</string>
+    <string name="quick_search">Quick Search</string>
+    <string name="transport">Transport</string>
+    <string name="speed">Speed</string>
+    <string name="swap_button">Swap Button</string>
 </resources>

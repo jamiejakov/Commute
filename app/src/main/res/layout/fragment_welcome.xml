@@ -9,32 +9,65 @@
     tools:layout_editor_absoluteY="81dp">
 
     <!-- TODO: Update blank fragment layout -->
+
+
     <TextView
-        android:id="@+id/textView2"
-        android:layout_width="274dp"
-        android:layout_height="256dp"
-        android:text="@string/commute"
-        app:layout_constraintBottom_toBottomOf="@+id/fragment_journey_constraintLayout"
+        android:id="@+id/fragment_welcome_welcome_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:text="Welcome To Commute"
         app:layout_constraintLeft_toLeftOf="@+id/fragment_journey_constraintLayout"
         app:layout_constraintRight_toRightOf="@+id/fragment_journey_constraintLayout"
         app:layout_constraintTop_toTopOf="@+id/fragment_journey_constraintLayout"
-        tools:layout_constraintBottom_creator="0"
         tools:layout_constraintLeft_creator="0"
         tools:layout_constraintRight_creator="0"
         tools:layout_constraintTop_creator="0"
-        tools:layout_editor_absoluteX="55dp"
-        tools:layout_editor_absoluteY="127dp" />
+        android:textSize="20sp"
+        android:textColor="@color/primary_text"/>
 
+    <ImageView
+        android:id="@+id/fragment_welcome_image_view"
+        android:layout_width="wrap_content"
+        android:layout_height="200dp"
+        android:layout_marginTop="40dp"
+        android:src="@drawable/logo"
+        app:layout_constraintLeft_toLeftOf="@+id/fragment_journey_constraintLayout"
+        app:layout_constraintRight_toRightOf="@+id/fragment_journey_constraintLayout"
+        app:layout_constraintTop_toBottomOf="@+id/fragment_welcome_welcome_text_view"
+        tools:layout_constraintLeft_creator="0"
+        tools:layout_constraintRight_creator="0"
+        tools:layout_constraintTop_creator="0"
+        tools:layout_editor_absoluteX="78dp"
+        tools:layout_editor_absoluteY="160dp" />
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/third_fab"
+    <TextView
+        android:id="@+id/fragment_welcome_start_text_view"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:text="To get started, add your Home and Work/School locations."
+        app:layout_constraintLeft_toLeftOf="@+id/fragment_journey_constraintLayout"
+        app:layout_constraintRight_toRightOf="@+id/fragment_journey_constraintLayout"
+        app:layout_constraintBottom_toTopOf="@+id/fragment_welcome_setup_button"
+        tools:layout_constraintLeft_creator="0"
+        tools:layout_constraintRight_creator="0"
+        tools:layout_constraintTop_creator="0"
+        android:textSize="18sp"
+        android:textAlignment="center"
+        android:textColor="@color/primary_text"/>
+
+    <Button
+        android:id="@+id/fragment_welcome_setup_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/fab_margin"
-        android:layout_marginEnd="@dimen/fab_margin"
-        android:src="@drawable/ic_search_black_24dp"
-        android:tint="@color/icons"
-        app:layout_constraintBottom_toBottomOf="@+id/fragment_journey_constraintLayout"
-        app:layout_constraintRight_toRightOf="@+id/fragment_journey_constraintLayout" />
+        style="@style/Base.Widget.AppCompat.Button.Colored"
+        android:layout_marginBottom="50dp"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:text="Set up commute"
+        app:layout_constraintLeft_toLeftOf="@+id/fragment_journey_constraintLayout"
+        app:layout_constraintRight_toRightOf="@+id/fragment_journey_constraintLayout"
+        app:layout_constraintBottom_toBottomOf="@+id/fragment_journey_constraintLayout"/>
 
 </android.support.constraint.ConstraintLayout>

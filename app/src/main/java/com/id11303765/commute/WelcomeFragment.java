@@ -30,7 +30,7 @@ public class WelcomeFragment extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        getActivity().setTitle("Welcome to Commute");
+        getActivity().setTitle(R.string.commute);
     }
 
     @Override

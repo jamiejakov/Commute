@@ -10,6 +10,7 @@ import android.transition.TransitionManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.RotateAnimation;
 import android.widget.Button;
 import android.widget.GridLayout;
 import android.widget.ImageButton;
@@ -26,11 +27,8 @@ public class JourneyFragment extends Fragment implements View.OnClickListener, S
     private float mElevation;
     private SheetLayout mSheetLayout;
     private FloatingActionButton mFab;
-    private LinearLayout mAppBarStyleLinearLayout;
-    private Button mDepartureButton;
-    private Button mDestinationButton;
-    private LinearLayout mDepartureLL;
-    private LinearLayout mDestinationLL;
+    private LinearLayout mSeachButtonsLinearLayout;
+    private ImageButton mSwapButton;
 
 
     public JourneyFragment() {
@@ -55,12 +53,8 @@ public class JourneyFragment extends Fragment implements View.OnClickListener, S
 
         mFab = (FloatingActionButton) getActivity().findViewById(R.id.fragment_journey_search_fab);
         mSheetLayout = (SheetLayout) getActivity().findViewById(R.id.fragment_journey_sheet_layout);
-        mAppBarStyleLinearLayout = (LinearLayout) getActivity().findViewById(R.id.fragment_journey_search_linearLayout);
-        mDepartureButton = (Button) getActivity().findViewById(R.id.fragment_journey_departure_button);
-        mDestinationButton = (Button) getActivity().findViewById(R.id.fragment_journey_destination_button);
-
-        mDepartureLL = (LinearLayout) getActivity().findViewById(R.id.fragment_journey_from_ll);
-        mDestinationLL = (LinearLayout) getActivity().findViewById(R.id.fragment_journey_to_ll);
+        mSwapButton = (ImageButton) getActivity().findViewById(R.id.fragment_journey_swap_button);
+        mSeachButtonsLinearLayout = (LinearLayout) getActivity().findViewById(R.id.fragment_journey_search_buttons_ll);
 
         setUpOnClickListeners();
     }
@@ -111,17 +105,20 @@ public class JourneyFragment extends Fragment implements View.OnClickListener, S
 
 
     private void swap(){
-        View cur = mAppBarStyleLinearLayout.getChildAt(0);
-        View v = mAppBarStyleLinearLayout.getChildAt(2);
-        TransitionManager.beginDelayedTransition(mAppBarStyleLinearLayout, new ChangeBounds());
-        mAppBarStyleLinearLayout.removeView(v);
-        mAppBarStyleLinearLayout.addView(v, 0);
-        LinearLayout.LayoutParams params =
-                (LinearLayout.LayoutParams)cur.getLayoutParams();
-        cur.setLayoutParams(v.getLayoutParams());
-        v.setLayoutParams(params);
-        mAppBarStyleLinearLayout.removeView(cur);
-        mAppBarStyleLinearLayout.addView(cur);
+        Button a = (Button) mSeachButtonsLinearLayout.getChildAt(0);
+        Button b = (Button) mSeachButtonsLinearLayout.getChildAt(1);
+
+        String tempHint = b.getHint().toString();
+        TransitionManager.beginDelayedTransition(mSeachButtonsLinearLayout, new ChangeBounds());
+        mSeachButtonsLinearLayout.removeView(b);
+        b.setHint(a.getHint());
+        mSeachButtonsLinearLayout.addView(b, 0);
+        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams)a.getLayoutParams();
+        a.setLayoutParams(b.getLayoutParams());
+        b.setLayoutParams(params);
+        mSeachButtonsLinearLayout.removeView(a);
+        a.setHint(tempHint);
+        mSeachButtonsLinearLayout.addView(a);
     }
 
 
@@ -152,11 +149,11 @@ public class JourneyFragment extends Fragment implements View.OnClickListener, S
         LinearLayout optionsButtonLL = (LinearLayout) getActivity().findViewById(R.id.fragment_journey_more_options_ll);
         optionsButtonLL.setOnClickListener(this);
 
-        ImageButton swapButton = (ImageButton) getActivity().findViewById(R.id.fragment_journey_swap_button);
-        swapButton.setOnClickListener(this);
 
-        mDepartureButton.setOnClickListener(this);
-        mDestinationButton.setOnClickListener(this);
+        mSwapButton.setOnClickListener(this);
+
+        mSeachButtonsLinearLayout.getChildAt(0).setOnClickListener(this);
+        mSeachButtonsLinearLayout.getChildAt(1).setOnClickListener(this);
 
         mFab.setOnClickListener(this);
         mSheetLayout.setFab(mFab);

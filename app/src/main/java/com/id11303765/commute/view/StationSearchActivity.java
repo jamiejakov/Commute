@@ -32,6 +32,7 @@ public class StationSearchActivity extends AppCompatActivity {
         setTitle(R.string.search_hint);
         ActionBar actionBar = getSupportActionBar();
 
+
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }

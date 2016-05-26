@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="opal_card_types_array">
+        <item>Adult</item>
+        <item>Concession</item>
+        <item>Child/Youth</item>
+        <item>Senior/Pensioner</item>
+    </string-array>
+
+    <string-array name="opal_card_types_array_values">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+    </string-array>
+</resources>

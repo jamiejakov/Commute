@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:background="@color/primary"
         android:elevation="4dp"
-        android:orientation="vertical"
+        android:orientation="horizontal"
         android:paddingBottom="50dp"
         android:paddingEnd="20dp"
         android:paddingStart="20dp"
@@ -25,13 +25,13 @@
         tools:layout_editor_absoluteX="0dp">
 
         <LinearLayout
-            android:id="@+id/fragment_journey_from_ll"
-            android:layout_width="match_parent"
+            android:id="@+id/fragment_journey_search_text_and_swap_ll"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintLeft_toLeftOf="@+id/fragment_journey_search_linearLayout"
+            android:orientation="vertical"
+            android:paddingTop="10dp"
             app:layout_constraintRight_toRightOf="@+id/fragment_journey_search_linearLayout"
-            app:layout_constraintTop_toBottomOf="@+id/fragment_journey_search_linearLayout"
+            app:layout_constraintTop_toTopOf="@+id/fragment_journey_search_linearLayout"
             tools:layout_constraintLeft_creator="1"
             tools:layout_constraintRight_creator="1"
             tools:layout_constraintTop_creator="1">
@@ -42,10 +42,45 @@
                 android:layout_height="wrap_content"
                 android:layout_marginRight="10dp"
                 android:text="@string/from"
-                app:layout_constraintLeft_toLeftOf="@+id/fragment_journey_from_ll"
-                app:layout_constraintTop_toTopOf="@+id/fragment_journey_from_ll"
+                app:layout_constraintLeft_toLeftOf="@+id/fragment_journey_search_text_and_swap_ll"
+                app:layout_constraintTop_toTopOf="@+id/fragment_journey_search_text_and_swap_ll"
                 tools:layout_constraintLeft_creator="1"
                 tools:layout_constraintTop_creator="1" />
+
+            <ImageButton
+                android:id="@+id/fragment_journey_swap_button"
+                android:contentDescription="@string/swap_button"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/ic_swap_vert_black_24dp"
+                android:background="@xml/swap_button_ripple"
+                android:tint="@color/icons"
+                app:layout_constraintLeft_toLeftOf="@+id/fragment_journey_search_text_and_swap_ll"
+                app:layout_constraintTop_toBottomOf="@+id/fragment_journey_from_tv" />
+
+            <TextView
+                android:id="@+id/fragment_journey_to_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="10dp"
+                android:paddingStart="16dp"
+                android:text="@string/to"
+                tools:layout_editor_absoluteX="0dp"
+                tools:layout_editor_absoluteY="15dp"
+                app:layout_constraintLeft_toLeftOf="@+id/fragment_journey_search_text_and_swap_ll"
+                app:layout_constraintTop_toBottomOf="@+id/fragment_journey_swap_button"  />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/fragment_journey_search_buttons_ll"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintLeft_toRightOf="@+id/fragment_journey_search_text_and_swap_ll"
+            app:layout_constraintRight_toRightOf="@+id/fragment_journey_search_linearLayout"
+            app:layout_constraintTop_toTopOf="@+id/fragment_journey_search_linearLayout">
 
             <Button
                 android:id="@+id/fragment_journey_departure_button"
@@ -57,63 +92,23 @@
                 android:paddingStart="10dp"
                 android:textAlignment="textStart"
                 android:background="@xml/journey_button_shape"
-                app:layout_constraintLeft_toRightOf="@+id/fragment_journey_from_tv"
+                app:layout_constraintTop_toTopOf="@+id/fragment_journey_search_buttons_ll"
+                app:layout_constraintLeft_toLeftOf="@+id/fragment_journey_search_buttons_ll"
                 tools:layout_constraintRight_creator="1"
                 android:elevation="0dp"/>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/fragment_journey_swap_ll"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintLeft_toLeftOf="@+id/fragment_journey_search_linearLayout"
-            app:layout_constraintRight_toRightOf="@+id/fragment_journey_search_linearLayout">
-
-            <ImageButton
-                android:id="@+id/fragment_journey_swap_button"
-                android:contentDescription="@string/swap_button"
-                style="@style/Widget.AppCompat.Button.Borderless"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:src="@drawable/ic_swap_vert_black_24dp"
-                android:background="@xml/swap_button_ripple"
-                android:tint="@color/icons"
-                app:layout_constraintLeft_toLeftOf="@+id/fragment_journey_swap_ll"
-                app:layout_constraintTop_toTopOf="@+id/fragment_journey_swap_ll" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/fragment_journey_to_ll"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintLeft_toLeftOf="@+id/fragment_journey_search_linearLayout"
-            app:layout_constraintRight_toRightOf="@+id/fragment_journey_search_linearLayout"
-            app:layout_constraintTop_toBottomOf="@+id/fragment_journey_swap_ll">
-
-            <TextView
-                android:id="@+id/fragment_journey_to_tv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="10dp"
-                android:paddingStart="16dp"
-                android:text="@string/to"
-                tools:layout_editor_absoluteX="0dp"
-                tools:layout_editor_absoluteY="15dp" />
 
             <Button
                 android:id="@+id/fragment_journey_destination_button"
                 style="@style/Widget.AppCompat.Button.Borderless"
                 android:layout_width="match_parent"
                 android:layout_height="35dp"
+                android:layout_marginTop="25dp"
                 android:background="@xml/journey_button_shape"
                 android:hint="@string/choose_destination"
                 android:paddingEnd="10dp"
                 android:paddingStart="10dp"
                 android:textAlignment="textStart"
-                app:layout_constraintLeft_toRightOf="@+id/fragment_journey_to_tv" />
+                app:layout_constraintTop_toBottomOf="@+id/fragment_journey_departure_button" />
         </LinearLayout>
     </LinearLayout>
 

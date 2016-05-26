@@ -8,8 +8,8 @@
     tools:context="com.id11303765.commute.view.journey.JourneyOptionsActivity">
 
     <android.support.design.widget.CoordinatorLayout
-        android:layout_height="match_parent"
         android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:fitsSystemWindows="false">
 
         <android.support.design.widget.AppBarLayout
@@ -18,13 +18,13 @@
             android:theme="@style/AppTheme.AppBarOverlay">
 
             <android.support.v7.widget.Toolbar
-                android:id="@+id/toolbar"
+                android:id="@+id/activity_journey_options_toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:background="?attr/colorPrimary"
                 app:popupTheme="@style/AppTheme.PopupOverlay" />
-
         </android.support.design.widget.AppBarLayout>
+
     </android.support.design.widget.CoordinatorLayout>
 
     <include layout="@layout/content_journey_options" />

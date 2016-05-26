@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory
+        android:key="pref_key_storage_settings"
+        android:title="@string/commute_settings">
+
+        <Preference
+            android:key="@string/home_preference"
+            android:summary="Select the station that you will be traveling from daily"
+            android:title="@string/home_preference">
+        </Preference>
+
+        <Preference
+            android:key="@string/work_preference"
+            android:summary="Select the station that you will be traveling to daily"
+            android:title="@string/work_preference">
+        </Preference>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:key="pref_key_storage_settings"
+        android:title="@string/other_settings">
+        <ListPreference
+            android:defaultValue="1"
+            android:entries="@array/opal_card_types_array"
+            android:entryValues="@array/opal_card_types_array_values"
+            android:key="@string/opal_card_type"
+            android:summary="Select the type of Opal Card you would like to see prices for"
+            android:title="@string/opal_card_type" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:key="pref_key_storage_settings"
+        android:title="">
+    </PreferenceCategory>
+
+</PreferenceScreen>

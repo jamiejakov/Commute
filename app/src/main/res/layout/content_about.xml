@@ -2,11 +2,105 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/content_about"
+    android:id="@+id/activity_about_constraint_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_marginTop="60dp"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.id11303765.commute.view.AboutActivity"
     tools:showIn="@layout/activity_about">
+
+    <ImageView
+        android:id="@+id/fragment_about_image_view"
+        android:layout_width="wrap_content"
+        android:layout_height="200dp"
+        android:layout_marginTop="40dp"
+        android:contentDescription="@string/application_icon"
+        android:src="@drawable/logo"
+        app:layout_constraintLeft_toLeftOf="@+id/activity_about_constraint_layout"
+        app:layout_constraintRight_toRightOf="@+id/activity_about_constraint_layout"
+        app:layout_constraintTop_toTopOf="@+id/activity_about_constraint_layout"
+        tools:layout_constraintLeft_creator="0"
+        tools:layout_constraintRight_creator="0"
+        tools:layout_constraintTop_creator="0"
+        tools:layout_editor_absoluteX="78dp"
+        tools:layout_editor_absoluteY="160dp" />
+
+    <LinearLayout
+        android:id="@+id/fragment_about_version_ll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@+id/fragment_about_build_ll"
+        app:layout_constraintLeft_toLeftOf="@+id/activity_about_constraint_layout"
+        app:layout_constraintRight_toRightOf="@+id/activity_about_constraint_layout">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Version:" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="1.0"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/fragment_about_build_ll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@+id/fragment_about_start_text_view"
+        app:layout_constraintLeft_toLeftOf="@+id/activity_about_constraint_layout"
+        app:layout_constraintRight_toRightOf="@+id/activity_about_constraint_layout">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Build Date:" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="20th May 2016"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+
+    <TextView
+        android:id="@+id/fragment_about_start_text_view"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:text="Thank you for using Commute."
+        android:textAlignment="center"
+        android:textColor="@color/primary_text"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toTopOf="@+id/fragment_about_visit_web_button"
+        app:layout_constraintLeft_toLeftOf="@+id/activity_about_constraint_layout"
+        app:layout_constraintRight_toRightOf="@+id/activity_about_constraint_layout"
+        tools:layout_constraintLeft_creator="0"
+        tools:layout_constraintRight_creator="0"
+        tools:layout_constraintTop_creator="0" />
+
+    <Button
+        android:id="@+id/fragment_about_visit_web_button"
+        style="@style/Base.Widget.AppCompat.Button.Colored"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="50dp"
+        android:paddingEnd="20dp"
+        android:paddingStart="20dp"
+        android:text="@string/visit_website"
+        app:layout_constraintBottom_toBottomOf="@+id/activity_about_constraint_layout"
+        app:layout_constraintLeft_toLeftOf="@+id/activity_about_constraint_layout"
+        app:layout_constraintRight_toRightOf="@+id/activity_about_constraint_layout" />
 
 </android.support.constraint.ConstraintLayout>

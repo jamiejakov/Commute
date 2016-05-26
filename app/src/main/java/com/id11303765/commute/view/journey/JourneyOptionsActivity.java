@@ -17,7 +17,7 @@ public class JourneyOptionsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_journey_options);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.activity_journey_options_toolbar);
         setSupportActionBar(toolbar);
 
         setTitle(R.string.journey_options);

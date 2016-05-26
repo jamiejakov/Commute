@@ -12,6 +12,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import com.id11303765.commute.R;
+import com.id11303765.commute.SettingsActivity;
 import com.id11303765.commute.view.journey.JourneyFragment;
 import com.id11303765.commute.view.timetables.TimetablesFragment;
 
@@ -85,7 +86,7 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_alerts) {
             frag.beginTransaction().replace(R.id.activity_main_content_frame, new AlertsFragment()).commit();
         } else if (id == R.id.nav_settings) {
-            //startActivity(new Intent(this,SettingsActivity.class));
+            startActivity(new Intent(this,SettingsActivity.class));
         } else if (id == R.id.nav_about) {
             startActivity(new Intent(this,AboutActivity.class));
         }

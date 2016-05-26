@@ -1,4 +1,4 @@
-package com.id11303765.commute;
+package com.id11303765.commute.view;
 
 
 import android.content.Intent;
@@ -18,6 +18,7 @@ import android.support.v7.app.ActionBar;
 import android.text.TextUtils;
 import android.view.MenuItem;
 
+import com.id11303765.commute.R;
 import com.id11303765.commute.utils.AppCompatPreferenceActivity;
 import com.id11303765.commute.utils.Constants;
 import com.id11303765.commute.view.StationSearchActivity;
@@ -116,6 +117,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                 }
             });
             bindPreferenceSummaryToValue(findPreference(getString(R.string.opal_card_type)));
+            bindPreferenceSummaryToValue(findPreference(getString(R.string.launch_screen_preference_key)));
         }
     }
 

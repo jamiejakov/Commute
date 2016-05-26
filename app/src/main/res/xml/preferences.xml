@@ -6,14 +6,23 @@
 
         <Preference
             android:key="@string/home_preference"
-            android:summary="Select the station that you will be traveling from daily"
+            android:summary="@string/home_preference_summary"
             android:title="@string/home_preference">
+
+        </Preference>
+
+        <Preference
+            android:key="@string/transfer_preference"
+            android:summary="@string/transfer_preference_summary"
+            android:title="@string/transfer_preference">
+
         </Preference>
 
         <Preference
             android:key="@string/work_preference"
-            android:summary="Select the station that you will be traveling to daily"
+            android:summary="@string/work_preference_summary"
             android:title="@string/work_preference">
+
         </Preference>
 
     </PreferenceCategory>
@@ -26,13 +35,21 @@
             android:entries="@array/opal_card_types_array"
             android:entryValues="@array/opal_card_types_array_values"
             android:key="@string/opal_card_type"
-            android:summary="Select the type of Opal Card you would like to see prices for"
+            android:summary="@string/opal_preference_summary"
             android:title="@string/opal_card_type" />
+        <ListPreference
+            android:defaultValue="0"
+            android:entries="@array/launch_screen_preference_array_text"
+            android:entryValues="@array/launch_screen_preference_array_values"
+            android:key="@string/launch_screen_preference_key"
+            android:summary="@string/launch_screen_preference_summary"
+            android:title="@string/launch_screen_preference_title" />
     </PreferenceCategory>
 
     <PreferenceCategory
         android:key="pref_key_storage_settings"
         android:title="">
+
     </PreferenceCategory>
 
 </PreferenceScreen>

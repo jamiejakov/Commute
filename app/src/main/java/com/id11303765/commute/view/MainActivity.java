@@ -2,17 +2,20 @@ package com.id11303765.commute.view;
 
 import android.app.FragmentManager;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 
 import com.id11303765.commute.R;
-import com.id11303765.commute.SettingsActivity;
+import com.id11303765.commute.model.DatabaseHelper;
 import com.id11303765.commute.view.journey.JourneyFragment;
 import com.id11303765.commute.view.timetables.TimetablesFragment;
 
@@ -40,8 +43,9 @@ public class MainActivity extends AppCompatActivity
         assert navigationView != null;
         navigationView.setNavigationItemSelectedListener(this);
 
-        FragmentManager frag = getFragmentManager();
-        frag.beginTransaction().replace(R.id.activity_main_content_frame, new WelcomeFragment()).commit();
+        DatabaseHelper dbHelper = new DatabaseHelper(this);
+        selectLaunchScreen();
+
     }
 
     @Override
@@ -95,5 +99,34 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
+    private void selectLaunchScreen(){
+        FragmentManager frag = getFragmentManager();
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        String launchScreenPref = sharedPreferences.getString(getString(R.string.launch_screen_preference_key),"0");
+
+        switch (launchScreenPref){
+            case "0":
+                frag.beginTransaction().replace(R.id.activity_main_content_frame, new WelcomeFragment()).commit();
+                editor.putString(getString(R.string.launch_screen_preference_key),"2");
+                editor.commit();
+                break;
+            case "1":
+                frag.beginTransaction().replace(R.id.activity_main_content_frame, new JourneyFragment()).commit();
+                break;
+            case "2":
+                frag.beginTransaction().replace(R.id.activity_main_content_frame, new CommuteFragment()).commit();
+                break;
+            case "3":
+                frag.beginTransaction().replace(R.id.activity_main_content_frame, new TimetablesFragment()).commit();
+                break;
+            case "4":
+                frag.beginTransaction().replace(R.id.activity_main_content_frame, new SavedRoutesFragment()).commit();
+                break;
+            case "5":
+                frag.beginTransaction().replace(R.id.activity_main_content_frame, new AlertsFragment()).commit();
+                break;
+        }
+    }
 
 }

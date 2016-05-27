@@ -13,7 +13,7 @@
         android:text="@string/hello_blank_fragment" />
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fragment_timetables_search_fab"
+        android:id="@+id/fragment_saved_routes_add_fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/fab_margin"

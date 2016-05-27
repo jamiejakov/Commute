@@ -117,48 +117,21 @@
             android:id="@+id/fragment_commute_center_bottom_ll"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
+            android:layout_marginTop="20dp"
             android:gravity="center"
             android:orientation="horizontal"
             app:layout_constraintLeft_toLeftOf="@+id/fragment_commute_center_ll"
             app:layout_constraintRight_toRightOf="@+id/fragment_commute_center_ll"
             app:layout_constraintTop_toBottomOf="@+id/fragment_commute_center_top_ll">
 
-            <LinearLayout
-                android:id="@+id/fragment_commute_center_bottom_left_ll"
-                android:layout_width="wrap_content"
+            <TextView
+                android:id="@+id/fragment_commute_station_from_name"
+                android:layout_width="100dp"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/fragment_commute_station_from_name"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:text="Mascot"
-                    android:textColor="@color/secondary_text"
-                    android:textSize="@dimen/station_platform_text" />
-
-                <FrameLayout
-                    android:id="@+id/fragment_commute_platform_from_frame"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:background="@xml/platform_frame"
-                    app:layout_constraintTop_toBottomOf="@+id/fragment_commute_station_from_name">
-
-                    <TextView
-                        android:id="@+id/fragment_commute_platform_from_name"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:padding="5dp"
-                        android:text="Platorm 1"
-                        android:textColor="@color/secondary_text"
-                        android:textSize="@dimen/station_platform_text" />
-                </FrameLayout>
-
-            </LinearLayout>
+                android:gravity="center"
+                android:text="Mascot, Platorm 1"
+                android:textColor="@color/secondary_text"
+                android:textSize="@dimen/station_platform_text" />
 
             <ImageView
                 android:id="@+id/fragment_commute_to_station_arrow"
@@ -170,45 +143,17 @@
                 android:contentDescription="@string/to_station_arrow"
                 android:src="@drawable/ic_towards_black_24dp"
                 android:tint="@color/secondary_text"
-                app:layout_constraintLeft_toRightOf="@+id/fragment_commute_center_bottom_left_ll" />
+                app:layout_constraintLeft_toRightOf="@+id/fragment_commute_station_from_name" />
 
-            <LinearLayout
-                android:id="@+id/fragment_commute_center_bottom_right_ll"
-                android:layout_width="wrap_content"
+            <TextView
+                android:id="@+id/fragment_commute_station_to_name"
+                android:layout_width="100dp"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                app:layout_constraintLeft_toRightOf="@+id/fragment_commute_to_station_arrow"
-                tools:layout_constraintLeft_creator="0">
-
-                <TextView
-                    android:id="@+id/fragment_commute_station_to_name"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:text="Central"
-                    android:textColor="@color/secondary_text"
-                    android:textSize="@dimen/station_platform_text" />
-
-                <FrameLayout
-                    android:id="@+id/fragment_commute_platform_to_frame"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:background="@xml/platform_frame"
-                    app:layout_constraintTop_toBottomOf="@+id/fragment_commute_station_to_name">
-
-                    <TextView
-                        android:id="@+id/fragment_commute_platform_to_name"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:gravity="center"
-                        android:padding="5dp"
-                        android:text="Platorm 21"
-                        android:textColor="@color/secondary_text"
-                        android:textSize="@dimen/station_platform_text" />
-                </FrameLayout>
-
-            </LinearLayout>
+                android:gravity="center"
+                android:text="Central, Platform 21"
+                android:textColor="@color/secondary_text"
+                android:textSize="@dimen/station_platform_text"
+                app:layout_constraintLeft_toRightOf="@+id/fragment_commute_to_station_arrow"/>
 
         </LinearLayout>
     </LinearLayout>
@@ -228,10 +173,12 @@
     <RelativeLayout
         android:id="@+id/fragment_commute_bottom_sheet_ll"
         android:layout_width="match_parent"
-        android:layout_height="220dp"
+        android:layout_height="match_parent"
         android:background="#52A13F"
         android:gravity="center"
+        android:layout_marginTop="60dp"
         android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@+id/fragment_commute_center_ll"
         app:layout_constraintBottom_toBottomOf="@+id/fragment_commute_constraint_layout"
         app:layout_constraintLeft_toLeftOf="@+id/fragment_commute_constraint_layout"
         app:layout_constraintRight_toRightOf="@+id/fragment_commute_constraint_layout">

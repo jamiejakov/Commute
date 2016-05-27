@@ -108,7 +108,7 @@ public class MainActivity extends AppCompatActivity
         switch (launchScreenPref){
             case "0":
                 frag.beginTransaction().replace(R.id.activity_main_content_frame, new WelcomeFragment()).commit();
-                editor.putString(getString(R.string.launch_screen_preference_key),"2");
+                editor.putString(getString(R.string.launch_screen_preference_key),"3");
                 editor.commit();
                 break;
             case "1":

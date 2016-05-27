@@ -8,7 +8,8 @@ public class Constants {
     public static final int SETTINGS_HOME_TO_SEARCH_REQUEST = 61;
     public static final int SETTINGS_WORK_TO_SEARCH_REQUEST = 62;
     public static final String SEARCHTAG = "DEBUGGING SEARCH";
-
+    public static final String CSV_PARSER_LOG = "CSVParser";
+    public static final String CSV_SPLIT = "\",\"";
 
 
     /*          DATABASE STUFF                */

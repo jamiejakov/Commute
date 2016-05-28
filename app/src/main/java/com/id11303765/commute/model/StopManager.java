@@ -2,6 +2,7 @@ package com.id11303765.commute.model;
 
 import android.database.Cursor;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 
 public class StopManager {
@@ -27,10 +28,10 @@ public class StopManager {
     private StopManager() {
     }
 
-    public static Stop getStopById(String id){
+    public static Stop getStopById(String id) {
         Stop stop = findStopById(id);
 
-        if (stop == null){
+        if (stop == null) {
             Cursor cursor = mDatabaseHelper.getStopById(id);
             stop = makeStop(cursor);
             mStops.add(stop);
@@ -39,19 +40,21 @@ public class StopManager {
         return stop;
     }
 
-    public static Stop getStopByName(String name){
-        Stop stop = findStopByName(name);
-
-        if (stop == null){
-            Cursor cursor = mDatabaseHelper.getStopByName(name);
-            stop = makeStop(cursor);
-            mStops.add(stop);
+    public static ArrayList<Stop> getStopsByName(String name) {
+        if (mStops != null){
+            return mStops;
         }
 
-        return stop;
+        Cursor cursor = mDatabaseHelper.getAllStops();
+        if (cursor.moveToFirst()) {
+            do {
+                mStops.add(makeStop(cursor));
+            } while (cursor.moveToNext());
+        }
+        return mStops;
     }
 
-    private static Stop makeStop(Cursor cursor){
+    private static Stop makeStop(Cursor cursor) {
         Stop stop = new Stop(cursor.getString(cursor.getColumnIndex(KEY_ID)),
                 cursor.getString(cursor.getColumnIndex(KEY_CODE)),
                 cursor.getString(cursor.getColumnIndex(KEY_NAME)),
@@ -63,25 +66,25 @@ public class StopManager {
         return stop;
     }
 
-    private static Stop findStopByName(String name){
-        for(Stop s : mStops){
-            if (s.getName().contains(name)){
+    private static Stop findStopByName(String name) {
+        for (Stop s : mStops) {
+            if (s.getName().contains(name)) {
                 return s;
             }
         }
         return null;
     }
 
-    private static Stop findStopById(String id){
-        for(Stop s : mStops){
-            if (s.getID() == id){
+    private static Stop findStopById(String id) {
+        for (Stop s : mStops) {
+            if (s.getID() == id) {
                 return s;
             }
         }
         return null;
     }
 
-    public static void setDatabaseHelper(DatabaseHelper dbHelper){
+    public static void setDatabaseHelper(DatabaseHelper dbHelper) {
         mDatabaseHelper = dbHelper;
     }
 }

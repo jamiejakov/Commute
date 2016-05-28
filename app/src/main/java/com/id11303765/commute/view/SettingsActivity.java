@@ -2,26 +2,17 @@ package com.id11303765.commute.view;
 
 
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
-import android.media.Ringtone;
-import android.media.RingtoneManager;
-import android.net.Uri;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
-import android.preference.RingtonePreference;
 import android.support.v7.app.ActionBar;
-import android.text.TextUtils;
 import android.view.MenuItem;
 
 import com.id11303765.commute.R;
 import com.id11303765.commute.utils.AppCompatPreferenceActivity;
 import com.id11303765.commute.utils.Constants;
-import com.id11303765.commute.view.StationSearchActivity;
 
 
 public class SettingsActivity extends AppCompatPreferenceActivity {
@@ -100,7 +91,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             homePreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
-                    startActivityForResult(new Intent(getActivity(), StationSearchActivity.class),
+                    startActivityForResult(new Intent(getActivity(), StopSearchActivity.class),
                             Constants.SETTINGS_HOME_TO_SEARCH_REQUEST);
                     return true;
                 }
@@ -108,7 +99,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             workPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
-                    startActivityForResult(new Intent(getActivity(), StationSearchActivity.class),
+                    startActivityForResult(new Intent(getActivity(), StopSearchActivity.class),
                             Constants.SETTINGS_WORK_TO_SEARCH_REQUEST);
                     return true;
                 }

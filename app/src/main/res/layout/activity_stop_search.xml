@@ -5,14 +5,13 @@
     android:id="@+id/activity_station_search"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.id11303765.commute.view.StationSearchActivity">
+    tools:context="com.id11303765.commute.view.StopSearchActivity">
 
-    <ListView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/activit_station_search_list_view"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/activity_stop_search_recyclerview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    </android.support.v7.widget.RecyclerView>
 
 </android.support.constraint.ConstraintLayout>

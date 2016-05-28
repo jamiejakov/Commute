@@ -30,7 +30,7 @@
             android:name=".view.journey.JourneyRoutesListActivity"
             android:label="@string/title_activity_journey_routes_list"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".view.StationSearchActivity" />
+        <activity android:name=".view.StopSearchActivity" />
         <activity
             android:name=".view.SettingsActivity"
             android:label="@string/title_activity_settings"></activity>

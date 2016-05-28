@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/adapter_item_station_search_constraint_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:layout_editor_absoluteX="0dp"
+    tools:layout_editor_absoluteY="81dp">
+
+    <RelativeLayout
+        android:id="@+id/adapter_item_station_search_linear_layout"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_marginLeft="@dimen/fab_margin"
+        app:layout_constraintBottom_toBottomOf="@+id/adapter_item_station_search_constraint_layout"
+        app:layout_constraintLeft_toLeftOf="@+id/adapter_item_station_search_constraint_layout"
+        app:layout_constraintRight_toRightOf="@+id/adapter_item_station_search_constraint_layout"
+        app:layout_constraintTop_toTopOf="@+id/adapter_item_station_search_constraint_layout">
+
+        <ImageView
+            android:id="@+id/adapter_item_station_search_transport_image_view"
+            android:layout_width="@dimen/search_item_width"
+            android:layout_height="@dimen/search_item_width"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="@dimen/fab_margin"
+            android:background="@xml/rounded_image_border"
+            android:contentDescription="@string/transport_mode_image"
+            android:src="@drawable/tnsw_icon_train" />
+
+        <TextView
+            android:id="@+id/adapter_item_station_search_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_toEndOf="@+id/adapter_item_station_search_transport_image_view"
+            android:gravity="center_vertical"
+            android:text="Central"
+            android:textColor="@color/primary_text"
+            android:textSize="@dimen/station_platform_text" />
+
+
+    </RelativeLayout>
+
+
+</android.support.constraint.ConstraintLayout>

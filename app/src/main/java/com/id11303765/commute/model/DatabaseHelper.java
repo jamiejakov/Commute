@@ -112,13 +112,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return cursor;
     }
 
-    public Cursor getStopByName(String name){
+    public Cursor getAllStops(){
         SQLiteDatabase db = getReadableDatabase();
 
         String[] columns = new String[]{StopManager.KEY_ID, StopManager.KEY_CODE, StopManager.KEY_NAME,
                 StopManager.KEY_LAT, StopManager.KEY_LON, StopManager.KEY_PLATFORM_CODE};
-        String selection = StopManager.KEY_NAME + "  LIKE  '% " + name +  "%' ";
-        Cursor cursor = db.query(StopManager.KEY_TABLE, columns, selection, null, null, null, null);
+        Cursor cursor = db.query(StopManager.KEY_TABLE, columns, null, null, null, null, null);
 
         if (cursor == null) {
             return null;

@@ -57,8 +57,8 @@
 
                 <ImageView
                     android:id="@+id/fragment_commute_transport_mode_image"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
+                    android:layout_width="@dimen/transport_mode_icon_width"
+                    android:layout_height="@dimen/transport_mode_icon_width"
                     android:background="@xml/rounded_image_border"
                     android:contentDescription="@string/transport_mode_image"
                     android:src="@drawable/tnsw_icon_train"
@@ -66,16 +66,16 @@
 
                 <FrameLayout
                     android:id="@+id/fragment_commute_line_number_frame"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
+                    android:layout_width="@dimen/transport_mode_icon_width"
+                    android:layout_height="match_parent"
                     android:layout_marginLeft="10dp"
                     android:background="@xml/route_frame"
                     app:layout_constraintLeft_toRightOf="@+id/fragment_commute_transport_mode_image">
 
                     <TextView
                         android:id="@+id/fragment_commute_line_number_tv"
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
                         android:gravity="center"
                         android:text="T2"
                         android:textColor="@color/icons"
@@ -86,7 +86,7 @@
                 <TextView
                     android:id="@+id/fragment_commute_line_name_tv"
                     android:layout_width="wrap_content"
-                    android:layout_height="30dp"
+                    android:layout_height="match_parent"
                     android:layout_marginLeft="10dp"
                     android:padding="3dp"
                     android:text="Airport Line"

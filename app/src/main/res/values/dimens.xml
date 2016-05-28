@@ -8,4 +8,6 @@
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="station_platform_text">18sp</dimen>
     <dimen name="line_and_destination_text">20sp</dimen>
+    <dimen name="search_item_width">40dp</dimen>
+    <dimen name="transport_mode_icon_width">30dp</dimen>
 </resources>

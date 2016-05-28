@@ -10,16 +10,14 @@ import android.transition.TransitionManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.RotateAnimation;
 import android.widget.Button;
-import android.widget.GridLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
 import com.github.fabtransitionactivity.SheetLayout;
 import com.id11303765.commute.R;
 import com.id11303765.commute.utils.Constants;
-import com.id11303765.commute.view.StationSearchActivity;
+import com.id11303765.commute.view.StopSearchActivity;
 
 
 public class JourneyFragment extends Fragment implements View.OnClickListener, SheetLayout.OnFabAnimationEndListener{
@@ -85,11 +83,11 @@ public class JourneyFragment extends Fragment implements View.OnClickListener, S
                 mSheetLayout.expandFab();
                 break;
             case R.id.fragment_journey_departure_button:
-                startActivityForResult(new Intent(getActivity(), StationSearchActivity.class),
+                startActivityForResult(new Intent(getActivity(), StopSearchActivity.class),
                         Constants.JOURNEY_DEPARTURE_TO_SEARCH_REQUEST);
                 break;
             case R.id.fragment_journey_destination_button:
-                startActivityForResult(new Intent(getActivity(), StationSearchActivity.class),
+                startActivityForResult(new Intent(getActivity(), StopSearchActivity.class),
                         Constants.JOURNEY_DESTINATION_TO_SEARCH_REQUEST);
                 break;
             case R.id.fragment_journey_swap_button:

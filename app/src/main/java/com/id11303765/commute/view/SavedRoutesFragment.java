@@ -50,8 +50,6 @@ public class SavedRoutesFragment extends Fragment implements View.OnClickListene
 
     @Override
     public void onClick(View v) {
-        DatabaseHelper db = new DatabaseHelper(getActivity());
-        showToast(db.getRowCount() + "");
     }
 
     private void showToast(String text) {

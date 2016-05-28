@@ -90,17 +90,14 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
     }
 
 
-
-    public static class MyPreferenceFragment extends PreferenceFragment
-    {
+    public static class MyPreferenceFragment extends PreferenceFragment {
         @Override
-        public void onCreate(final Bundle savedInstanceState)
-        {
+        public void onCreate(final Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.preferences);
             Preference homePreference = findPreference(getString(R.string.home_preference));
             Preference workPreference = findPreference(getString(R.string.work_preference));
-            homePreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener(){
+            homePreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
                     startActivityForResult(new Intent(getActivity(), StationSearchActivity.class),
@@ -108,7 +105,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                     return true;
                 }
             });
-            workPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener(){
+            workPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
                     startActivityForResult(new Intent(getActivity(), StationSearchActivity.class),
@@ -120,5 +117,4 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             bindPreferenceSummaryToValue(findPreference(getString(R.string.launch_screen_preference_key)));
         }
     }
-
 }

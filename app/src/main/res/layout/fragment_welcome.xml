@@ -43,17 +43,27 @@
         android:id="@+id/fragment_welcome_start_text_view"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
-        android:text="@string/getting_started"
+        android:layout_marginBottom="15dp"
+        android:text="@string/adding_to_db"
         app:layout_constraintLeft_toLeftOf="@+id/fragment_welcome_constraint_layout"
         app:layout_constraintRight_toRightOf="@+id/fragment_welcome_constraint_layout"
-        app:layout_constraintBottom_toTopOf="@+id/fragment_welcome_setup_button"
+        app:layout_constraintBottom_toTopOf="@+id/fragment_welcome_progress_bar"
         tools:layout_constraintLeft_creator="0"
         tools:layout_constraintRight_creator="0"
         tools:layout_constraintTop_creator="0"
         android:textSize="18sp"
         android:textAlignment="center"
         android:textColor="@color/primary_text"/>
+
+    <ProgressBar
+        android:id="@+id/fragment_welcome_progress_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        app:layout_constraintLeft_toLeftOf="@+id/fragment_welcome_constraint_layout"
+        app:layout_constraintRight_toRightOf="@+id/fragment_welcome_constraint_layout"
+        app:layout_constraintBottom_toTopOf="@+id/fragment_welcome_setup_button"
+        android:visibility="gone"/>
 
     <Button
         android:id="@+id/fragment_welcome_setup_button"

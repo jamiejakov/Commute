@@ -15,7 +15,12 @@ import android.util.Log;
 import android.view.MenuItem;
 
 import com.id11303765.commute.R;
+import com.id11303765.commute.model.AgencyManager;
 import com.id11303765.commute.model.DatabaseHelper;
+import com.id11303765.commute.model.RouteManager;
+import com.id11303765.commute.model.StopManager;
+import com.id11303765.commute.model.StopTimeManager;
+import com.id11303765.commute.model.TripManager;
 import com.id11303765.commute.view.journey.JourneyFragment;
 import com.id11303765.commute.view.timetables.TimetablesFragment;
 
@@ -29,23 +34,10 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar_main_toolbar);
-        setSupportActionBar(toolbar);
 
-        mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mDrawerToggle = new ActionBarDrawerToggle(
-                this, mDrawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        assert mDrawer != null;
-        mDrawer.addDrawerListener(mDrawerToggle);
-        mDrawerToggle.syncState();
-
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        assert navigationView != null;
-        navigationView.setNavigationItemSelectedListener(this);
-
-        DatabaseHelper dbHelper = new DatabaseHelper(this);
+        setUpDrawer();
+        setUpDatabaseHelper();
         selectLaunchScreen();
-
     }
 
     @Override
@@ -99,6 +91,30 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
+    private void setUpDrawer(){
+        Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar_main_toolbar);
+        setSupportActionBar(toolbar);
+        mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawerToggle = new ActionBarDrawerToggle(
+                this, mDrawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        assert mDrawer != null;
+        mDrawer.addDrawerListener(mDrawerToggle);
+        mDrawerToggle.syncState();
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        assert navigationView != null;
+        navigationView.setNavigationItemSelectedListener(this);
+    }
+
+    private void setUpDatabaseHelper(){
+        DatabaseHelper dbHelper = new DatabaseHelper(this);
+        AgencyManager.setDatabaseHelper(dbHelper);
+        RouteManager.setDatabaseHelper(dbHelper);
+        TripManager.setDatabaseHelper(dbHelper);
+        StopManager.setDatabaseHelper(dbHelper);
+        StopTimeManager.setDatabaseHelper(dbHelper);
+    }
+
     private void selectLaunchScreen(){
         FragmentManager frag = getFragmentManager();
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
@@ -108,8 +124,8 @@ public class MainActivity extends AppCompatActivity
         switch (launchScreenPref){
             case "0":
                 frag.beginTransaction().replace(R.id.activity_main_content_frame, new WelcomeFragment()).commit();
-                editor.putString(getString(R.string.launch_screen_preference_key),"3");
-                editor.commit();
+                editor.putString(getString(R.string.launch_screen_preference_key),"1");
+                editor.apply();
                 break;
             case "1":
                 frag.beginTransaction().replace(R.id.activity_main_content_frame, new JourneyFragment()).commit();

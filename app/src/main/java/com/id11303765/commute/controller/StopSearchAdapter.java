@@ -2,6 +2,7 @@ package com.id11303765.commute.controller;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,12 +11,11 @@ import android.widget.TextView;
 
 import com.id11303765.commute.R;
 import com.id11303765.commute.model.Stop;
+import com.id11303765.commute.model.StopManager;
+import com.id11303765.commute.utils.Constants;
 
 import java.util.ArrayList;
 
-/**
- * Created by jamiejakov on 28/05/2016.
- */
 
 public class StopSearchAdapter extends RecyclerView.Adapter<StopSearchAdapter.StopSearchViewHolder> {
     private LayoutInflater mInflater;
@@ -37,18 +37,30 @@ public class StopSearchAdapter extends RecyclerView.Adapter<StopSearchAdapter.St
     @Override
     public void onBindViewHolder(StopSearchViewHolder holder, int position) {
         Stop currentStopData = mStopList.get(position);
-        holder.mName.setText(currentStopData.getName());
+        String name = currentStopData.getName();
+        holder.mName.setText(name);
+        int image = getImage(name);
+        if (image != 0) {
+            holder.mImage.setImageResource(image);
+        }
+
+    }
+
+    private int getImage(String name){
+        if (name.toLowerCase().contains("wharf")){
+            return R.drawable.tnsw_icon_ferry;
+        } else if (name.toLowerCase().contains("light rail")){
+            return R.drawable.tnsw_icon_light_rail;
+        } else if (name.toLowerCase().contains("platform")){
+            return R.drawable.tnsw_icon_train;
+        }
+        return 0;
     }
 
     @Override
     public int getItemCount() {
         return mStopList.size();
     }
-
-
-    /***********************************
-    * View Holder and Interface classes
-    *************************************/
 
     /**
      * Class that links the items from the adapter_item XML layout file to variables
@@ -63,6 +75,7 @@ public class StopSearchAdapter extends RecyclerView.Adapter<StopSearchAdapter.St
          */
         public StopSearchViewHolder(View view) {
             super(view);
+            view.setOnClickListener(this);
             mName = (TextView) view.findViewById(R.id.adapter_item_station_search_text_view);
             mImage = (ImageView) view.findViewById(R.id.adapter_item_station_search_transport_image_view);
         }

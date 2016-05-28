@@ -1,6 +1,9 @@
 package com.id11303765.commute.model;
 
 import android.database.Cursor;
+import android.util.Log;
+
+import com.id11303765.commute.utils.Constants;
 
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -26,6 +29,7 @@ public class StopManager {
     }
 
     private StopManager() {
+        mStops = new ArrayList<>();
     }
 
     public static Stop getStopById(String id) {
@@ -41,16 +45,19 @@ public class StopManager {
     }
 
     public static ArrayList<Stop> getStopsByName(String name) {
-        if (mStops != null){
-            return mStops;
+        if (!mStops.isEmpty()){
+            ArrayList<Stop> list = new ArrayList<>();
+            findStopByNameAndAddToList(name, list);
+            return list;
         }
-
         Cursor cursor = mDatabaseHelper.getAllStops();
+
         if (cursor.moveToFirst()) {
             do {
                 mStops.add(makeStop(cursor));
             } while (cursor.moveToNext());
         }
+        cursor.close();
         return mStops;
     }
 
@@ -60,19 +67,16 @@ public class StopManager {
                 cursor.getString(cursor.getColumnIndex(KEY_NAME)),
                 Double.parseDouble(cursor.getString(cursor.getColumnIndex(KEY_LAT))),
                 Double.parseDouble(cursor.getString(cursor.getColumnIndex(KEY_LON))),
-                cursor.getString(cursor.getColumnIndex(KEY_PARENT_STATION)),
                 cursor.getString(cursor.getColumnIndex(KEY_PLATFORM_CODE)));
-        cursor.close();
         return stop;
     }
 
-    private static Stop findStopByName(String name) {
+    private static void findStopByNameAndAddToList(String name, ArrayList<Stop> list) {
         for (Stop s : mStops) {
-            if (s.getName().contains(name)) {
-                return s;
+            if (s.getName().toLowerCase().contains(name.toLowerCase())) {
+                list.add(s);
             }
         }
-        return null;
     }
 
     private static Stop findStopById(String id) {

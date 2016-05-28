@@ -6,16 +6,14 @@ public class Stop {
     private String mName;
     private Double mLat;
     private Double mLon;
-    private String mParentStation;
     private String mPlatformCode;
 
-    public Stop(String mID, String mCode, String mName, Double mLat, Double mLon, String mParentStation, String mPlatformCode) {
+    public Stop(String mID, String mCode, String mName, Double mLat, Double mLon, String mPlatformCode) {
         this.mID = mID;
         this.mCode = mCode;
         this.mName = mName;
         this.mLat = mLat;
         this.mLon = mLon;
-        this.mParentStation = mParentStation;
         this.mPlatformCode = mPlatformCode;
     }
 
@@ -38,11 +36,6 @@ public class Stop {
     public void setLon(Double mLon) {
         this.mLon = mLon;
     }
-
-    public void setParentStation(String mParentStation) {
-        this.mParentStation = mParentStation;
-    }
-
 
     public void setPlatformCode(String mPlatformCode) {
         this.mPlatformCode = mPlatformCode;
@@ -67,10 +60,6 @@ public class Stop {
 
     public Double getLon() {
         return mLon;
-    }
-
-    public String getParentStation() {
-        return mParentStation;
     }
 
     public String getPlatformCode() {

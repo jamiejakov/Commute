@@ -23,6 +23,8 @@ public class TimetableManager {
     }
 
     private TimetableManager() {
+        mTripTimetables = new ArrayList<>();
+        mStopTimetables = new ArrayList<>();
     }
 
     public static void setDatabaseHelper(DatabaseHelper dbHelper){

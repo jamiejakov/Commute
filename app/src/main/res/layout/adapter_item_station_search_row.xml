@@ -1,22 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/adapter_item_station_search_constraint_layout"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    tools:layout_editor_absoluteX="0dp"
-    tools:layout_editor_absoluteY="81dp">
+    android:layout_height="wrap_content">
 
     <RelativeLayout
         android:id="@+id/adapter_item_station_search_linear_layout"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:layout_marginLeft="@dimen/fab_margin"
-        app:layout_constraintBottom_toBottomOf="@+id/adapter_item_station_search_constraint_layout"
-        app:layout_constraintLeft_toLeftOf="@+id/adapter_item_station_search_constraint_layout"
-        app:layout_constraintRight_toRightOf="@+id/adapter_item_station_search_constraint_layout"
-        app:layout_constraintTop_toTopOf="@+id/adapter_item_station_search_constraint_layout">
+        android:layout_marginLeft="@dimen/fab_margin">
 
         <ImageView
             android:id="@+id/adapter_item_station_search_transport_image_view"
@@ -42,4 +34,4 @@
     </RelativeLayout>
 
 
-</android.support.constraint.ConstraintLayout>
+</RelativeLayout>

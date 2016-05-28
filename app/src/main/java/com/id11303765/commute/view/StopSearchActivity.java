@@ -17,6 +17,7 @@ import android.view.MenuItem;
 import com.id11303765.commute.R;
 import com.id11303765.commute.controller.StopSearchAdapter;
 import com.id11303765.commute.model.Stop;
+import com.id11303765.commute.model.StopManager;
 import com.id11303765.commute.utils.Constants;
 import com.id11303765.commute.utils.DividerItemDecoration;
 
@@ -25,7 +26,6 @@ import java.util.ArrayList;
 public class StopSearchActivity extends AppCompatActivity {
 
     private RecyclerView mStopRecyclerView;
-    private Cursor mCursor;
     private StopSearchAdapter mStopSearchAdapter;
     private ArrayList<Stop> mStopList;
 
@@ -46,7 +46,6 @@ public class StopSearchActivity extends AppCompatActivity {
         mStopRecyclerView.setLayoutManager(layoutManager);
         mStopSearchAdapter = new StopSearchAdapter(this, mStopList);
         mStopRecyclerView.setAdapter(mStopSearchAdapter);
-        mStopRecyclerView.addItemDecoration(new DividerItemDecoration(this, R.xml.divider));
     }
 
     @Override
@@ -74,8 +73,10 @@ public class StopSearchActivity extends AppCompatActivity {
             @Override
             public boolean onQueryTextChange(String s) {
                 Log.d(Constants.SEARCHTAG, "onQueryTextChange ");
-
-
+                Log.d(Constants.SEARCHTAG, "mStopList Before:  " + mStopList.size());
+                mStopList.clear();
+                mStopList.addAll(StopManager.getStopsByName(s));
+                mStopSearchAdapter.notifyDataSetChanged();
                 return false;
             }
 

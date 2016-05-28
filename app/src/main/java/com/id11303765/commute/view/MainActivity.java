@@ -11,7 +11,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 
 import com.id11303765.commute.R;
@@ -19,7 +18,7 @@ import com.id11303765.commute.model.AgencyManager;
 import com.id11303765.commute.model.DatabaseHelper;
 import com.id11303765.commute.model.RouteManager;
 import com.id11303765.commute.model.StopManager;
-import com.id11303765.commute.model.StopTimeManager;
+import com.id11303765.commute.model.TimetableManager;
 import com.id11303765.commute.model.TripManager;
 import com.id11303765.commute.view.journey.JourneyFragment;
 import com.id11303765.commute.view.timetables.TimetablesFragment;
@@ -112,7 +111,7 @@ public class MainActivity extends AppCompatActivity
         RouteManager.setDatabaseHelper(dbHelper);
         TripManager.setDatabaseHelper(dbHelper);
         StopManager.setDatabaseHelper(dbHelper);
-        StopTimeManager.setDatabaseHelper(dbHelper);
+        TimetableManager.setDatabaseHelper(dbHelper);
     }
 
     private void selectLaunchScreen(){

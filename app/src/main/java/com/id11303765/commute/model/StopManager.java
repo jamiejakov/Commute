@@ -2,9 +2,12 @@ package com.id11303765.commute.model;
 
 import android.database.Cursor;
 
+import java.util.ArrayList;
+
 public class StopManager {
     private static StopManager ourInstance = new StopManager();
     private static DatabaseHelper mDatabaseHelper;
+    private static ArrayList<Stop> mStops;
 
     static final String KEY_TABLE = "stop";
     static final String KEY_ID = "stop_id";
@@ -24,8 +27,31 @@ public class StopManager {
     private StopManager() {
     }
 
-    public static Stop getStop(String id){
-        Cursor cursor = mDatabaseHelper.getStop(id);
+    public static Stop getStopById(String id){
+        Stop stop = findStopById(id);
+
+        if (stop == null){
+            Cursor cursor = mDatabaseHelper.getStopById(id);
+            stop = makeStop(cursor);
+            mStops.add(stop);
+        }
+
+        return stop;
+    }
+
+    public static Stop getStopByName(String name){
+        Stop stop = findStopByName(name);
+
+        if (stop == null){
+            Cursor cursor = mDatabaseHelper.getStopByName(name);
+            stop = makeStop(cursor);
+            mStops.add(stop);
+        }
+
+        return stop;
+    }
+
+    private static Stop makeStop(Cursor cursor){
         Stop stop = new Stop(cursor.getString(cursor.getColumnIndex(KEY_ID)),
                 cursor.getString(cursor.getColumnIndex(KEY_CODE)),
                 cursor.getString(cursor.getColumnIndex(KEY_NAME)),
@@ -35,6 +61,24 @@ public class StopManager {
                 cursor.getString(cursor.getColumnIndex(KEY_PLATFORM_CODE)));
         cursor.close();
         return stop;
+    }
+
+    private static Stop findStopByName(String name){
+        for(Stop s : mStops){
+            if (s.getName().contains(name)){
+                return s;
+            }
+        }
+        return null;
+    }
+
+    private static Stop findStopById(String id){
+        for(Stop s : mStops){
+            if (s.getID() == id){
+                return s;
+            }
+        }
+        return null;
     }
 
     public static void setDatabaseHelper(DatabaseHelper dbHelper){

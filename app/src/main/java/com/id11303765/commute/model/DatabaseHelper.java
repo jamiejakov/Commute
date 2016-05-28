@@ -94,12 +94,30 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return cursor;
     }
 
-    public Cursor getStop(String id){
+    public Cursor getStopById(String id){
         SQLiteDatabase db = getReadableDatabase();
 
         String[] columns = new String[]{StopManager.KEY_ID, StopManager.KEY_CODE, StopManager.KEY_NAME,
         StopManager.KEY_LAT, StopManager.KEY_LON, StopManager.KEY_PLATFORM_CODE};
         String selection = StopManager.KEY_ID + " = " + id;
+        Cursor cursor = db.query(StopManager.KEY_TABLE, columns, selection, null, null, null, null);
+
+        if (cursor == null) {
+            return null;
+        } else if (!cursor.moveToFirst()) {
+            cursor.close();
+            return null;
+        }
+        db.close();
+        return cursor;
+    }
+
+    public Cursor getStopByName(String name){
+        SQLiteDatabase db = getReadableDatabase();
+
+        String[] columns = new String[]{StopManager.KEY_ID, StopManager.KEY_CODE, StopManager.KEY_NAME,
+                StopManager.KEY_LAT, StopManager.KEY_LON, StopManager.KEY_PLATFORM_CODE};
+        String selection = StopManager.KEY_NAME + "  LIKE  '% " + name +  "%' ";
         Cursor cursor = db.query(StopManager.KEY_TABLE, columns, selection, null, null, null, null);
 
         if (cursor == null) {
@@ -151,10 +169,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public Cursor getStopTimes(String idType, String id){
         SQLiteDatabase db = getReadableDatabase();
 
-        String[] columns = new String[]{TripManager.KEY_ID, StopTimeManager.KEY_ARRIVAL_TIME, StopTimeManager.KEY_DEPARTURE_TIME,
-                StopManager.KEY_ID, StopTimeManager.KEY_STOP_SEQUENCE};
+        String[] columns = new String[]{TripManager.KEY_ID, TimetableManager.KEY_ARRIVAL_TIME, TimetableManager.KEY_DEPARTURE_TIME,
+                StopManager.KEY_ID, TimetableManager.KEY_STOP_SEQUENCE};
         String selection = idType + " = " + id;
-        Cursor cursor = db.query(StopTimeManager.KEY_TABLE, columns, selection, null, null, null, null);
+        Cursor cursor = db.query(TimetableManager.KEY_TABLE, columns, selection, null, null, null, null);
 
         if (cursor == null) {
             return null;
@@ -178,7 +196,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     public void populateStopTimesTable(){
-        readCSV(StopTimeManager.KEY_TABLE, "stop_times.txt");
+        readCSV(TimetableManager.KEY_TABLE, "stop_times.txt");
     }
 
     private void readCSV(String table, String file) {
@@ -210,7 +228,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             case TripManager.KEY_TABLE:
                 populateTripTable(db, buffer);
                 break;
-            case StopTimeManager.KEY_TABLE:
+            case TimetableManager.KEY_TABLE:
                 populateStopTimeTable(db, buffer);
                 break;
         }
@@ -363,11 +381,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 }
                 ContentValues cv = new ContentValues();
                 cv.put(TripManager.KEY_ID, columns[0].replaceAll("\"", "").trim());
-                cv.put(StopTimeManager.KEY_ARRIVAL_TIME, columns[1].replaceAll("\"", "").trim());
-                cv.put(StopTimeManager.KEY_DEPARTURE_TIME, columns[2].replaceAll("\"", "").trim());
+                cv.put(TimetableManager.KEY_ARRIVAL_TIME, columns[1].replaceAll("\"", "").trim());
+                cv.put(TimetableManager.KEY_DEPARTURE_TIME, columns[2].replaceAll("\"", "").trim());
                 cv.put(StopManager.KEY_ID, columns[3].replaceAll("\"", "").trim());
-                cv.put(StopTimeManager.KEY_STOP_SEQUENCE, Integer.parseInt(columns[4].replaceAll("\"", "").trim()));
-                db.insert(StopTimeManager.KEY_TABLE, null, cv);
+                cv.put(TimetableManager.KEY_STOP_SEQUENCE, Integer.parseInt(columns[4].replaceAll("\"", "").trim()));
+                db.insert(TimetableManager.KEY_TABLE, null, cv);
                 i++;
             }
         } catch (IOException e) {
@@ -450,13 +468,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     private void createStopTimesTable() {
-        mTransportDatabase.execSQL("DROP TABLE IF EXISTS " + StopTimeManager.KEY_TABLE);
-        mTransportDatabase.execSQL("CREATE TABLE " + StopTimeManager.KEY_TABLE + "( " +
+        mTransportDatabase.execSQL("DROP TABLE IF EXISTS " + TimetableManager.KEY_TABLE);
+        mTransportDatabase.execSQL("CREATE TABLE " + TimetableManager.KEY_TABLE + "( " +
                 TripManager.KEY_ID + " TEXT NOT NULL," +
-                StopTimeManager.KEY_ARRIVAL_TIME + " TEXT NOT NULL," +
-                StopTimeManager.KEY_DEPARTURE_TIME + " TEXT NOT NULL," +
+                TimetableManager.KEY_ARRIVAL_TIME + " TEXT NOT NULL," +
+                TimetableManager.KEY_DEPARTURE_TIME + " TEXT NOT NULL," +
                 StopManager.KEY_ID + " TEXT NOT NULL," +
-                StopTimeManager.KEY_STOP_SEQUENCE + " INTEGER NOT NULL," +
+                TimetableManager.KEY_STOP_SEQUENCE + " INTEGER NOT NULL," +
                 " FOREIGN KEY (" + TripManager.KEY_ID + ") REFERENCES " +
                 TripManager.KEY_TABLE + "(" + TripManager.KEY_ID + ")," +
                 " FOREIGN KEY (" + StopManager.KEY_ID + ") REFERENCES " +

@@ -2,9 +2,12 @@ package com.id11303765.commute.model;
 
 import android.database.Cursor;
 
+import java.util.ArrayList;
+
 public class AgencyManager {
     private static AgencyManager ourInstance = new AgencyManager();
     private static DatabaseHelper mDatabaseHelper;
+    private static ArrayList<Agency> mAgencies;
 
     static final String KEY_TABLE = "agency";
     static final String KEY_ID = "agency_id";
@@ -18,15 +21,27 @@ public class AgencyManager {
 
     }
 
-    public static Agency getAgency(String id){
-        Cursor cursor = mDatabaseHelper.getAgency(id);
-        Agency agency = new Agency(cursor.getString(cursor.getColumnIndex(KEY_ID)),
-                cursor.getString(cursor.getColumnIndex(KEY_NAME)));
-        cursor.close();
+    public static Agency getAgency(String id) {
+        Agency agency = findAngency(id);
+        if (agency == null){
+            Cursor cursor = mDatabaseHelper.getAgency(id);
+            agency = new Agency(cursor.getString(cursor.getColumnIndex(KEY_ID)),
+                    cursor.getString(cursor.getColumnIndex(KEY_NAME)));
+            cursor.close();
+        }
         return agency;
     }
 
-    public static void setDatabaseHelper(DatabaseHelper dbHelper){
+    public static void setDatabaseHelper(DatabaseHelper dbHelper) {
         mDatabaseHelper = dbHelper;
+    }
+
+    private static Agency findAngency(String id) {
+        for (Agency a : mAgencies) {
+            if (a.getID() == id) {
+                return a;
+            }
+        }
+        return null;
     }
 }

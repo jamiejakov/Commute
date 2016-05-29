@@ -22,12 +22,16 @@ import com.id11303765.commute.utils.Constants;
 import com.id11303765.commute.utils.DividerItemDecoration;
 
 import java.util.ArrayList;
+import java.util.Set;
+import java.util.TreeSet;
 
 public class StopSearchActivity extends AppCompatActivity {
 
     private RecyclerView mStopRecyclerView;
     private StopSearchAdapter mStopSearchAdapter;
     private ArrayList<Stop> mStopList;
+    private int mIntentRequest;
+    private String mExcludeSearch;
 
 
     @Override
@@ -39,12 +43,13 @@ public class StopSearchActivity extends AppCompatActivity {
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
-
+        mIntentRequest = getIntent().getIntExtra(Constants.INTENT_REQUEST, 0);
+        mExcludeSearch = getIntent().getStringExtra(Constants.INTENT_SEARCH_EXCLUDE);
         mStopList = new ArrayList<>();
         mStopRecyclerView = (RecyclerView) findViewById(R.id.activity_stop_search_recyclerview);
         final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         mStopRecyclerView.setLayoutManager(layoutManager);
-        mStopSearchAdapter = new StopSearchAdapter(this, mStopList);
+        mStopSearchAdapter = new StopSearchAdapter(this,this, mIntentRequest, mStopList);
         mStopRecyclerView.setAdapter(mStopSearchAdapter);
     }
 
@@ -73,19 +78,32 @@ public class StopSearchActivity extends AppCompatActivity {
             @Override
             public boolean onQueryTextChange(String s) {
                 Log.d(Constants.SEARCHTAG, "onQueryTextChange ");
-                Log.d(Constants.SEARCHTAG, "mStopList Before:  " + mStopList.size());
                 mStopList.clear();
-                mStopList.addAll(StopManager.getStopsByName(s));
+                ArrayList<Stop> list = StopManager.getStopsByName(s);
+                for (Stop stop : list){
+                    if (containsStop(stop) == null){
+                        if (mExcludeSearch == null || !stop.getShortName().toLowerCase().equals(mExcludeSearch.toLowerCase())){
+                            mStopList.add(stop);
+                        }
+                    }
+                }
                 mStopSearchAdapter.notifyDataSetChanged();
                 return false;
             }
-
         });
-
-
         return true;
-
     }
+
+    private Stop containsStop(Stop stopToCheck){
+        for (Stop stop: mStopList) {
+            if (stop.getShortName().toLowerCase().equals(stopToCheck.getShortName().toLowerCase()) &&
+                    stop.getmStopType() == stopToCheck.getmStopType()) {
+                return stop;
+            }
+        }
+        return null;
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();

@@ -8,6 +8,12 @@ public class Constants {
     public static final int SETTINGS_HOME_TO_SEARCH_REQUEST = 61;
     public static final int SETTINGS_WORK_TO_SEARCH_REQUEST = 62;
     public static final int WELCOME_TO_SETTINGS_REQUEST = 1;
+    public static final int STOP_SELECT_TO_BACK_REQUEST = 101;
+
+    public static final String INTENT_SELECTED_STOP_NAME = "INTENT_SELECTED_STOP_NAME";
+    public static final String INTENT_REQUEST = "INTENT_REQUEST";
+    public static final String INTENT_SEARCH_EXCLUDE = "INTENT_SEARCH_EXCLUDE";
+
     public static final String SEARCHTAG = "DEBUGGING SEARCH";
     public static final String CSV_PARSER_LOG = "CSVParser";
     public static final String CSV_SPLIT = "\",\"";

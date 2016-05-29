@@ -117,8 +117,8 @@ public class MainActivity extends AppCompatActivity
     private void selectLaunchScreen(){
         FragmentManager frag = getFragmentManager();
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-        SharedPreferences.Editor editor = sharedPreferences.edit();
         String launchScreenPref = sharedPreferences.getString(getString(R.string.launch_screen_preference_key),"0");
+        SharedPreferences.Editor editor = sharedPreferences.edit();
 
         switch (launchScreenPref){
             case "0":

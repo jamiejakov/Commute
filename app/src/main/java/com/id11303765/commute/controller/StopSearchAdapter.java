@@ -42,7 +42,7 @@ public class StopSearchAdapter extends RecyclerView.Adapter<StopSearchAdapter.St
         Stop currentStopData = mStopList.get(position);
         String name = currentStopData.getShortName();
         holder.mName.setText(name);
-        int image = currentStopData.getmStopType();
+        int image = currentStopData.getStopType();
         if (image != 0) {
             holder.mImage.setImageResource(image);
         }

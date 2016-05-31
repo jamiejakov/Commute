@@ -25,6 +25,7 @@ public class TripManager {
     }
 
     private TripManager() {
+        mTrips = new ArrayList<>();
     }
 
     public static void setDatabaseHelper(DatabaseHelper dbHelper){
@@ -38,25 +39,26 @@ public class TripManager {
             Cursor cursor = mDatabaseHelper.getTrip(id);
             Route route = RouteManager.getRoute(cursor.getString(cursor.getColumnIndex(RouteManager.KEY_ID)));
             Cursor calCurs = mDatabaseHelper.getCalendar(cursor.getString(cursor.getColumnIndex(Constants.DATABASE_TABLE_SERVICE_ID)));
+            if (cursor.moveToFirst() && calCurs.moveToFirst()) {
+                boolean[] calendar = {
+                        convertToBoolean(calCurs.getString(calCurs.getColumnIndex(Constants.DATABASE_TABLE_CALENDAR_MONDAY))),
+                        convertToBoolean(calCurs.getString(calCurs.getColumnIndex(Constants.DATABASE_TABLE_CALENDAR_TUESDAY))),
+                        convertToBoolean(calCurs.getString(calCurs.getColumnIndex(Constants.DATABASE_TABLE_CALENDAR_WEDNESDAY))),
+                        convertToBoolean(calCurs.getString(calCurs.getColumnIndex(Constants.DATABASE_TABLE_CALENDAR_THURSDAY))),
+                        convertToBoolean(calCurs.getString(calCurs.getColumnIndex(Constants.DATABASE_TABLE_CALENDAR_FRIDAY))),
+                        convertToBoolean(calCurs.getString(calCurs.getColumnIndex(Constants.DATABASE_TABLE_CALENDAR_SATURDAY))),
+                        convertToBoolean(calCurs.getString(calCurs.getColumnIndex(Constants.DATABASE_TABLE_CALENDAR_SUNDAY)))
+                };
 
-            boolean[] calendar = {
-                    convertToBoolean(calCurs.getString(calCurs.getColumnIndex(Constants.DATABASE_TABLE_CALENDAR_MONDAY))),
-                    convertToBoolean(calCurs.getString(calCurs.getColumnIndex(Constants.DATABASE_TABLE_CALENDAR_TUESDAY))),
-                    convertToBoolean(calCurs.getString(calCurs.getColumnIndex(Constants.DATABASE_TABLE_CALENDAR_WEDNESDAY))),
-                    convertToBoolean(calCurs.getString(calCurs.getColumnIndex(Constants.DATABASE_TABLE_CALENDAR_THURSDAY))),
-                    convertToBoolean(calCurs.getString(calCurs.getColumnIndex(Constants.DATABASE_TABLE_CALENDAR_FRIDAY))),
-                    convertToBoolean(calCurs.getString(calCurs.getColumnIndex(Constants.DATABASE_TABLE_CALENDAR_SATURDAY))),
-                    convertToBoolean(calCurs.getString(calCurs.getColumnIndex(Constants.DATABASE_TABLE_CALENDAR_SUNDAY)))
-            };
 
-
-            trip = new Trip(route, calendar,
-                    cursor.getString(cursor.getColumnIndex(KEY_ID)),
-                    cursor.getString(cursor.getColumnIndex(KEY_HEADSIGN)),
-                    cursor.getString(cursor.getColumnIndex(KEY_DIRECTION_ID)),
-                    cursor.getString(cursor.getColumnIndex(KEY_BLOCK_ID)),
-                    convertToBoolean(cursor.getString(cursor.getColumnIndex(KEY_WHEELCHAIR_ACCESSIBLE)))
-            );
+                trip = new Trip(route, calendar,
+                        cursor.getString(cursor.getColumnIndex(KEY_ID)),
+                        cursor.getString(cursor.getColumnIndex(KEY_HEADSIGN)),
+                        cursor.getString(cursor.getColumnIndex(KEY_DIRECTION_ID)),
+                        cursor.getString(cursor.getColumnIndex(KEY_BLOCK_ID)),
+                        convertToBoolean(cursor.getString(cursor.getColumnIndex(KEY_WHEELCHAIR_ACCESSIBLE)))
+                );
+            }
             calCurs.close();
             cursor.close();
         }

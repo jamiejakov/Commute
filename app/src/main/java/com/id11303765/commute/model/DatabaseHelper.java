@@ -14,6 +14,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 
 /**
  * SQL query class for accessing the DataBase
@@ -54,11 +55,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     /*-------------- GET POJOs --------------*/
 
-    public Cursor getAgency(String id){
+    public Cursor getAgency(String id) {
         SQLiteDatabase db = getReadableDatabase();
 
         String[] columns = new String[]{AgencyManager.KEY_ID, AgencyManager.KEY_NAME};
-        String selection = AgencyManager.KEY_ID + " = " + id;
+        String selection = AgencyManager.KEY_ID + " = '" + id + "'";
         Cursor cursor = db.query(AgencyManager.KEY_TABLE, columns, selection, null, null, null, null);
 
         if (cursor == null) {
@@ -71,7 +72,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return cursor;
     }
 
-    public Cursor getCalendar(String id){
+    public Cursor getCalendar(String id) {
         SQLiteDatabase db = getReadableDatabase();
 
         String[] columns = new String[]{Constants.DATABASE_TABLE_CALENDAR_MONDAY,
@@ -81,7 +82,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 Constants.DATABASE_TABLE_CALENDAR_FRIDAY,
                 Constants.DATABASE_TABLE_CALENDAR_SATURDAY,
                 Constants.DATABASE_TABLE_CALENDAR_SUNDAY};
-        String selection = Constants.DATABASE_TABLE_SERVICE_ID + " = " + id;
+        String selection = Constants.DATABASE_TABLE_SERVICE_ID + " = '" + id + "'";
         Cursor cursor = db.query(Constants.DATABASE_TABLE_CALENDAR, columns, selection, null, null, null, null);
 
         if (cursor == null) {
@@ -94,12 +95,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return cursor;
     }
 
-    public Cursor getStopById(String id){
+    public Cursor getStopById(String id) {
         SQLiteDatabase db = getReadableDatabase();
 
         String[] columns = new String[]{StopManager.KEY_ID, StopManager.KEY_CODE, StopManager.KEY_NAME,
-        StopManager.KEY_LAT, StopManager.KEY_LON, StopManager.KEY_PLATFORM_CODE};
-        String selection = StopManager.KEY_ID + " = " + id;
+                StopManager.KEY_LAT, StopManager.KEY_LON, StopManager.KEY_PLATFORM_CODE};
+        String selection = StopManager.KEY_ID + " = '" + id + "'";
         Cursor cursor = db.query(StopManager.KEY_TABLE, columns, selection, null, null, null, null);
 
         if (cursor == null) {
@@ -112,7 +113,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return cursor;
     }
 
-    public Cursor getAllStops(){
+    public Cursor getAllStops() {
         SQLiteDatabase db = getReadableDatabase();
 
         String[] columns = new String[]{StopManager.KEY_ID, StopManager.KEY_CODE, StopManager.KEY_NAME,
@@ -129,12 +130,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return cursor;
     }
 
-    public Cursor getRoute(String id){
+    public Cursor getRoute(String id) {
         SQLiteDatabase db = getReadableDatabase();
 
         String[] columns = new String[]{RouteManager.KEY_ID, AgencyManager.KEY_ID, RouteManager.KEY_SHORT_NAME, RouteManager.KEY_LONG_NAME,
                 RouteManager.KEY_DESC, RouteManager.KEY_TYPE, RouteManager.KEY_COLOR};
-        String selection = RouteManager.KEY_ID + " = " + id;
+        String selection = RouteManager.KEY_ID + " = '" + id + "'";
         Cursor cursor = db.query(RouteManager.KEY_TABLE, columns, selection, null, null, null, null);
 
         if (cursor == null) {
@@ -147,12 +148,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return cursor;
     }
 
-    public Cursor getTrip(String id){
+    public Cursor getTrip(String id) {
         SQLiteDatabase db = getReadableDatabase();
 
         String[] columns = new String[]{RouteManager.KEY_ID, Constants.DATABASE_TABLE_SERVICE_ID, TripManager.KEY_ID, TripManager.KEY_HEADSIGN,
                 TripManager.KEY_DIRECTION_ID, TripManager.KEY_BLOCK_ID, TripManager.KEY_WHEELCHAIR_ACCESSIBLE};
-        String selection = TripManager.KEY_ID + " = " + id;
+        String selection = TripManager.KEY_ID + " = '" + id + "'";
         Cursor cursor = db.query(TripManager.KEY_TABLE, columns, selection, null, null, null, null);
 
         if (cursor == null) {
@@ -165,12 +166,60 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return cursor;
     }
 
-    public Cursor getStopTimes(String idType, String id){
+    public Cursor getTripsContainingStops(String startStopShortName, String endStopShortName) {
+        SQLiteDatabase db = getReadableDatabase();
+
+        String query = "SELECT a." + TripManager.KEY_ID + "\n" +
+                "          FROM " + TimetableManager.KEY_TABLE + " a, " + TimetableManager.KEY_TABLE + " b\n" +
+                "         WHERE a." + TripManager.KEY_ID + " = b." + TripManager.KEY_ID + "\n" +
+                "           AND a." + StopManager.KEY_ID + " IN (SELECT " + StopManager.KEY_ID + " \n" +
+                "                                              FROM " + StopManager.KEY_TABLE + " \n" +
+                "                                             WHERE " + StopManager.KEY_NAME + " LIKE '" + startStopShortName + "%') \n" +
+                "           AND b." + StopManager.KEY_ID + " IN (SELECT " + StopManager.KEY_ID + " \n" +
+                "                                              FROM " + StopManager.KEY_TABLE + " \n" +
+                "                                             WHERE " + StopManager.KEY_NAME + " LIKE '" + endStopShortName + "%') \n" +
+                "           AND b." + TimetableManager.KEY_STOP_SEQUENCE + " > a." + TimetableManager.KEY_STOP_SEQUENCE + ";";
+        Cursor cursor = db.rawQuery(query, null);
+
+        if (cursor == null) {
+            return null;
+        } else if (!cursor.moveToFirst()) {
+            cursor.close();
+            return null;
+        }
+        db.close();
+        return cursor;
+    }
+
+    public Cursor getStopTimes(String idType, String id) {
         SQLiteDatabase db = getReadableDatabase();
 
         String[] columns = new String[]{TripManager.KEY_ID, TimetableManager.KEY_ARRIVAL_TIME, TimetableManager.KEY_DEPARTURE_TIME,
                 StopManager.KEY_ID, TimetableManager.KEY_STOP_SEQUENCE};
-        String selection = idType + " = " + id;
+        String selection = idType + " = '" + id + "'";
+        Cursor cursor = db.query(TimetableManager.KEY_TABLE, columns, selection, null, null, null, null);
+
+        if (cursor == null) {
+            return null;
+        } else if (!cursor.moveToFirst()) {
+            cursor.close();
+            return null;
+        }
+        db.close();
+        return cursor;
+    }
+
+    public Cursor getStopTimesForTripAndStop(String tripId, ArrayList<String> stopIds) {
+        SQLiteDatabase db = getReadableDatabase();
+
+        String[] columns = new String[]{TripManager.KEY_ID, TimetableManager.KEY_ARRIVAL_TIME, TimetableManager.KEY_DEPARTURE_TIME,
+                StopManager.KEY_ID, TimetableManager.KEY_STOP_SEQUENCE};
+        String selection = TripManager.KEY_ID + " = '" + tripId + "' AND " + StopManager.KEY_ID + " IN (";
+        for(String s : stopIds){
+            selection += s+", ";
+        }
+        selection = selection.substring(0, selection.length() - 2);
+        selection+=")";
         Cursor cursor = db.query(TimetableManager.KEY_TABLE, columns, selection, null, null, null, null);
 
         if (cursor == null) {
@@ -185,7 +234,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     /*-------------- POPULATE TABLES --------------*/
 
-    public void populateMainTables(){
+    public void populateMainTables() {
         readCSV(AgencyManager.KEY_TABLE, "agency.txt");
         readCSV(Constants.DATABASE_TABLE_CALENDAR, "calendar.txt");
         readCSV(RouteManager.KEY_TABLE, "routes.txt");
@@ -194,7 +243,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     }
 
-    public void populateStopTimesTable(){
+    public void populateStopTimesTable() {
         readCSV(TimetableManager.KEY_TABLE, "stop_times.txt");
     }
 
@@ -247,14 +296,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     continue;
                 }
                 ContentValues cv = new ContentValues();
-                cv.put(AgencyManager.KEY_ID, columns[0].trim());
-                cv.put(AgencyManager.KEY_NAME, columns[1].trim());
+                cv.put(AgencyManager.KEY_ID, columns[0].replaceAll("\"", "").trim());
+                cv.put(AgencyManager.KEY_NAME, columns[1].replaceAll("\"", "").trim());
                 db.insert(AgencyManager.KEY_TABLE, null, cv);
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
-        Log.d(Constants.CSV_PARSER_LOG, "Agencies Added" );
+        Log.d(Constants.CSV_PARSER_LOG, "Agencies Added");
     }
 
     private void populateCalendarTable(SQLiteDatabase db, BufferedReader buffer) {
@@ -267,7 +316,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     continue;
                 }
                 ContentValues cv = new ContentValues();
-                cv.put(Constants.DATABASE_TABLE_SERVICE_ID, columns[0].trim());
+                cv.put(Constants.DATABASE_TABLE_SERVICE_ID, columns[0].replaceAll("\"", "").trim());
                 cv.put(Constants.DATABASE_TABLE_CALENDAR_MONDAY, Integer.parseInt(columns[1].replaceAll("\"", "").trim()));
                 cv.put(Constants.DATABASE_TABLE_CALENDAR_TUESDAY, Integer.parseInt(columns[2].replaceAll("\"", "").trim()));
                 cv.put(Constants.DATABASE_TABLE_CALENDAR_WEDNESDAY, Integer.parseInt(columns[3].replaceAll("\"", "").trim()));
@@ -280,7 +329,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        Log.d(Constants.CSV_PARSER_LOG, "Calendars Added" );
+        Log.d(Constants.CSV_PARSER_LOG, "Calendars Added");
     }
 
     private void populateRouteTable(SQLiteDatabase db, BufferedReader buffer) {
@@ -306,7 +355,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        Log.d(Constants.CSV_PARSER_LOG, "Routes Added" );
+        Log.d(Constants.CSV_PARSER_LOG, "Routes Added");
     }
 
     private void populateStopTable(SQLiteDatabase db, BufferedReader buffer) {
@@ -333,7 +382,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        Log.d(Constants.CSV_PARSER_LOG, "Stops Added" );
+        Log.d(Constants.CSV_PARSER_LOG, "Stops Added");
     }
 
     private void populateTripTable(SQLiteDatabase db, BufferedReader buffer) {
@@ -359,7 +408,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        Log.d(Constants.CSV_PARSER_LOG, "Trips Added" );
+        Log.d(Constants.CSV_PARSER_LOG, "Trips Added");
     }
 
     private void populateStopTimeTable(SQLiteDatabase db, BufferedReader buffer) {
@@ -368,11 +417,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         try {
             while ((line = buffer.readLine()) != null) {
                 String[] columns = line.split(Constants.CSV_SPLIT);
-                if (i >= 5000){
+                if (i >= 5000) {
                     db.setTransactionSuccessful();
                     db.endTransaction();
                     db.beginTransaction();
-                    i=0;
+                    i = 0;
                 }
                 if (columns.length != 9) {
                     Log.d("CSVParser", "Skipping Bad CSV Row in Stop Time");
@@ -390,7 +439,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        Log.d(Constants.CSV_PARSER_LOG, "Stop Times Added" );
+        Log.d(Constants.CSV_PARSER_LOG, "Stop Times Added");
     }
 
     /*-------------- CREATE TABLES --------------*/

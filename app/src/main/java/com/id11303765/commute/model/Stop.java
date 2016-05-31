@@ -77,7 +77,7 @@ public class Stop {
         return mShortName;
     }
 
-    public int getmStopType() {
+    public int getStopType() {
         return mStopType;
     }
 

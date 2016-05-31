@@ -1,13 +1,17 @@
 package com.id11303765.commute.view;
 
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
+import android.util.Log;
 import android.view.MenuItem;
 
 import com.id11303765.commute.R;
@@ -21,7 +25,6 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getFragmentManager().beginTransaction().replace(android.R.id.content, new MyPreferenceFragment()).commit();
-
 
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
@@ -82,30 +85,74 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
 
 
     public static class MyPreferenceFragment extends PreferenceFragment {
+
         @Override
         public void onCreate(final Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.preferences);
-            Preference homePreference = findPreference(getString(R.string.home_preference));
-            Preference workPreference = findPreference(getString(R.string.work_preference));
+            final Preference homePreference = findPreference(getString(R.string.home_preference));
+            final Preference workPreference = findPreference(getString(R.string.work_preference));
+
+            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+            homePreference.setSummary(sharedPreferences.getString(getString(R.string.home_preference),getString(R.string.home_preference_summary)));
             homePreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
-                    startActivityForResult(new Intent(getActivity(), StopSearchActivity.class),
-                            Constants.SETTINGS_HOME_TO_SEARCH_REQUEST);
+                    Intent intent = new Intent(getActivity(), StopSearchActivity.class);
+                    intent.putExtra(Constants.INTENT_REQUEST, Constants.SETTINGS_HOME_TO_SEARCH_REQUEST);
+                    String text = workPreference.getSummary().toString();
+                    if (!text.matches("") && !text.matches(getString(R.string.work_preference_summary))){
+                        intent.putExtra(Constants.INTENT_SEARCH_EXCLUDE, text);
+                    }
+                    startActivityForResult(intent, Constants.SETTINGS_HOME_TO_SEARCH_REQUEST);
                     return true;
                 }
             });
+            workPreference.setSummary(sharedPreferences.getString(getString(R.string.work_preference), getString(R.string.work_preference_summary)));
             workPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
-                    startActivityForResult(new Intent(getActivity(), StopSearchActivity.class),
-                            Constants.SETTINGS_WORK_TO_SEARCH_REQUEST);
+                    Intent intent = new Intent(getActivity(), StopSearchActivity.class);
+                    intent.putExtra(Constants.INTENT_REQUEST, Constants.SETTINGS_WORK_TO_SEARCH_REQUEST);
+                    String text = homePreference.getSummary().toString();
+                    if (!text.matches("") && !text.matches(getString(R.string.home_preference_summary))){
+                        intent.putExtra(Constants.INTENT_SEARCH_EXCLUDE, text);
+                    }
+                    startActivityForResult(intent, Constants.SETTINGS_WORK_TO_SEARCH_REQUEST);
                     return true;
                 }
             });
             bindPreferenceSummaryToValue(findPreference(getString(R.string.opal_card_type)));
             bindPreferenceSummaryToValue(findPreference(getString(R.string.launch_screen_preference_key)));
+        }
+
+        @Override
+        public void onActivityResult(int requestCode, int resultCode, Intent data) {
+            String value;
+            SharedPreferences.Editor editor;
+            super.onActivityResult(requestCode, resultCode, data);
+            final Preference homePreference = findPreference(getString(R.string.home_preference));
+            final Preference workPreference = findPreference(getString(R.string.work_preference));
+            switch (requestCode){
+                case Constants.SETTINGS_HOME_TO_SEARCH_REQUEST:
+                    if (data != null){
+                        value = data.getStringExtra(Constants.INTENT_SELECTED_STOP_NAME);
+                        homePreference.setSummary(value);
+                        editor = homePreference.getSharedPreferences().edit();
+                        editor.putString(getString(R.string.home_preference),value);
+                        editor.apply();
+                    }
+                    break;
+                case Constants.SETTINGS_WORK_TO_SEARCH_REQUEST:
+                    if (data != null){
+                        value = data.getStringExtra(Constants.INTENT_SELECTED_STOP_NAME);
+                        workPreference.setSummary(value);
+                        editor = workPreference.getSharedPreferences().edit();
+                        editor.putString(getString(R.string.work_preference),value);
+                        editor.apply();
+                    }
+                    break;
+            }
         }
     }
 }

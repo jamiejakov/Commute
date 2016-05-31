@@ -84,29 +84,29 @@
                 </FrameLayout>
 
                 <TextView
-                    android:id="@+id/fragment_commute_line_name_tv"
+                    android:id="@+id/fragment_commute_commute_destination_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_marginLeft="10dp"
                     android:padding="3dp"
-                    android:text="Airport Line"
+                    android:text="to Central"
                     android:textAlignment="center"
                     android:textColor="@color/primary_text"
                     android:textSize="@dimen/line_and_destination_text"
+                    android:textStyle="bold"
                     app:layout_constraintLeft_toRightOf="@+id/fragment_commute_line_number_frame" />
 
             </LinearLayout>
 
             <TextView
-                android:id="@+id/fragment_commute_commute_destination_tv"
+                android:id="@+id/fragment_commute_line_name_tv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:text="to Central"
+                android:text="Airport Line"
                 android:textAlignment="center"
                 android:textColor="@color/primary_text"
                 android:textSize="@dimen/line_and_destination_text"
-                android:textStyle="bold"
                 app:layout_constraintLeft_toLeftOf="@+id/fragment_commute_center_top_ll"
                 app:layout_constraintRight_toRightOf="@+id/fragment_commute_center_top_ll"
                 app:layout_constraintTop_toBottomOf="@+id/fragment_commute_center_top_line_ll" />
@@ -174,7 +174,7 @@
         android:id="@+id/fragment_commute_bottom_sheet_ll"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#52A13F"
+        android:background="@color/primary"
         android:gravity="center"
         android:layout_marginTop="60dp"
         android:orientation="horizontal"

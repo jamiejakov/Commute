@@ -1,6 +1,7 @@
 package com.id11303765.commute.model;
 
 import android.database.Cursor;
+import android.util.Log;
 
 import java.util.ArrayList;
 
@@ -18,15 +19,17 @@ public class AgencyManager {
     }
 
     private AgencyManager() {
-
+        mAgencies = new ArrayList<>();
     }
 
     public static Agency getAgency(String id) {
         Agency agency = findAngency(id);
         if (agency == null){
             Cursor cursor = mDatabaseHelper.getAgency(id);
-            agency = new Agency(cursor.getString(cursor.getColumnIndex(KEY_ID)),
-                    cursor.getString(cursor.getColumnIndex(KEY_NAME)));
+            if (cursor.moveToFirst()) {
+                agency = new Agency(cursor.getString(cursor.getColumnIndex(KEY_ID)),
+                        cursor.getString(cursor.getColumnIndex(KEY_NAME)));
+            }
             cursor.close();
         }
         return agency;

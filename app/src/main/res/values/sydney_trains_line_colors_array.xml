@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="lineColors">
+        <item name="colorT1">#F29F2C</item>
+        <item name="colorT2">#52A13F</item>
+        <item name="colorT3">#EE552F</item>
+        <item name="colorT4">#1D83C3</item>
+        <item name="colorT5">#C3369E</item>
+        <item name="colorT6">#3B5D99</item>
+        <item name="colorT7">#98A2AC</item>
+    </string-array>
+</resources>

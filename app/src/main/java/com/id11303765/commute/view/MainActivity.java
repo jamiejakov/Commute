@@ -15,6 +15,7 @@ import android.view.MenuItem;
 
 import com.id11303765.commute.R;
 import com.id11303765.commute.model.AgencyManager;
+import com.id11303765.commute.model.CommuteManager;
 import com.id11303765.commute.model.DatabaseHelper;
 import com.id11303765.commute.model.RouteManager;
 import com.id11303765.commute.model.StopManager;
@@ -108,10 +109,11 @@ public class MainActivity extends AppCompatActivity
     private void setUpDatabaseHelper(){
         DatabaseHelper dbHelper = new DatabaseHelper(this);
         AgencyManager.setDatabaseHelper(dbHelper);
-        RouteManager.setDatabaseHelper(dbHelper);
+        RouteManager.setDatabaseHelperAndContext(dbHelper, this);
         TripManager.setDatabaseHelper(dbHelper);
         StopManager.setDatabaseHelper(dbHelper);
         TimetableManager.setDatabaseHelper(dbHelper);
+        CommuteManager.setDatabaseHelper(dbHelper);
     }
 
     private void selectLaunchScreen(){

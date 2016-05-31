@@ -2,7 +2,6 @@ package com.id11303765.commute.view;
 
 import android.app.SearchManager;
 import android.content.Context;
-import android.database.Cursor;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -19,11 +18,8 @@ import com.id11303765.commute.controller.StopSearchAdapter;
 import com.id11303765.commute.model.Stop;
 import com.id11303765.commute.model.StopManager;
 import com.id11303765.commute.utils.Constants;
-import com.id11303765.commute.utils.DividerItemDecoration;
 
 import java.util.ArrayList;
-import java.util.Set;
-import java.util.TreeSet;
 
 public class StopSearchActivity extends AppCompatActivity {
 
@@ -97,7 +93,7 @@ public class StopSearchActivity extends AppCompatActivity {
     private Stop containsStop(Stop stopToCheck){
         for (Stop stop: mStopList) {
             if (stop.getShortName().toLowerCase().equals(stopToCheck.getShortName().toLowerCase()) &&
-                    stop.getmStopType() == stopToCheck.getmStopType()) {
+                    stop.getStopType() == stopToCheck.getStopType()) {
                 return stop;
             }
         }

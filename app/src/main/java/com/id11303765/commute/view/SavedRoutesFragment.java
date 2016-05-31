@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.id11303765.commute.R;
+import com.id11303765.commute.model.CommuteManager;
 import com.id11303765.commute.model.DatabaseHelper;
 import com.id11303765.commute.utils.Constants;
 
@@ -50,6 +51,8 @@ public class SavedRoutesFragment extends Fragment implements View.OnClickListene
 
     @Override
     public void onClick(View v) {
+        //CommuteManager.getCommute("Mascot", "Central");
+        //showToast("Done");
     }
 
     private void showToast(String text) {

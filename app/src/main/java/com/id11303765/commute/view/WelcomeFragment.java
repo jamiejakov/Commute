@@ -91,7 +91,7 @@ public class WelcomeFragment extends Fragment implements View.OnClickListener {
         private DatabaseHelper mDB;
 
 
-        public LaunchPopulateDbAsync(DatabaseHelper db){
+        LaunchPopulateDbAsync(DatabaseHelper db){
             mDB = db;
         }
 
@@ -103,8 +103,8 @@ public class WelcomeFragment extends Fragment implements View.OnClickListener {
         @Override
         protected Void doInBackground(Void... params) {
             mDB.populateMainTables();
-            publishProgress();
             mDB.populateStopTimesTable();
+            publishProgress();
             return null;
         }
 

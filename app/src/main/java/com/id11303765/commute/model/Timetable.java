@@ -1,8 +1,9 @@
 package com.id11303765.commute.model;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 
-public class Timetable {
+public class Timetable implements Comparable<Timetable>{
 
     private Trip mTrip;
     private ArrayList<StopTime> mStopTimes;
@@ -42,5 +43,11 @@ public class Timetable {
 
     public void setStop(Stop mStop) {
         this.mStop = mStop;
+    }
+
+
+    @Override
+    public int compareTo(Timetable timetable) {
+        return mStopTimes.get(0).compareTo(timetable.getStopTimes().get(0));
     }
 }

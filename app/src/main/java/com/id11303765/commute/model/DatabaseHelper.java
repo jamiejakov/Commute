@@ -55,7 +55,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     /*-------------- GET POJOs --------------*/
 
-    public Cursor getAgency(String id) {
+    Cursor getAgency(String id) {
         SQLiteDatabase db = getReadableDatabase();
 
         String[] columns = new String[]{AgencyManager.KEY_ID, AgencyManager.KEY_NAME};
@@ -72,7 +72,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return cursor;
     }
 
-    public Cursor getCalendar(String id) {
+    Cursor getCalendar(String id) {
         SQLiteDatabase db = getReadableDatabase();
 
         String[] columns = new String[]{Constants.DATABASE_TABLE_CALENDAR_MONDAY,
@@ -95,7 +95,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return cursor;
     }
 
-    public Cursor getAllStops() {
+    Cursor getAllStops() {
         SQLiteDatabase db = getReadableDatabase();
 
         String[] columns = new String[]{StopManager.KEY_ID, StopManager.KEY_CODE, StopManager.KEY_NAME,
@@ -112,7 +112,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return cursor;
     }
 
-    public Cursor getRoute(String id) {
+    Cursor getRoute(String id) {
         SQLiteDatabase db = getReadableDatabase();
 
         String[] columns = new String[]{RouteManager.KEY_ID, AgencyManager.KEY_ID, RouteManager.KEY_SHORT_NAME, RouteManager.KEY_LONG_NAME,
@@ -130,7 +130,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return cursor;
     }
 
-    public Cursor getTrip(String id) {
+    Cursor getTrip(String id) {
         SQLiteDatabase db = getReadableDatabase();
 
         String[] columns = new String[]{RouteManager.KEY_ID, Constants.DATABASE_TABLE_SERVICE_ID, TripManager.KEY_ID, TripManager.KEY_HEADSIGN,
@@ -148,18 +148,24 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return cursor;
     }
 
-    public Cursor getTripsContainingStops(String startStopShortName, String endStopShortName) {
+    Cursor getTripsContainingStops(ArrayList<Stop> startStops, ArrayList<Stop> endStops) {
         SQLiteDatabase db = getReadableDatabase();
+        String startSelection = "";
+        String endSelection = "";
 
+        for (Stop stop : startStops) {
+            startSelection += stop.getID() + ", ";
+        }
+        startSelection = startSelection.substring(0, startSelection.length() - 2);
+        for (Stop stop : endStops) {
+            endSelection += stop.getID() + ", ";
+        }
+        endSelection = endSelection.substring(0, endSelection.length() - 2);
         String query = "SELECT a." + TripManager.KEY_ID + "\n" +
                 "          FROM " + TimetableManager.KEY_TABLE + " a, " + TimetableManager.KEY_TABLE + " b\n" +
                 "         WHERE a." + TripManager.KEY_ID + " = b." + TripManager.KEY_ID + "\n" +
-                "           AND a." + StopManager.KEY_ID + " IN (SELECT " + StopManager.KEY_ID + " \n" +
-                "                                                  FROM " + StopManager.KEY_TABLE + " \n" +
-                "                                                 WHERE " + StopManager.KEY_NAME + " LIKE '" + startStopShortName + "%') \n" +
-                "           AND b." + StopManager.KEY_ID + " IN (SELECT " + StopManager.KEY_ID + " \n" +
-                "                                                  FROM " + StopManager.KEY_TABLE + " \n" +
-                "                                                 WHERE " + StopManager.KEY_NAME + " LIKE '" + endStopShortName + "%') \n" +
+                "           AND a." + StopManager.KEY_ID + " IN (" + startSelection + ")\n" +
+                "           AND b." + StopManager.KEY_ID + " IN (" + endSelection + ") \n" +
                 "           AND b." + TimetableManager.KEY_STOP_SEQUENCE + " > a." + TimetableManager.KEY_STOP_SEQUENCE + ";";
         Cursor cursor = db.rawQuery(query, null);
 
@@ -173,7 +179,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return cursor;
     }
 
-    public Cursor getStopTimes(String idType, String id) {
+    Cursor getStopTimes(String idType, String id) {
         SQLiteDatabase db = getReadableDatabase();
 
         String[] columns = new String[]{TripManager.KEY_ID, TimetableManager.KEY_ARRIVAL_TIME, TimetableManager.KEY_DEPARTURE_TIME,
@@ -191,14 +197,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return cursor;
     }
 
-    public Cursor getStopTimesForTripAndStop(String tripId, ArrayList<String> stopIds) {
+    Cursor getStopTimesForTripAndStop(String tripId, ArrayList<Stop> stops) {
         SQLiteDatabase db = getReadableDatabase();
 
         String[] columns = new String[]{TripManager.KEY_ID, TimetableManager.KEY_ARRIVAL_TIME, TimetableManager.KEY_DEPARTURE_TIME,
                 StopManager.KEY_ID, TimetableManager.KEY_STOP_SEQUENCE};
         String selection = TripManager.KEY_ID + " = '" + tripId + "' AND " + StopManager.KEY_ID + " IN (";
-        for (String s : stopIds) {
-            selection += s + ", ";
+        for (Stop stop : stops) {
+            selection += stop.getID() + ", ";
         }
         selection = selection.substring(0, selection.length() - 2);
         selection += ")";

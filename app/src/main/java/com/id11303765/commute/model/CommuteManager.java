@@ -20,29 +20,36 @@ public class CommuteManager {
 
     public static Commute getCommute(String startStopShortName, String endStopShortName) {
         Commute commute = findCommute(startStopShortName, endStopShortName);
-        int position = 1;
+        ArrayList<Stop> startStops = StopManager.getStopsByName(startStopShortName);
+        ArrayList<Stop> endStops = StopManager.getStopsByName(endStopShortName);
+        ArrayList<Stop> allStops = new ArrayList<>();
+        allStops.addAll(startStops);
+        allStops.addAll(endStops);
+
         if (commute == null) {
-            Cursor cursor = mDatabaseHelper.getTripsContainingStops(startStopShortName, endStopShortName);
+            Cursor cursor = mDatabaseHelper.getTripsContainingStops(startStops, endStops);
             if (cursor.moveToFirst()) {
                 ArrayList<Timetable> tripTimetables = new ArrayList<>();
-                ArrayList<Stop> stops = new ArrayList<>();
                 do {
-                    if (position == 1){
-                        stops.addAll(StopManager.getStopsByName(startStopShortName));
-                        stops.addAll(StopManager.getStopsByName(endStopShortName));
-                    }
                     String tripID = cursor.getString(cursor.getColumnIndex(TripManager.KEY_ID));
-                    tripTimetables.add(TimetableManager.getTimetable(TripManager.getTrip(tripID),stops));
-
-                    position++;
+                    tripTimetables.add(TimetableManager.getTimetable(TripManager.getTrip(tripID),allStops));
                 } while (cursor.moveToNext());
 
                 commute = new Commute(startStopShortName, endStopShortName, tripTimetables);
             }
             cursor.close();
+            mCommutes.add(commute);
         }
 
         return commute;
+    }
+
+    private static ArrayList<String> getStopIds(ArrayList<Stop> stops){
+        ArrayList<String> ids = new ArrayList<>();
+        for(Stop s : stops){
+            ids.add(s.getID());
+        }
+        return ids;
     }
 
     private static Commute findCommute(String startShortName, String endShortName) {

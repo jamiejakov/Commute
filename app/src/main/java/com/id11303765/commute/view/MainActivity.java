@@ -1,6 +1,7 @@
 package com.id11303765.commute.view;
 
 import android.app.FragmentManager;
+import android.content.ClipData;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -11,7 +12,9 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.id11303765.commute.R;
 import com.id11303765.commute.model.AgencyManager;
@@ -36,7 +39,7 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
 
         setUpDrawer();
-        setUpDatabaseHelper();
+        setUpDatabaseHelpers();
         selectLaunchScreen();
     }
 
@@ -64,7 +67,6 @@ public class MainActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
@@ -82,31 +84,54 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_alerts) {
             frag.beginTransaction().replace(R.id.activity_main_content_frame, new AlertsFragment()).commit();
         } else if (id == R.id.nav_settings) {
-            startActivity(new Intent(this,SettingsActivity.class));
+            startActivity(new Intent(this, SettingsActivity.class));
         } else if (id == R.id.nav_about) {
-            startActivity(new Intent(this,AboutActivity.class));
+            startActivity(new Intent(this, AboutActivity.class));
         }
 
         mDrawer.closeDrawer(GravityCompat.START);
         return true;
     }
 
-    private void setUpDrawer(){
+    private void setUpDrawer() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar_main_toolbar);
         setSupportActionBar(toolbar);
         mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        final NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         mDrawerToggle = new ActionBarDrawerToggle(
-                this, mDrawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+                this, mDrawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
+
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+
+
+                Menu nav_Menu = navigationView.getMenu();
+                MenuItem item = nav_Menu.findItem(R.id.nav_commute);
+                if (!item.isEnabled()){
+                    item.setEnabled(isCommuteEnabled());
+                }
+            }
+        };
+
+
         assert mDrawer != null;
         mDrawer.addDrawerListener(mDrawerToggle);
         mDrawerToggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         assert navigationView != null;
         navigationView.setNavigationItemSelectedListener(this);
     }
 
-    private void setUpDatabaseHelper(){
+    private boolean isCommuteEnabled() {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+        String homeStop = sharedPreferences.getString(getString(R.string.home_preference), "non");
+        String workStop = sharedPreferences.getString(getString(R.string.work_preference), "non");
+        return !homeStop.equals("non") && !workStop.equals("non");
+    }
+
+
+    private void setUpDatabaseHelpers() {
         DatabaseHelper dbHelper = new DatabaseHelper(this);
         AgencyManager.setDatabaseHelper(dbHelper);
         RouteManager.setDatabaseHelperAndContext(dbHelper, this);
@@ -116,16 +141,16 @@ public class MainActivity extends AppCompatActivity
         CommuteManager.setDatabaseHelper(dbHelper);
     }
 
-    private void selectLaunchScreen(){
+    private void selectLaunchScreen() {
         FragmentManager frag = getFragmentManager();
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-        String launchScreenPref = sharedPreferences.getString(getString(R.string.launch_screen_preference_key),"0");
+        String launchScreenPref = sharedPreferences.getString(getString(R.string.launch_screen_preference_key), "0");
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
-        switch (launchScreenPref){
+        switch (launchScreenPref) {
             case "0":
                 frag.beginTransaction().replace(R.id.activity_main_content_frame, new WelcomeFragment()).commit();
-                editor.putString(getString(R.string.launch_screen_preference_key),"1");
+                editor.putString(getString(R.string.launch_screen_preference_key), "1");
                 editor.apply();
                 break;
             case "1":

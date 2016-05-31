@@ -3,7 +3,7 @@ package com.id11303765.commute.model;
 
 import java.util.Date;
 
-public class StopTime {
+public class StopTime implements Comparable<StopTime>{
     private Trip mTrip;
     private Date mArrivalTime;
     private Date mDepartureTime;
@@ -58,5 +58,10 @@ public class StopTime {
 
     public void setStopSequence(int mStopSequence) {
         this.mStopSequence = mStopSequence;
+    }
+
+    @Override
+    public int compareTo(StopTime stopTime) {
+        return this.mDepartureTime.compareTo(stopTime.getDepartureTime());
     }
 }

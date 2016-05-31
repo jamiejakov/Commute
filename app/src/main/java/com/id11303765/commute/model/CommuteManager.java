@@ -27,7 +27,6 @@ public class CommuteManager {
                 ArrayList<Timetable> tripTimetables = new ArrayList<>();
                 ArrayList<Stop> stops = new ArrayList<>();
                 do {
-
                     if (position == 1){
                         stops.addAll(StopManager.getStopsByName(startStopShortName));
                         stops.addAll(StopManager.getStopsByName(endStopShortName));

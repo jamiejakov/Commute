@@ -19,6 +19,7 @@ public class Constants {
     public static final String CSV_SPLIT = "\",\"";
 
     public static final int ONE_MINUTE = 1000*60;
+    public static final String COMMUTE_TO_OR_FROM_PREF = "COMMUTE_TO_OR_FROM_PREF";
 
 
     /*          DATABASE STUFF                */

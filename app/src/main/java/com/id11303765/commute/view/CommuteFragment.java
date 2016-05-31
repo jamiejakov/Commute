@@ -1,9 +1,12 @@
 package com.id11303765.commute.view;
 
 import android.app.Fragment;
+import android.app.ProgressDialog;
 import android.content.SharedPreferences;
 import android.graphics.drawable.GradientDrawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.view.LayoutInflater;
@@ -17,6 +20,7 @@ import android.widget.TextView;
 import com.id11303765.commute.R;
 import com.id11303765.commute.model.Commute;
 import com.id11303765.commute.model.CommuteManager;
+import com.id11303765.commute.model.DatabaseHelper;
 import com.id11303765.commute.model.Route;
 import com.id11303765.commute.model.StopTime;
 import com.id11303765.commute.model.Timetable;
@@ -31,11 +35,14 @@ import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 
-public class CommuteFragment extends Fragment implements View.OnClickListener{
+public class CommuteFragment extends Fragment implements View.OnClickListener {
     private View mTabView;
     private ArrayList<Commute> mCommuteLegs;
     private Commute mSelectedCommute;
     private Timetable mSelectedTimetable;
+    private boolean mIsTravelTo;
+    private FloatingActionButton mSwapFab;
+    private CountDownTimer mCountdownTimer;
 
     public CommuteFragment() {
         // Required empty public constructor
@@ -68,15 +75,14 @@ public class CommuteFragment extends Fragment implements View.OnClickListener{
         tabLayout.addTab(tabLayout.newTab().setText("such wow"));
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);*/
 
-        FloatingActionButton swapFab = (FloatingActionButton) getActivity().findViewById(R.id.fragment_journey_search_fab);
-        swapFab.setOnClickListener(this);
+        mSwapFab = (FloatingActionButton) getActivity().findViewById(R.id.fragment_journey_search_fab);
+        mSwapFab.setOnClickListener(this);
     }
 
     @Override
     public void onStart() {
         super.onStart();
         setUpData();
-        setUpScreen();
     }
 
     @Override
@@ -94,11 +100,25 @@ public class CommuteFragment extends Fragment implements View.OnClickListener{
         }
     }
 
-    private void swap(){
+    private void swap() {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        SharedPreferences.Editor editor = sharedPreferences.edit();
 
+        if (mIsTravelTo) {
+            mSwapFab.setImageDrawable(getActivity().getDrawable(R.drawable.ic_png_swap_back));
+        } else {
+            mSwapFab.setImageDrawable(getActivity().getDrawable(R.drawable.ic_png_swap_forward));
+        }
+
+        mIsTravelTo = !mIsTravelTo;
+        editor.putBoolean(Constants.COMMUTE_TO_OR_FROM_PREF, mIsTravelTo);
+        editor.apply();
+
+        setUpData();
     }
 
     private void setUpScreen() {
+        mSelectedTimetable = findClosestTimetable();
         Route selectedRoute = mSelectedTimetable.getTrip().getRoute();
 
         getActivity().setTitle(getActivity().getString(R.string.commute) + " to " + mSelectedCommute.getEndStopShortName());
@@ -148,42 +168,54 @@ public class CommuteFragment extends Fragment implements View.OnClickListener{
         TextView arrivalTime = (TextView) getActivity().findViewById(R.id.fragment_commute_station_to_time);
         arrivalTime.setText(date.format(mSelectedTimetable.getStopTimes().get(1).getArrivalTime()));
 
-        TextView eta = (TextView) getActivity().findViewById(R.id.fragment_commute_bottom_sheet_eta);
-        String etaString = getETA(departureTimeDate);
-        eta.setText(etaString);
+
+        setETA(departureTimeDate);
     }
 
-    public String getETA(Date departureTime) {
+    public void setETA(Date departureTime) {
+        final TextView etaText = (TextView) getActivity().findViewById(R.id.fragment_commute_bottom_sheet_eta);
         Calendar now = Calendar.getInstance();
-        now.set(1970,0,1);
+        now.set(1970, 0, 1);
         Calendar dep = Calendar.getInstance();
         dep.setTime(departureTime);
 
 
-        long millis = dep.getTimeInMillis() - now.getTimeInMillis();
-        String time;
-        if (millis > Constants.ONE_MINUTE*60){
-            time = String.format("%2dhr %02dmin %02dsec",
-                    TimeUnit.MILLISECONDS.toHours(millis),
-                    TimeUnit.MILLISECONDS.toMinutes(millis) - TimeUnit.MINUTES.toMinutes(TimeUnit.MILLISECONDS.toHours(millis)),
-                    TimeUnit.MILLISECONDS.toSeconds(millis) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis)) - TimeUnit.MINUTES.toMinutes(TimeUnit.MILLISECONDS.toHours(millis))
-            );
-        }else{
-            time = String.format("%02dmin %02dsec",
-                    TimeUnit.MILLISECONDS.toMinutes(millis),
-                    TimeUnit.MILLISECONDS.toSeconds(millis) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis))
-            );
+        final long millis = dep.getTimeInMillis() - now.getTimeInMillis();
+        if (mCountdownTimer!=null){
+            mCountdownTimer.cancel();
         }
+        mCountdownTimer = new CountDownTimer(millis, 1000) {
+            public void onTick(long millisUntilFinished) {
+                String time;
+                if (millisUntilFinished > Constants.ONE_MINUTE * 60) {
+                    time = String.format(Locale.ENGLISH, "%2dhr %02dmin %02dsec",
+                            TimeUnit.MILLISECONDS.toHours(millisUntilFinished),
+                            TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished) -
+                                    TimeUnit.MINUTES.toMinutes(TimeUnit.MILLISECONDS.toHours(millisUntilFinished)),
+                            TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished) -
+                                    TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished)) -
+                                    TimeUnit.MINUTES.toMinutes(TimeUnit.MILLISECONDS.toHours(millisUntilFinished))
+                    );
+                } else {
+                    time = String.format(Locale.ENGLISH, "%02dmin %02dsec",
+                            TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished),
+                            TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished))
+                    );
+                }
+                etaText.setText(time);
+            }
 
-
-        return time;
+            public void onFinish() {
+                setUpScreen();
+            }
+        }.start();
     }
 
     private Timetable findClosestTimetable() {
         Timetable timetable = null;
         ArrayList<Timetable> timetables = mSelectedCommute.getTripTimetables();
         Calendar now = Calendar.getInstance();
-        now.set(1970,0,1);
+        now.set(1970, 0, 1);
         Calendar currentTimetableTime = Calendar.getInstance();
         for (Timetable t : timetables) {
             StopTime st = t.getStopTimes().get(0);
@@ -202,12 +234,61 @@ public class CommuteFragment extends Fragment implements View.OnClickListener{
     }
 
     private void setUpData() {
+        mCommuteLegs.clear();
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
         String startStopShortName = sharedPreferences.getString(getString(R.string.home_preference), getString(R.string.home_preference_summary));
         String endStopShortName = sharedPreferences.getString(getString(R.string.work_preference), getString(R.string.work_preference_summary));
-        mCommuteLegs.add(CommuteManager.getCommute(startStopShortName, endStopShortName));
+        mIsTravelTo = sharedPreferences.getBoolean(Constants.COMMUTE_TO_OR_FROM_PREF, true);
+        if (mIsTravelTo) {
+            LoadCommuteAsync loadCommute = new LoadCommuteAsync(startStopShortName, endStopShortName);
+            loadCommute.execute();
+        } else {
+            LoadCommuteAsync loadCommute = new LoadCommuteAsync(endStopShortName, startStopShortName);
+            loadCommute.execute();
+        }
+    }
+
+    private void continueSetup() {
         mSelectedCommute = mCommuteLegs.get(0);
-        mSelectedTimetable = findClosestTimetable();
+        setUpScreen();
+    }
+
+    /**
+     * Populates the internal database with the GTFS data from Transport NSW
+     */
+    private class LoadCommuteAsync extends AsyncTask<Void, Void, Void> {
+
+        private ProgressDialog mDialog;
+        private String mStartStopShortName;
+        private String mEndStopShortName;
+
+
+        public LoadCommuteAsync(String start, String end) {
+            mStartStopShortName = start;
+            mEndStopShortName = end;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            mDialog = new ProgressDialog(getActivity());
+            mDialog.show();
+            mDialog.setMessage("Loading Timetable");
+            mDialog.setCancelable(false);
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            mCommuteLegs.add(CommuteManager.getCommute(mStartStopShortName, mEndStopShortName));
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            if (this.mDialog.isShowing()) {
+                this.mDialog.dismiss();
+            }
+            continueSetup();
+        }
     }
 
 

@@ -95,24 +95,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return cursor;
     }
 
-    public Cursor getStopById(String id) {
-        SQLiteDatabase db = getReadableDatabase();
-
-        String[] columns = new String[]{StopManager.KEY_ID, StopManager.KEY_CODE, StopManager.KEY_NAME,
-                StopManager.KEY_LAT, StopManager.KEY_LON, StopManager.KEY_PLATFORM_CODE};
-        String selection = StopManager.KEY_ID + " = '" + id + "'";
-        Cursor cursor = db.query(StopManager.KEY_TABLE, columns, selection, null, null, null, null);
-
-        if (cursor == null) {
-            return null;
-        } else if (!cursor.moveToFirst()) {
-            cursor.close();
-            return null;
-        }
-        db.close();
-        return cursor;
-    }
-
     public Cursor getAllStops() {
         SQLiteDatabase db = getReadableDatabase();
 
@@ -173,11 +155,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "          FROM " + TimetableManager.KEY_TABLE + " a, " + TimetableManager.KEY_TABLE + " b\n" +
                 "         WHERE a." + TripManager.KEY_ID + " = b." + TripManager.KEY_ID + "\n" +
                 "           AND a." + StopManager.KEY_ID + " IN (SELECT " + StopManager.KEY_ID + " \n" +
-                "                                              FROM " + StopManager.KEY_TABLE + " \n" +
-                "                                             WHERE " + StopManager.KEY_NAME + " LIKE '" + startStopShortName + "%') \n" +
+                "                                                  FROM " + StopManager.KEY_TABLE + " \n" +
+                "                                                 WHERE " + StopManager.KEY_NAME + " LIKE '" + startStopShortName + "%') \n" +
                 "           AND b." + StopManager.KEY_ID + " IN (SELECT " + StopManager.KEY_ID + " \n" +
-                "                                              FROM " + StopManager.KEY_TABLE + " \n" +
-                "                                             WHERE " + StopManager.KEY_NAME + " LIKE '" + endStopShortName + "%') \n" +
+                "                                                  FROM " + StopManager.KEY_TABLE + " \n" +
+                "                                                 WHERE " + StopManager.KEY_NAME + " LIKE '" + endStopShortName + "%') \n" +
                 "           AND b." + TimetableManager.KEY_STOP_SEQUENCE + " > a." + TimetableManager.KEY_STOP_SEQUENCE + ";";
         Cursor cursor = db.rawQuery(query, null);
 
@@ -215,11 +197,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         String[] columns = new String[]{TripManager.KEY_ID, TimetableManager.KEY_ARRIVAL_TIME, TimetableManager.KEY_DEPARTURE_TIME,
                 StopManager.KEY_ID, TimetableManager.KEY_STOP_SEQUENCE};
         String selection = TripManager.KEY_ID + " = '" + tripId + "' AND " + StopManager.KEY_ID + " IN (";
-        for(String s : stopIds){
-            selection += s+", ";
+        for (String s : stopIds) {
+            selection += s + ", ";
         }
         selection = selection.substring(0, selection.length() - 2);
-        selection+=")";
+        selection += ")";
         Cursor cursor = db.query(TimetableManager.KEY_TABLE, columns, selection, null, null, null, null);
 
         if (cursor == null) {

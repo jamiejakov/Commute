@@ -2,7 +2,6 @@ package com.id11303765.commute.view;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
-import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -12,14 +11,11 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.id11303765.commute.R;
 import com.id11303765.commute.model.DatabaseHelper;
 import com.id11303765.commute.utils.Constants;
 import com.id11303765.commute.view.journey.JourneyFragment;
-
-import org.w3c.dom.Text;
 
 
 public class WelcomeFragment extends Fragment implements View.OnClickListener {
@@ -58,7 +54,7 @@ public class WelcomeFragment extends Fragment implements View.OnClickListener {
     public void onStart(){
         super.onStart();
         DatabaseHelper dbHelper = new DatabaseHelper(getActivity());
-        LaunchPopulateDB a = new LaunchPopulateDB(dbHelper);
+        LaunchPopulateDbAsync a = new LaunchPopulateDbAsync(dbHelper);
         a.execute();
     }
 
@@ -90,12 +86,12 @@ public class WelcomeFragment extends Fragment implements View.OnClickListener {
     /**
      * Populates the internal database with the GTFS data from Transport NSW
      */
-    private class LaunchPopulateDB extends AsyncTask<Void, Void, Void> {
+    private class LaunchPopulateDbAsync extends AsyncTask<Void, Void, Void> {
 
-        DatabaseHelper mDB;
+        private DatabaseHelper mDB;
 
 
-        public LaunchPopulateDB(DatabaseHelper db){
+        public LaunchPopulateDbAsync(DatabaseHelper db){
             mDB = db;
         }
 

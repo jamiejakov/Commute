@@ -90,7 +90,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_marginLeft="10dp"
-                    android:padding="3dp"
                     android:textAlignment="center"
                     android:textColor="@color/primary_text"
                     android:textSize="@dimen/line_and_destination_text"
@@ -129,7 +128,6 @@
                 android:layout_width="130dp"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="Mascot, Platorm 1"
                 android:textColor="@color/secondary_text"
                 android:textSize="@dimen/station_platform_text" />
 
@@ -150,7 +148,6 @@
                 android:layout_width="130dp"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="Central, Platform 21"
                 android:textColor="@color/secondary_text"
                 android:textSize="@dimen/station_platform_text"
                 app:layout_constraintLeft_toRightOf="@+id/fragment_commute_to_station_arrow"/>
@@ -172,7 +169,6 @@
                 android:layout_width="130dp"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="10:45 pm"
                 android:textColor="@color/primary_text"
                 android:textStyle="bold"
                 android:textSize="@dimen/line_and_destination_text"/>
@@ -183,7 +179,6 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:layout_marginLeft="64dp"
-                android:text="11:50 pm"
                 android:textStyle="bold"
                 android:textColor="@color/primary_text"
                 android:textSize="@dimen/line_and_destination_text"
@@ -260,7 +255,6 @@
                     android:textSize="50sp"
                     android:textAlignment="center"
                     android:textColor="@color/white"
-                    android:text="8min 45sec"
                     />
             </LinearLayout>
 

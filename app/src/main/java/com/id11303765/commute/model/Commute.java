@@ -4,22 +4,22 @@ package com.id11303765.commute.model;
 import java.util.ArrayList;
 
 public class Commute {
-    private Stop mStartStop;
-    private Stop mEndStop;
+    private String mStartStop;
+    private String mEndStop;
     private ArrayList<Timetable> mTripTimetables;
 
-    public Commute(Stop start, Stop end, ArrayList<Timetable> tripTimetables) {
+    public Commute(String start, String end, ArrayList<Timetable> tripTimetables) {
         mStartStop = start;
         mEndStop = end;
         mTripTimetables = tripTimetables;
     }
 
 
-    public Stop getStartStop() {
+    public String getStartStopShortName() {
         return mStartStop;
     }
 
-    public Stop getEndStop() {
+    public String getEndStopShortName() {
         return mEndStop;
     }
 
@@ -27,15 +27,4 @@ public class Commute {
         return mTripTimetables;
     }
 
-    public void setStartStop(Stop mStartStop) {
-        this.mStartStop = mStartStop;
-    }
-
-    public void setEndStop(Stop mEndStop) {
-        this.mEndStop = mEndStop;
-    }
-
-    public void setTripTimetables(ArrayList<Timetable> mTripTimetables) {
-        this.mTripTimetables = mTripTimetables;
-    }
 }

@@ -62,7 +62,8 @@
                     android:background="@xml/rounded_image_border"
                     android:contentDescription="@string/transport_mode_image"
                     android:src="@drawable/tnsw_icon_train"
-                    app:layout_constraintLeft_toLeftOf="@+id/fragment_commute_center_top_line_ll" />
+                    app:layout_constraintLeft_toLeftOf="@+id/fragment_commute_center_top_line_ll"
+                    android:visibility="gone"/>
 
                 <FrameLayout
                     android:id="@+id/fragment_commute_line_number_frame"
@@ -70,6 +71,7 @@
                     android:layout_height="match_parent"
                     android:layout_marginLeft="10dp"
                     android:background="@xml/route_frame"
+                    android:visibility="gone"
                     app:layout_constraintLeft_toRightOf="@+id/fragment_commute_transport_mode_image">
 
                     <TextView
@@ -77,10 +79,10 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:gravity="center"
-                        android:text="T2"
                         android:textColor="@color/white"
                         android:textSize="16sp"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        />
                 </FrameLayout>
 
                 <TextView
@@ -89,7 +91,6 @@
                     android:layout_height="match_parent"
                     android:layout_marginLeft="10dp"
                     android:padding="3dp"
-                    android:text="to Central"
                     android:textAlignment="center"
                     android:textColor="@color/primary_text"
                     android:textSize="@dimen/line_and_destination_text"
@@ -103,7 +104,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:text="Airport Line"
                 android:textAlignment="center"
                 android:textColor="@color/primary_text"
                 android:textSize="@dimen/line_and_destination_text"
@@ -126,7 +126,7 @@
 
             <TextView
                 android:id="@+id/fragment_commute_station_from_name"
-                android:layout_width="100dp"
+                android:layout_width="130dp"
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:text="Mascot, Platorm 1"
@@ -147,12 +147,46 @@
 
             <TextView
                 android:id="@+id/fragment_commute_station_to_name"
-                android:layout_width="100dp"
+                android:layout_width="130dp"
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:text="Central, Platform 21"
                 android:textColor="@color/secondary_text"
                 android:textSize="@dimen/station_platform_text"
+                app:layout_constraintLeft_toRightOf="@+id/fragment_commute_to_station_arrow"/>
+
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/fragment_commute_center_times_ll"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:gravity="center"
+            android:orientation="horizontal"
+            app:layout_constraintLeft_toLeftOf="@+id/fragment_commute_center_ll"
+            app:layout_constraintRight_toRightOf="@+id/fragment_commute_center_ll"
+            app:layout_constraintTop_toBottomOf="@+id/fragment_commute_center_bottom_ll">
+
+            <TextView
+                android:id="@+id/fragment_commute_station_from_time"
+                android:layout_width="130dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="10:45 pm"
+                android:textColor="@color/primary_text"
+                android:textStyle="bold"
+                android:textSize="@dimen/line_and_destination_text"/>
+
+            <TextView
+                android:id="@+id/fragment_commute_station_to_time"
+                android:layout_width="130dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_marginLeft="64dp"
+                android:text="11:50 pm"
+                android:textStyle="bold"
+                android:textColor="@color/primary_text"
+                android:textSize="@dimen/line_and_destination_text"
                 app:layout_constraintLeft_toRightOf="@+id/fragment_commute_to_station_arrow"/>
 
         </LinearLayout>
@@ -196,38 +230,42 @@
             android:contentDescription="@string/previous_service_button" />
 
         <LinearLayout
-            android:id="@+id/fragment_commute_bottom_sheet_middle_ll"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:orientation="vertical"
             android:gravity="center"
+            android:orientation="vertical"
             android:layout_toEndOf="@id/fragment_commute_prev_service_button"
             android:layout_toRightOf="@id/fragment_commute_prev_service_button"
             android:layout_toStartOf="@+id/fragment_commute_next_service_button"
             android:layout_toLeftOf="@+id/fragment_commute_next_service_button">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="15dp"
+                    android:textAlignment="center"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/line_and_destination_text"
+                    android:text="@string/next_service_departing_in"/>
+                <TextView
+                    android:id="@+id/fragment_commute_bottom_sheet_eta"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:paddingStart="20dp"
+                    android:paddingEnd="20dp"
+                    android:gravity="center"
+                    android:textSize="50sp"
+                    android:textAlignment="center"
+                    android:textColor="@color/white"
+                    android:text="8min 45sec"
+                    />
+            </LinearLayout>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/white"
-                android:textSize="@dimen/line_and_destination_text"
-                android:text="Departs at: 10:45 pm"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="@dimen/line_and_destination_text"
-                android:textColor="@color/white"
-                android:textStyle="bold"
-                android:layout_marginTop="8dp"
-                android:text="to City Circle via Central"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="45sp"
-                android:layout_marginTop="25dp"
-                android:textColor="@color/white"
-                android:text="8min 45sec"/>
         </LinearLayout>
+
 
         <ImageButton
             android:layout_centerVertical="true"

@@ -18,13 +18,10 @@ public class Constants {
     public static final String CSV_PARSER_LOG = "CSVParser";
     public static final String CSV_SPLIT = "\",\"";
 
+    public static final int ONE_MINUTE = 1000*60;
+
 
     /*          DATABASE STUFF                */
-
-
-
-
-
     public static final String DATABASE_TABLE_CALENDAR = "calendar";
     public static final String DATABASE_TABLE_SERVICE_ID = "service_id";
     public static final String DATABASE_TABLE_CALENDAR_MONDAY = "monday";

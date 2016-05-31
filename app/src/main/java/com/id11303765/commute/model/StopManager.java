@@ -36,20 +36,27 @@ public class StopManager {
         Stop stop = findStopById(id);
 
         if (stop == null) {
-            Cursor cursor = mDatabaseHelper.getStopById(id);
-            stop = makeStop(cursor);
-            mStops.add(stop);
+            getAllStops();
+            stop = findStopById(id);
         }
 
         return stop;
     }
 
     public static ArrayList<Stop> getStopsByName(String name) {
-        if (!mStops.isEmpty()){
-            ArrayList<Stop> list = new ArrayList<>();
-            findStopByNameAndAddToList(name, list);
+        if (mStops.isEmpty()) {
+            getAllStops();
+        }
+        ArrayList<Stop> list = new ArrayList<>();
+        findStopByNameAndAddToList(name, list);
+        if (list.size() != 0) {
             return list;
         }
+
+        return mStops;
+    }
+
+    private static void getAllStops() {
         Cursor cursor = mDatabaseHelper.getAllStops();
 
         if (cursor.moveToFirst()) {
@@ -58,7 +65,6 @@ public class StopManager {
             } while (cursor.moveToNext());
         }
         cursor.close();
-        return mStops;
     }
 
     private static Stop makeStop(Cursor cursor) {
@@ -81,7 +87,7 @@ public class StopManager {
 
     private static Stop findStopById(String id) {
         for (Stop s : mStops) {
-            if (s.getID() == id) {
+            if (s.getID().equals(id)) {
                 return s;
             }
         }

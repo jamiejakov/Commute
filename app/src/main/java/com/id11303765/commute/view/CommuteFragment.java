@@ -27,6 +27,8 @@ import com.id11303765.commute.model.StopTime;
 import com.id11303765.commute.model.Timetable;
 import com.id11303765.commute.utils.Constants;
 
+import org.w3c.dom.Text;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -47,6 +49,7 @@ public class CommuteFragment extends Fragment implements View.OnClickListener {
     private ImageButton mPrevButton;
     private ImageButton mNextButton;
     private int mStopTimeCount;
+    private TextView mNextServiceText;
 
     public CommuteFragment() {
         // Required empty public constructor
@@ -85,6 +88,7 @@ public class CommuteFragment extends Fragment implements View.OnClickListener {
         mPrevButton.setOnClickListener(this);
         mNextButton = (ImageButton) getActivity().findViewById(R.id.fragment_commute_next_service_button);
         mNextButton.setOnClickListener(this);
+        mNextServiceText = (TextView) getActivity().findViewById(R.id.fragment_commute_next_service_text);
     }
 
     @Override
@@ -224,6 +228,7 @@ public class CommuteFragment extends Fragment implements View.OnClickListener {
         TextView arrivalTime = (TextView) getActivity().findViewById(R.id.fragment_commute_station_to_time);
         arrivalTime.setText(date.format(mSelectedTimetable.getStopTimes().get(mStopTimeCount-1).getArrivalTime()));
 
+        checkIfNextExist(false, mPrevButton, mNextButton);
 
         setETA(departureTimeDate);
     }
@@ -242,6 +247,7 @@ public class CommuteFragment extends Fragment implements View.OnClickListener {
             mCountdownTimer = null;
         }
         if (millis > 0){
+            mNextServiceText.setText(R.string.next_service_departing_in);
             mCountdownTimer = new CountDownTimer(millis, 1000) {
                 public void onTick(long millisUntilFinished) {
                     String time;
@@ -272,9 +278,9 @@ public class CommuteFragment extends Fragment implements View.OnClickListener {
                 }
             }.start();
         }else{
-
+            etaText.setText("");
+            mNextServiceText.setText(R.string.service_already_departed);
         }
-
     }
 
     private Timetable findClosestTimetable(Calendar now, boolean forNext) {
@@ -282,7 +288,7 @@ public class CommuteFragment extends Fragment implements View.OnClickListener {
         ArrayList<Timetable> timetables = mSelectedCommute.getTripTimetables();
         Calendar currentTimetableTime = Calendar.getInstance();
         for (Timetable t : timetables) {
-            StopTime st = t.getStopTimes().get(0);
+            StopTime st = t.getStopTimes().get(t.getStopTimes().size()-2);
             Calendar departureTime = Calendar.getInstance();
             departureTime.setTime(st.getDepartureTime());
             boolean correctStop = st.getStop().getShortName().equals(mSelectedCommute.getStartStopShortName());

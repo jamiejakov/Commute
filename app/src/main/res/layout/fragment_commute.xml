@@ -9,7 +9,7 @@
 
     <HorizontalScrollView
         android:id="@+id/fragment_commute_time_horizontal_scroll"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="140dp"
         android:background="@color/greyish_background"
         app:layout_constraintLeft_toLeftOf="@+id/fragment_commute_constraint_layout"
@@ -21,7 +21,10 @@
         tools:layout_editor_absoluteX="0dp"
         tools:layout_editor_absoluteY="0dp">
 
-        <include layout="@layout/commute_timeline" />
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:src="@drawable/logo"/>
 
     </HorizontalScrollView>
 
@@ -192,7 +195,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end"
-        android:layout_marginEnd="16dp"
+        android:layout_marginEnd="@dimen/fab_margin"
         android:clickable="true"
         android:src="@drawable/ic_png_swap_forward"
         app:layout_constraintBottom_toTopOf="@+id/fragment_commute_bottom_sheet_ll"
@@ -203,7 +206,7 @@
         android:id="@+id/fragment_commute_bottom_sheet_ll"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="60dp"
+        android:layout_marginTop="50dp"
         android:background="@color/primary"
         android:gravity="center"
         android:orientation="horizontal"
@@ -240,9 +243,10 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/fragment_commute_next_service_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="15dp"
+                    android:layout_marginBottom="10dp"
                     android:text="@string/next_service_departing_in"
                     android:textAlignment="center"
                     android:textColor="@color/white"

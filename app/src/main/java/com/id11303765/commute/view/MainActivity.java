@@ -98,6 +98,8 @@ public class MainActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
         mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         final NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        Menu nav_Menu = navigationView.getMenu();
+        final MenuItem item = nav_Menu.findItem(R.id.nav_commute);
         mDrawerToggle = new ActionBarDrawerToggle(
                 this, mDrawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
 
@@ -105,9 +107,6 @@ public class MainActivity extends AppCompatActivity
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
 
-
-                Menu nav_Menu = navigationView.getMenu();
-                MenuItem item = nav_Menu.findItem(R.id.nav_commute);
                 if (!item.isEnabled()){
                     item.setEnabled(isCommuteEnabled());
                 }
@@ -118,8 +117,6 @@ public class MainActivity extends AppCompatActivity
         assert mDrawer != null;
         mDrawer.addDrawerListener(mDrawerToggle);
         mDrawerToggle.syncState();
-
-        assert navigationView != null;
         navigationView.setNavigationItemSelectedListener(this);
     }
 

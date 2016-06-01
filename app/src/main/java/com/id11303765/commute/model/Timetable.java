@@ -19,15 +19,6 @@ public class Timetable implements Comparable<Timetable>{
         this.mStopTimes = mStopTimes;
     }
 
-    public void setTrip(Trip mTrip) {
-
-        this.mTrip = mTrip;
-    }
-
-    public void setStopTimes(ArrayList<StopTime> mStopTimes) {
-        this.mStopTimes = mStopTimes;
-    }
-
     public Trip getTrip() {
 
         return mTrip;
@@ -39,10 +30,6 @@ public class Timetable implements Comparable<Timetable>{
 
     public Stop getStop() {
         return mStop;
-    }
-
-    public void setStop(Stop mStop) {
-        this.mStop = mStop;
     }
 
 

@@ -39,27 +39,6 @@ public class StopTime implements Comparable<StopTime>{
         return mStopSequence;
     }
 
-    public void setTrip(Trip trip) {
-
-        this.mTrip = trip;
-    }
-
-    public void setArrivalTime(Date mArrivalTime) {
-        this.mArrivalTime = mArrivalTime;
-    }
-
-    public void setDepartureTime(Date mDepartureTime) {
-        this.mDepartureTime = mDepartureTime;
-    }
-
-    public void setStop(Stop stop) {
-        this.mStop = stop;
-    }
-
-    public void setStopSequence(int mStopSequence) {
-        this.mStopSequence = mStopSequence;
-    }
-
     @Override
     public int compareTo(StopTime stopTime) {
         return this.mDepartureTime.compareTo(stopTime.getDepartureTime());

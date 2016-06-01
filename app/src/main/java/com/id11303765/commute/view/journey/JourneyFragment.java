@@ -140,6 +140,8 @@ public class JourneyFragment extends Fragment implements View.OnClickListener, S
     @Override
     public void onFabAnimationEnd() {
         Intent intent = new Intent(getActivity(), JourneyRoutesListActivity.class);
+        intent.putExtra(Constants.INTENT_SEARCH_JOURNEY_START_STOP, ((Button) mSeachButtonsLinearLayout.getChildAt(0)).getText());
+        intent.putExtra(Constants.INTENT_SEARCH_JOURNEY_END_STOP, ((Button) mSeachButtonsLinearLayout.getChildAt(1)).getText());
         startActivityForResult(intent, Constants.JOURNEY_FAB_TO_LIST_REQUEST);
     }
 

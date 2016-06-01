@@ -12,14 +12,14 @@ public class Route {
     private int mType;
     private int mColor;
 
-    public Route(String id, Agency agency, String shortName, String longName, String desc, int type, int color){
-        setID(id);
-        setAgency(agency);
-        setShortName(shortName);
-        setLongName(longName);
-        setDescription(desc);
-        setType(type);
-        setColor(color);
+    public Route(String mID, Agency mAgency, String mShortName, String mLongName, String mDescription, int mType, int mColor) {
+        this.mID = mID;
+        this.mAgency = mAgency;
+        this.mShortName = mShortName;
+        this.mLongName = mLongName;
+        this.mDescription = mDescription;
+        this.mType = mType;
+        this.mColor = mColor;
     }
 
     public String getID() {
@@ -48,33 +48,5 @@ public class Route {
 
     public int getColor() {
         return mColor;
-    }
-
-    public void setID(String mID) {
-        this.mID = mID;
-    }
-
-    public void setAgency(Agency mAgency) {
-        this.mAgency = mAgency;
-    }
-
-    public void setShortName(String mShortName) {
-        this.mShortName = mShortName;
-    }
-
-    public void setLongName(String mLongName) {
-        this.mLongName = mLongName;
-    }
-
-    public void setDescription(String mDescription) {
-        this.mDescription = mDescription;
-    }
-
-    public void setType(int mType) {
-        this.mType = mType;
-    }
-
-    public void setColor(int mColor) {
-        this.mColor = mColor;
     }
 }

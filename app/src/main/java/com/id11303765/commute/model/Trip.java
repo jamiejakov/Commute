@@ -20,36 +20,6 @@ public class Trip {
         this.mWheelchairAccessible = mWheelchairAccessible;
     }
 
-
-    public void setRoute(Route mRoute) {
-        this.mRoute = mRoute;
-    }
-
-    public void setCalendar(boolean[] mCalendar) {
-        this.mCalendar = mCalendar;
-    }
-
-    public void setID(String mID) {
-        this.mID = mID;
-    }
-
-    public void setHeadSign(String mHeadSign) {
-        this.mHeadSign = mHeadSign;
-    }
-
-    public void setDirectionID(String mDirectionID) {
-        this.mDirectionID = mDirectionID;
-    }
-
-    public void setBlockID(String mBlockID) {
-        this.mBlockID = mBlockID;
-    }
-
-    public void setWheelchairAccessible(boolean mWheelchairAccessible) {
-        this.mWheelchairAccessible = mWheelchairAccessible;
-    }
-
-
     public Route getRoute() {
 
         return mRoute;

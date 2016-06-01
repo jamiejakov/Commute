@@ -36,7 +36,6 @@ public class Stop {
     }
 
     private String shortenName(){
-        String s;
         if (mName.toLowerCase().contains("wharf")) {
             String[] columns = mName.split(",");
             return columns[0].trim();
@@ -47,30 +46,6 @@ public class Stop {
             return columns[0].replaceAll("(?i)station", "").trim();
         }
         return null;
-    }
-
-    public void setID(String mID) {
-        this.mID = mID;
-    }
-
-    public void setCode(String mCode) {
-        this.mCode = mCode;
-    }
-
-    public void setName(String mName) {
-        this.mName = mName;
-    }
-
-    public void setLat(Double mLat) {
-        this.mLat = mLat;
-    }
-
-    public void setLon(Double mLon) {
-        this.mLon = mLon;
-    }
-
-    public void setPlatformCode(String mPlatformCode) {
-        this.mPlatformCode = mPlatformCode;
     }
 
     public String getShortName(){

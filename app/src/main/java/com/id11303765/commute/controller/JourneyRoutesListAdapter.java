@@ -12,23 +12,21 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.id11303765.commute.R;
-import com.id11303765.commute.model.Stop;
+import com.id11303765.commute.model.Journey;
 import com.id11303765.commute.utils.Constants;
 
 import java.util.ArrayList;
 
 
-public class StopSearchAdapter extends RecyclerView.Adapter<StopSearchAdapter.StopSearchViewHolder> {
+public class JourneyRoutesListAdapter extends RecyclerView.Adapter<JourneyRoutesListAdapter.StopSearchViewHolder> {
     private LayoutInflater mInflater;
-    private ArrayList<Stop> mStopList;
+    private ArrayList<Journey> mJourneyList;
     private Activity mActivity;
-    private int mIntentRequest;
 
-    public StopSearchAdapter(Activity activity, Context context, int intentRequest, ArrayList<Stop> stopList) {
+    public JourneyRoutesListAdapter(Activity activity, Context context, ArrayList<Journey> stopList) {
         mInflater = LayoutInflater.from(context);
-        mStopList = stopList;
+        mJourneyList = stopList;
         mActivity = activity;
-        mIntentRequest = intentRequest;
     }
 
     @Override
@@ -39,18 +37,18 @@ public class StopSearchAdapter extends RecyclerView.Adapter<StopSearchAdapter.St
 
     @Override
     public void onBindViewHolder(StopSearchViewHolder holder, int position) {
-        Stop currentStopData = mStopList.get(position);
-        String name = currentStopData.getShortName();
-        holder.mName.setText(name);
-        int image = currentStopData.getStopType();
-        if (image != 0) {
-            holder.mImage.setImageResource(image);
-        }
+        Journey currentStopData = mJourneyList.get(position);
+        //String name = currentStopData.getShortName();
+        //holder.mName.setText(name);
+        //int image = currentStopData.getStopType();
+        //if (image != 0) {
+         //   holder.mImage.setImageResource(image);
+        //}
     }
 
     @Override
     public int getItemCount() {
-        return mStopList.size();
+        return mJourneyList.size();
     }
 
     /**
@@ -78,8 +76,8 @@ public class StopSearchAdapter extends RecyclerView.Adapter<StopSearchAdapter.St
             Context context = itemView.getContext();
             Intent intent = new Intent();
             intent.putExtra(Constants.INTENT_SELECTED_STOP_NAME, mName.getText());
-            mActivity.setResult(mIntentRequest, intent);
-            mActivity.finish();
+            //mActivity.setResult(mIntentRequest, intent);
+            //mActivity.finish();
         }
     }
 }

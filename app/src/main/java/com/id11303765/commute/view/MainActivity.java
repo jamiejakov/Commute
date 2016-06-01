@@ -31,7 +31,6 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private DrawerLayout mDrawer;
-    private ActionBarDrawerToggle mDrawerToggle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,15 +53,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
 
         return super.onOptionsItemSelected(item);
     }
@@ -98,16 +89,17 @@ public class MainActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
         mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         final NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        Menu nav_Menu = navigationView.getMenu();
-        final MenuItem item = nav_Menu.findItem(R.id.nav_commute);
-        mDrawerToggle = new ActionBarDrawerToggle(
+        assert navigationView != null;
+        Menu navMenu = navigationView.getMenu();
+        final MenuItem item = navMenu.findItem(R.id.nav_commute);
+        ActionBarDrawerToggle drawerToggle = new ActionBarDrawerToggle(
                 this, mDrawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
 
             @Override
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
 
-                if (!item.isEnabled()){
+                if (!item.isEnabled()) {
                     item.setEnabled(isCommuteEnabled());
                 }
             }
@@ -115,8 +107,8 @@ public class MainActivity extends AppCompatActivity
 
 
         assert mDrawer != null;
-        mDrawer.addDrawerListener(mDrawerToggle);
-        mDrawerToggle.syncState();
+        mDrawer.addDrawerListener(drawerToggle);
+        drawerToggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
     }
 

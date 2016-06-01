@@ -23,10 +23,8 @@ import java.util.ArrayList;
 
 public class StopSearchActivity extends AppCompatActivity {
 
-    private RecyclerView mStopRecyclerView;
     private StopSearchAdapter mStopSearchAdapter;
     private ArrayList<Stop> mStopList;
-    private int mIntentRequest;
     private String mExcludeSearch;
 
 
@@ -39,14 +37,14 @@ public class StopSearchActivity extends AppCompatActivity {
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
-        mIntentRequest = getIntent().getIntExtra(Constants.INTENT_REQUEST, 0);
+        int intentRequest = getIntent().getIntExtra(Constants.INTENT_REQUEST, 0);
         mExcludeSearch = getIntent().getStringExtra(Constants.INTENT_SEARCH_EXCLUDE);
         mStopList = new ArrayList<>();
-        mStopRecyclerView = (RecyclerView) findViewById(R.id.activity_stop_search_recyclerview);
+        RecyclerView stopRecyclerView = (RecyclerView) findViewById(R.id.activity_stop_search_recyclerview);
         final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        mStopRecyclerView.setLayoutManager(layoutManager);
-        mStopSearchAdapter = new StopSearchAdapter(this,this, mIntentRequest, mStopList);
-        mStopRecyclerView.setAdapter(mStopSearchAdapter);
+        stopRecyclerView.setLayoutManager(layoutManager);
+        mStopSearchAdapter = new StopSearchAdapter(this,this, intentRequest, mStopList);
+        stopRecyclerView.setAdapter(mStopSearchAdapter);
     }
 
     @Override

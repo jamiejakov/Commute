@@ -29,7 +29,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "transport.db";
     private static final int DATABASE_VERSION = 1;
 
-    private SQLiteDatabase mTransportDatabase;
     private Context mContext;
 
     public DatabaseHelper(Context context) {
@@ -39,13 +38,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        mTransportDatabase = db;
-        createAgencyTable();
-        createCalendarTable();
-        createRouteTable();
-        createStopTable();
-        createTripTable();
-        createStopTimesTable();
+        createAgencyTable(db);
+        createCalendarTable(db);
+        createRouteTable(db);
+        createStopTable(db);
+        createTripTable(db);
+        createStopTimesTable(db);
     }
 
     @Override
@@ -98,7 +96,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     Cursor getAllStops() {
         SQLiteDatabase db = getReadableDatabase();
 
-        String[] columns = new String[]{StopManager.KEY_ID, StopManager.KEY_CODE, StopManager.KEY_NAME,
+        String[] columns = new String[]{StopManager.KEY_ID, StopManager.KEY_NAME,
                 StopManager.KEY_LAT, StopManager.KEY_LON, StopManager.KEY_PLATFORM_CODE};
         Cursor cursor = db.query(StopManager.KEY_TABLE, columns, null, null, null, null, null);
 
@@ -133,8 +131,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     Cursor getTrip(String id) {
         SQLiteDatabase db = getReadableDatabase();
 
-        String[] columns = new String[]{RouteManager.KEY_ID, Constants.DATABASE_TABLE_SERVICE_ID, TripManager.KEY_ID, TripManager.KEY_HEADSIGN,
-                TripManager.KEY_DIRECTION_ID, TripManager.KEY_BLOCK_ID, TripManager.KEY_WHEELCHAIR_ACCESSIBLE};
+        String[] columns = new String[]{RouteManager.KEY_ID, Constants.DATABASE_TABLE_SERVICE_ID, TripManager.KEY_ID, TripManager.KEY_HEADSIGN};
         String selection = TripManager.KEY_ID + " = '" + id + "'";
         Cursor cursor = db.query(TripManager.KEY_TABLE, columns, selection, null, null, null, null);
 
@@ -166,7 +163,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "         WHERE a." + TripManager.KEY_ID + " = b." + TripManager.KEY_ID + "\n" +
                 "           AND a." + StopManager.KEY_ID + " IN (" + startSelection + ")\n" +
                 "           AND b." + StopManager.KEY_ID + " IN (" + endSelection + ") \n" +
-                "           AND b." + TimetableManager.KEY_STOP_SEQUENCE + " > a." + TimetableManager.KEY_STOP_SEQUENCE + ";";
+                "           AND b." + TimetableManager.KEY_STOP_SEQUENCE + " > a." + TimetableManager.KEY_STOP_SEQUENCE;
+
+        query+= ";";
         Cursor cursor = db.rawQuery(query, null);
 
         if (cursor == null) {
@@ -220,18 +219,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return cursor;
     }
 
+
     /*-------------- POPULATE TABLES --------------*/
 
-    public void populateMainTables() {
+    public void populateTables() {
         readCSV(AgencyManager.KEY_TABLE, "agency.txt");
         readCSV(Constants.DATABASE_TABLE_CALENDAR, "calendar.txt");
         readCSV(RouteManager.KEY_TABLE, "routes.txt");
         readCSV(StopManager.KEY_TABLE, "stops.txt");
         readCSV(TripManager.KEY_TABLE, "trips.txt");
-
-    }
-
-    public void populateStopTimesTable() {
         readCSV(TimetableManager.KEY_TABLE, "stop_times.txt");
     }
 
@@ -357,12 +353,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 }
                 ContentValues cv = new ContentValues();
                 cv.put(StopManager.KEY_ID, columns[0].replaceAll("\"", "").trim());
-                cv.put(StopManager.KEY_CODE, columns[1].replaceAll("\"", "").trim());
                 cv.put(StopManager.KEY_NAME, columns[2].replaceAll("\"", "").trim());
                 cv.put(StopManager.KEY_LAT, Double.parseDouble(columns[3].replaceAll("\"", "").trim()));
                 cv.put(StopManager.KEY_LON, Double.parseDouble(columns[4].replaceAll("\"", "").trim()));
-                cv.put(StopManager.KEY_LOCATION_TYPE, columns[5].replaceAll("\"", "").trim());
-                cv.put(StopManager.KEY_PARENT_STATION, columns[6].replaceAll("\"", "").trim());
                 cv.put(StopManager.KEY_WHEELCHAIR_BOARDING, Integer.parseInt(columns[7].replaceAll("\"", "").trim()));
                 cv.put(StopManager.KEY_PLATFORM_CODE, columns[8].replaceAll("\"", "").trim());
                 db.insert(StopManager.KEY_TABLE, null, cv);
@@ -386,11 +379,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 cv.put(RouteManager.KEY_ID, columns[0].replaceAll("\"", "").trim());
                 cv.put(Constants.DATABASE_TABLE_SERVICE_ID, columns[1].replaceAll("\"", "").trim());
                 cv.put(TripManager.KEY_ID, columns[2].replaceAll("\"", "").trim());
-                cv.put(TripManager.KEY_SHARPE_ID, columns[3].replaceAll("\"", "").trim());
                 cv.put(TripManager.KEY_HEADSIGN, columns[4].replaceAll("\"", "").trim());
-                cv.put(TripManager.KEY_DIRECTION_ID, Integer.parseInt(columns[5].replaceAll("\"", "").trim()));
-                cv.put(TripManager.KEY_BLOCK_ID, columns[6].replaceAll("\"", "").trim());
-                cv.put(TripManager.KEY_WHEELCHAIR_ACCESSIBLE, Integer.parseInt(columns[7].replaceAll("\"", "").trim()));
                 db.insert(TripManager.KEY_TABLE, null, cv);
             }
         } catch (IOException e) {
@@ -430,19 +419,44 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         Log.d(Constants.CSV_PARSER_LOG, "Stop Times Added");
     }
 
+    /*-------------- CREATE INDEXES  --------------*/
+
+    public void createIndexes(){
+        SQLiteDatabase db = getReadableDatabase();
+        createStopIndex(db);
+        createTripIndex(db);
+        createStopTimeIndex(db);
+    }
+
+    private void createStopIndex(SQLiteDatabase db) {
+        db.execSQL("CREATE INDEX " + StopManager.KEY_INDEX + "\n" +
+                "on " + StopManager.KEY_TABLE + " (" + StopManager.KEY_NAME + ", " + StopManager.KEY_ID + ");");
+    }
+
+    private void createStopTimeIndex(SQLiteDatabase db) {
+        db.execSQL("CREATE INDEX " + TimetableManager.KEY_INDEX + "\n" +
+                "on " + TimetableManager.KEY_TABLE + " (" + TripManager.KEY_ID + ", " + StopManager.KEY_ID + ", " + TimetableManager.KEY_DEPARTURE_TIME + ");");
+    }
+
+    private void createTripIndex(SQLiteDatabase db) {
+        db.execSQL("CREATE INDEX " + TripManager.KEY_INDEX + "\n" +
+                "on " + TripManager.KEY_TABLE + " (" + TripManager.KEY_ID + ");");
+    }
+
+
     /*-------------- CREATE TABLES --------------*/
 
-    private void createAgencyTable() {
-        mTransportDatabase.execSQL("DROP TABLE IF EXISTS " + AgencyManager.KEY_TABLE);
-        mTransportDatabase.execSQL("CREATE TABLE " + AgencyManager.KEY_TABLE + "( " +
+    private void createAgencyTable(SQLiteDatabase db) {
+        db.execSQL("DROP TABLE IF EXISTS " + AgencyManager.KEY_TABLE);
+        db.execSQL("CREATE TABLE " + AgencyManager.KEY_TABLE + "( " +
                 AgencyManager.KEY_ID + " TEXT PRIMARY KEY," +
                 AgencyManager.KEY_NAME + " TEXT NOT NULL);"
         );
     }
 
-    private void createCalendarTable() {
-        mTransportDatabase.execSQL("DROP TABLE IF EXISTS " + Constants.DATABASE_TABLE_CALENDAR);
-        mTransportDatabase.execSQL("CREATE TABLE " + Constants.DATABASE_TABLE_CALENDAR + "( " +
+    private void createCalendarTable(SQLiteDatabase db) {
+        db.execSQL("DROP TABLE IF EXISTS " + Constants.DATABASE_TABLE_CALENDAR);
+        db.execSQL("CREATE TABLE " + Constants.DATABASE_TABLE_CALENDAR + "( " +
                 Constants.DATABASE_TABLE_SERVICE_ID + " TEXT PRIMARY KEY," +
                 Constants.DATABASE_TABLE_CALENDAR_MONDAY + " INTEGER NOT NULL," +
                 Constants.DATABASE_TABLE_CALENDAR_TUESDAY + " INTEGER NOT NULL," +
@@ -454,9 +468,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         );
     }
 
-    private void createRouteTable() {
-        mTransportDatabase.execSQL("DROP TABLE IF EXISTS " + RouteManager.KEY_TABLE);
-        mTransportDatabase.execSQL("CREATE TABLE " + RouteManager.KEY_TABLE + "( " +
+    private void createRouteTable(SQLiteDatabase db) {
+        db.execSQL("DROP TABLE IF EXISTS " + RouteManager.KEY_TABLE);
+        db.execSQL("CREATE TABLE " + RouteManager.KEY_TABLE + "( " +
                 RouteManager.KEY_ID + " TEXT PRIMARY KEY," +
                 AgencyManager.KEY_ID + " TEXT NOT NULL," +
                 RouteManager.KEY_SHORT_NAME + " TEXT," +
@@ -469,32 +483,25 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         );
     }
 
-    private void createStopTable() {
-        mTransportDatabase.execSQL("DROP TABLE IF EXISTS " + StopManager.KEY_TABLE);
-        mTransportDatabase.execSQL("CREATE TABLE " + StopManager.KEY_TABLE + "( " +
+    private void createStopTable(SQLiteDatabase db) {
+        db.execSQL("DROP TABLE IF EXISTS " + StopManager.KEY_TABLE);
+        db.execSQL("CREATE TABLE " + StopManager.KEY_TABLE + "( " +
                 StopManager.KEY_ID + " TEXT PRIMARY KEY," +
-                StopManager.KEY_CODE + " TEXT," +
                 StopManager.KEY_NAME + " TEXT NOT NULL," +
                 StopManager.KEY_LAT + " DOUBLE NOT NULL," +
                 StopManager.KEY_LON + " DOUBLE NOT NULL," +
-                StopManager.KEY_LOCATION_TYPE + " TEXT," +
-                StopManager.KEY_PARENT_STATION + " TEXT," +
                 StopManager.KEY_WHEELCHAIR_BOARDING + " INTEGER NOT NULL," +
                 StopManager.KEY_PLATFORM_CODE + " TEXT);"
         );
     }
 
-    private void createTripTable() {
-        mTransportDatabase.execSQL("DROP TABLE IF EXISTS " + TripManager.KEY_TABLE);
-        mTransportDatabase.execSQL("CREATE TABLE " + TripManager.KEY_TABLE + "( " +
+    private void createTripTable(SQLiteDatabase db) {
+        db.execSQL("DROP TABLE IF EXISTS " + TripManager.KEY_TABLE);
+        db.execSQL("CREATE TABLE " + TripManager.KEY_TABLE + "( " +
                 RouteManager.KEY_ID + " TEXT NOT NULL," +
                 Constants.DATABASE_TABLE_SERVICE_ID + " TEXT NOT NULL," +
                 TripManager.KEY_ID + " TEXT PRIMARY KEY," +
-                TripManager.KEY_SHARPE_ID + " TEXT NOT NULL," +
                 TripManager.KEY_HEADSIGN + " TEXT NOT NULL," +
-                TripManager.KEY_DIRECTION_ID + " INTEGER NOT NULL," +
-                TripManager.KEY_BLOCK_ID + " TEXT," +
-                TripManager.KEY_WHEELCHAIR_ACCESSIBLE + " INTEGER NOT NULL," +
                 " FOREIGN KEY (" + RouteManager.KEY_ID + ") REFERENCES " +
                 RouteManager.KEY_TABLE + "(" + RouteManager.KEY_ID + ")" +
                 " FOREIGN KEY (" + Constants.DATABASE_TABLE_SERVICE_ID + ") REFERENCES " +
@@ -503,9 +510,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         );
     }
 
-    private void createStopTimesTable() {
-        mTransportDatabase.execSQL("DROP TABLE IF EXISTS " + TimetableManager.KEY_TABLE);
-        mTransportDatabase.execSQL("CREATE TABLE " + TimetableManager.KEY_TABLE + "( " +
+    private void createStopTimesTable(SQLiteDatabase db) {
+        db.execSQL("DROP TABLE IF EXISTS " + TimetableManager.KEY_TABLE);
+        db.execSQL("CREATE TABLE " + TimetableManager.KEY_TABLE + "( " +
                 TripManager.KEY_ID + " TEXT NOT NULL," +
                 TimetableManager.KEY_ARRIVAL_TIME + " TEXT NOT NULL," +
                 TimetableManager.KEY_DEPARTURE_TIME + " TEXT NOT NULL," +

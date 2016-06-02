@@ -2,27 +2,26 @@ package com.id11303765.commute.model;
 
 
 import java.util.ArrayList;
+import java.util.Date;
 
 public class Journey {
-    private long mTimeInMillis;
+    private Date mDepartureTime;
+    private Date mArrivalTime;
+    private double mPrice;
     private boolean mSpeed;
     private boolean mCost;
     private boolean mConvenience;
-    private ArrayList<String> mStops;
-    private ArrayList<Timetable> mTripTimetables;
+    private ArrayList<JourneyLeg> mJourneyLegs;
 
 
-    public Journey(long mTimeInMillis, boolean mSpeed, boolean mCost, boolean mConvenience, ArrayList<String> mStops, ArrayList<Timetable> mTripTimetables) {
-        this.mTimeInMillis = mTimeInMillis;
+    Journey(Date mDepartureTime, Date mArrivalTime, double mPrice, boolean mSpeed, boolean mCost, boolean mConvenience, ArrayList<JourneyLeg> mJourneyLegs) {
+        this.mDepartureTime = mDepartureTime;
+        this.mArrivalTime = mArrivalTime;
+        this.mPrice = mPrice;
         this.mSpeed = mSpeed;
         this.mCost = mCost;
         this.mConvenience = mConvenience;
-        this.mStops = mStops;
-        this.mTripTimetables = mTripTimetables;
-    }
-
-    public long getTimeInMillis() {
-        return mTimeInMillis;
+        this.mJourneyLegs = mJourneyLegs;
     }
 
     public boolean isFast() {
@@ -37,11 +36,19 @@ public class Journey {
         return mConvenience;
     }
 
-    public ArrayList<Timetable> getTripTimetables() {
-        return mTripTimetables;
+    public ArrayList<JourneyLeg> getJourneyLegs() {
+        return mJourneyLegs;
     }
 
-    public ArrayList<String> getStops() {
-        return mStops;
+    public Date getArrivalTime() {
+        return mArrivalTime;
+    }
+
+    public Date getDepartureTime() {
+        return mDepartureTime;
+    }
+
+    public double getmPrice() {
+        return mPrice;
     }
 }

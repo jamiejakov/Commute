@@ -15,14 +15,12 @@ public class StopManager {
 
     static final String KEY_TABLE = "stop";
     static final String KEY_ID = "stop_id";
-    static final String KEY_CODE = "stop_code";
     static final String KEY_NAME = "stop_name";
     static final String KEY_LAT = "stop_lat";
     static final String KEY_LON = "stop_lon";
-    static final String KEY_LOCATION_TYPE = "stop_location_type";
-    static final String KEY_PARENT_STATION = "stop_parent_station";
     static final String KEY_WHEELCHAIR_BOARDING = "stop_wheelchair_boarding";
     static final String KEY_PLATFORM_CODE = "stop_platform_code";
+    static final String KEY_INDEX = "stop_name_id_index";
 
     public static StopManager getInstance() {
         return ourInstance;
@@ -32,7 +30,7 @@ public class StopManager {
         mStops = new ArrayList<>();
     }
 
-    public static Stop getStopById(String id) {
+    static Stop getStopById(String id) {
         Stop stop = findStopById(id);
 
         if (stop == null) {
@@ -68,13 +66,11 @@ public class StopManager {
     }
 
     private static Stop makeStop(Cursor cursor) {
-        Stop stop = new Stop(cursor.getString(cursor.getColumnIndex(KEY_ID)),
-                cursor.getString(cursor.getColumnIndex(KEY_CODE)),
+        return new Stop(cursor.getString(cursor.getColumnIndex(KEY_ID)),
                 cursor.getString(cursor.getColumnIndex(KEY_NAME)),
                 Double.parseDouble(cursor.getString(cursor.getColumnIndex(KEY_LAT))),
                 Double.parseDouble(cursor.getString(cursor.getColumnIndex(KEY_LON))),
                 cursor.getString(cursor.getColumnIndex(KEY_PLATFORM_CODE)));
-        return stop;
     }
 
     private static void findStopByNameAndAddToList(String name, ArrayList<Stop> list) {

@@ -5,7 +5,6 @@ import com.id11303765.commute.utils.Constants;
 
 public class Stop {
     private String mID;
-    private String mCode;
     private String mName;
     private Double mLat;
     private Double mLon;
@@ -13,9 +12,8 @@ public class Stop {
     private int mStopType;
     private String mShortName;
 
-    public Stop(String mID, String mCode, String mName, Double mLat, Double mLon, String mPlatformCode) {
+    public Stop(String mID, String mName, Double mLat, Double mLon, String mPlatformCode) {
         this.mID = mID;
-        this.mCode = mCode;
         this.mName = mName;
         this.mLat = mLat;
         this.mLon = mLon;
@@ -31,8 +29,9 @@ public class Stop {
             return R.drawable.tnsw_icon_light_rail;
         } else if (mName.toLowerCase().contains("platform")) {
             return R.drawable.tnsw_icon_train;
+        } else {
+            return R.drawable.tnsw_icon_bus;
         }
-        return 0;
     }
 
     private String shortenName(){
@@ -59,10 +58,6 @@ public class Stop {
     public String getID() {
 
         return mID;
-    }
-
-    public String getCode() {
-        return mCode;
     }
 
     public String getName() {

@@ -3,7 +3,7 @@
     android:id="@+id/adapter_item_station_search_relative_layout"
     android:layout_width="match_parent"
     android:layout_height="60dp"
-    android:layout_marginLeft="@dimen/fab_margin">
+    android:background="@xml/ripple">
 
     <ImageView
         android:id="@+id/adapter_item_station_search_transport_image_view"
@@ -11,9 +11,9 @@
         android:layout_height="@dimen/search_item_width"
         android:layout_centerVertical="true"
         android:layout_marginEnd="@dimen/fab_margin"
+        android:layout_marginStart="@dimen/fab_margin"
         android:background="@xml/rounded_image_border"
-        android:contentDescription="@string/transport_mode_image"
-        android:src="@drawable/tnsw_icon_train" />
+        android:contentDescription="@string/transport_mode_image" />
 
     <TextView
         android:id="@+id/adapter_item_journey_route_row_route_bullet"
@@ -21,7 +21,6 @@
         android:layout_height="match_parent"
         android:layout_toEndOf="@+id/adapter_item_station_search_transport_image_view"
         android:gravity="center_vertical"
-        android:text="Central"
         android:textColor="@color/primary_text"
         android:textSize="@dimen/station_platform_text" />
 

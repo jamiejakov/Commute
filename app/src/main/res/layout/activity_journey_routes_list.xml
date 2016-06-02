@@ -7,12 +7,14 @@
     android:fitsSystemWindows="true"
     tools:context="com.id11303765.commute.view.journey.JourneyRoutesListActivity">
 
-    <android.support.design.widget.CoordinatorLayout
+    <RelativeLayout
+        android:id="@+id/activity_journey_app_bar_coordinator"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fitsSystemWindows="false">
 
         <android.support.design.widget.AppBarLayout
+            android:id="@+id/activity_journey_app_bar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:theme="@style/AppTheme.AppBarOverlay">
@@ -24,9 +26,25 @@
                 android:background="?attr/colorPrimary"
                 app:popupTheme="@style/AppTheme.PopupOverlay" />
 
-        </android.support.design.widget.AppBarLayout>
-    </android.support.design.widget.CoordinatorLayout>
+            <android.support.design.widget.TabLayout
+                android:id="@+id/app_bar_journey_route_list_tab_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_scrollFlags="scroll|enterAlways">
 
-    <include layout="@layout/content_journey_routes_list" />
+            </android.support.design.widget.TabLayout>
+
+        </android.support.design.widget.AppBarLayout>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/activity_journey_routes_list_recyclerview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/activity_journey_app_bar">
+
+        </android.support.v7.widget.RecyclerView>
+
+    </RelativeLayout>
+
 
 </android.support.design.widget.CoordinatorLayout>

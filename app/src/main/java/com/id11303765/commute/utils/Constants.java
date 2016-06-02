@@ -14,7 +14,7 @@ public class Constants {
     public static final String INTENT_REQUEST = "INTENT_REQUEST";
     public static final String INTENT_SEARCH_EXCLUDE = "INTENT_SEARCH_EXCLUDE";
     public static final String INTENT_SEARCH_JOURNEY_START_STOP = "INTENT_SEARCH_JOURNEY_START_STOP";
-    public static final String INTENT_SEARCH_JOURNEY_END_STOP = "INTENT_SEARCH_JOURNEY_START_STOP";
+    public static final String INTENT_SEARCH_JOURNEY_END_STOP = "INTENT_SEARCH_JOURNEY_END_STOP";
     public static final String INTENT_SETTINGS_BACK = "INTENT_SETTINGS_BACK";
 
     public static final String SEARCHTAG = "DEBUGGING SEARCH";
@@ -23,6 +23,9 @@ public class Constants {
 
     public static final int ONE_MINUTE = 1000*60;
     public static final String COMMUTE_TO_OR_FROM_PREF = "COMMUTE_TO_OR_FROM_PREF";
+
+    public static final int OPAQUE = 255;
+    public static final int DESELECTED = 160;
 
 
     /*          DATABASE STUFF                */

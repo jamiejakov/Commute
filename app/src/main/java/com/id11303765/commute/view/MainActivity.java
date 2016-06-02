@@ -20,6 +20,7 @@ import com.id11303765.commute.R;
 import com.id11303765.commute.model.AgencyManager;
 import com.id11303765.commute.model.CommuteManager;
 import com.id11303765.commute.model.DatabaseHelper;
+import com.id11303765.commute.model.JourneyManager;
 import com.id11303765.commute.model.RouteManager;
 import com.id11303765.commute.model.StopManager;
 import com.id11303765.commute.model.TimetableManager;
@@ -128,6 +129,7 @@ public class MainActivity extends AppCompatActivity
         StopManager.setDatabaseHelper(dbHelper);
         TimetableManager.setDatabaseHelper(dbHelper);
         CommuteManager.setDatabaseHelper(dbHelper);
+        JourneyManager.setDatabaseHelper(dbHelper);
     }
 
     private void selectLaunchScreen() {

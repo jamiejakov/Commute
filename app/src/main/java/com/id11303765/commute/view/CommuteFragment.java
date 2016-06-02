@@ -139,7 +139,7 @@ public class CommuteFragment extends Fragment implements View.OnClickListener {
     private void showPrev() {
         Calendar now = Calendar.getInstance();
         now.setTime(mSelectedTimetable.getStopTimes().get(mStopTimeCount - 2).getDepartureTime());
-        Timetable tmp = findClosestTimetable(now, false);
+        Timetable tmp = Common.findClosestTimetable(mSelectedCommute.getTripTimetables(), mSelectedCommute.getStartStopShortName(), now, false, true);
         if (tmp != null) {
             mSelectedTimetable = tmp;
             setUpScreen();
@@ -151,7 +151,7 @@ public class CommuteFragment extends Fragment implements View.OnClickListener {
     private void showNext() {
         Calendar now = Calendar.getInstance();
         now.setTime(mSelectedTimetable.getStopTimes().get(mStopTimeCount - 2).getDepartureTime());
-        Timetable tmp = findClosestTimetable(now, true);
+        Timetable tmp = Common.findClosestTimetable(mSelectedCommute.getTripTimetables(), mSelectedCommute.getStartStopShortName(), now, true, true);
         if (tmp != null) {
             mSelectedTimetable = tmp;
             setUpScreen();
@@ -162,7 +162,7 @@ public class CommuteFragment extends Fragment implements View.OnClickListener {
     private void checkIfNextExist(boolean forNext, ImageButton button1, ImageButton button2) {
         Calendar now = Calendar.getInstance();
         now.setTime(mSelectedTimetable.getStopTimes().get(mStopTimeCount - 2).getDepartureTime());
-        Timetable tmp = findClosestTimetable(now, forNext);
+        Timetable tmp = Common.findClosestTimetable(mSelectedCommute.getTripTimetables(),mSelectedCommute.getStartStopShortName(), now, forNext, true);
         if (tmp == null) {
             button1.setEnabled(false);
             button1.setColorFilter(ContextCompat.getColor(getActivity(), R.color.divider));
@@ -235,8 +235,7 @@ public class CommuteFragment extends Fragment implements View.OnClickListener {
 
     private void setETA(Date departureTime) {
         final TextView etaText = (TextView) getActivity().findViewById(R.id.fragment_commute_bottom_sheet_eta);
-        Calendar now = Calendar.getInstance();
-        now.set(1970, 0, 1);
+        Calendar now = Common.getNow();
         Calendar dep = Calendar.getInstance();
         dep.setTime(departureTime);
 
@@ -250,7 +249,7 @@ public class CommuteFragment extends Fragment implements View.OnClickListener {
             mNextServiceText.setText(R.string.next_service_departing_in);
             mCountdownTimer = new CountDownTimer(millis, 1000) {
                 public void onTick(long millisUntilFinished) {
-                    etaText.setText(Common.getDurationTime(millisUntilFinished));
+                    etaText.setText(Common.getDurationTime(millisUntilFinished, true, true, true));
                 }
 
                 public void onFinish() {
@@ -261,37 +260,6 @@ public class CommuteFragment extends Fragment implements View.OnClickListener {
             etaText.setText("");
             mNextServiceText.setText(R.string.service_already_departed);
         }
-    }
-
-    private Timetable findClosestTimetable(Calendar now, boolean forNext) {
-        Timetable timetable = null;
-        ArrayList<Timetable> timetables = mSelectedCommute.getTripTimetables();
-        Calendar currentTimetableTime = Calendar.getInstance();
-        for (Timetable t : timetables) {
-            StopTime st = t.getStopTimes().get(t.getStopTimes().size() - 2);
-            Calendar departureTime = Calendar.getInstance();
-            departureTime.setTime(st.getDepartureTime());
-            boolean correctStop = st.getStop().getShortName().equals(mSelectedCommute.getStartStopShortName());
-
-            if (forNext) {
-                if (correctStop && departureTime.after(now)) {
-                    if (timetable == null || departureTime.before(currentTimetableTime)) {
-                        timetable = t;
-                        currentTimetableTime.setTime(st.getDepartureTime());
-                    }
-
-                }
-            } else {
-                if (correctStop && departureTime.before(now)) {
-                    if (timetable == null || departureTime.after(currentTimetableTime)) {
-                        timetable = t;
-                        currentTimetableTime.setTime(st.getDepartureTime());
-                    }
-                }
-            }
-
-        }
-        return timetable;
     }
 
     private void setUpData() {
@@ -311,14 +279,11 @@ public class CommuteFragment extends Fragment implements View.OnClickListener {
 
     private void continueSetup() {
         mSelectedCommute = mCommuteLegs.get(0);
-        Calendar now = Calendar.getInstance();
-        now.set(1970, 0, 1);
-        Timetable tmp = findClosestTimetable(now, true);
+        Timetable tmp = Common.findClosestTimetable(mSelectedCommute.getTripTimetables(),mSelectedCommute.getStartStopShortName(), Common.getNow(), true, true);
         if (tmp != null) {
             mSelectedTimetable = tmp;
             setUpScreen();
         }
-
     }
 
     /**
@@ -358,6 +323,4 @@ public class CommuteFragment extends Fragment implements View.OnClickListener {
             continueSetup();
         }
     }
-
-
 }

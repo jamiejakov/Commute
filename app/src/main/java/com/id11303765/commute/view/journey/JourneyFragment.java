@@ -8,7 +8,6 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
 import android.transition.ChangeBounds;
 import android.transition.TransitionManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,8 +25,8 @@ public class JourneyFragment extends Fragment implements View.OnClickListener, S
     private View mCustomView;
     private float mElevation;
     private SheetLayout mSheetLayout;
-    private FloatingActionButton mFab;
-    private LinearLayout mSeachButtonsLinearLayout;
+    private FloatingActionButton mSearchFab;
+    private LinearLayout mSearchButtonsLinearLayout;
     private ImageButton mSwapButton;
     private Button mSearchButton1;
     private Button mSearchButton2;
@@ -53,10 +52,12 @@ public class JourneyFragment extends Fragment implements View.OnClickListener, S
         super.onActivityCreated(savedInstanceState);
         getActivity().setTitle(R.string.plan_your_journey);
 
-        mFab = (FloatingActionButton) getActivity().findViewById(R.id.fragment_journey_search_fab);
+        mSearchFab = (FloatingActionButton) getActivity().findViewById(R.id.fragment_journey_search_fab);
         mSheetLayout = (SheetLayout) getActivity().findViewById(R.id.fragment_journey_sheet_layout);
         mSwapButton = (ImageButton) getActivity().findViewById(R.id.fragment_journey_swap_button);
-        mSeachButtonsLinearLayout = (LinearLayout) getActivity().findViewById(R.id.fragment_journey_search_buttons_ll);
+        mSearchButtonsLinearLayout = (LinearLayout) getActivity().findViewById(R.id.fragment_journey_search_buttons_ll);
+        mSearchFab.setEnabled(false);
+        mSearchFab.getDrawable().setAlpha(100);
 
         setUpOnClickListeners();
     }
@@ -102,46 +103,40 @@ public class JourneyFragment extends Fragment implements View.OnClickListener, S
                 intent.putExtra(Constants.INTENT_REQUEST, Constants.JOURNEY_DESTINATION_TO_SEARCH_REQUEST);
                 text = mSearchButton1.getText().toString();
                 if (!text.matches("")){
-                    Log.d(Constants.SEARCHTAG, "AHAHAHAHAH " + text);
                     intent.putExtra(Constants.INTENT_SEARCH_EXCLUDE, text);
                 }
                 startActivityForResult(intent, Constants.JOURNEY_DESTINATION_TO_SEARCH_REQUEST);
                 break;
             case R.id.fragment_journey_swap_button:
                 swap();
-
-                /*int selected = mAppBarStyleLinearLayout.indexOfChild(v);
-                TransitionManager.beginDelayedTransition(mAppBarStyleLinearLayout, new ChangeBounds());
-                ((ViewGroup) mDepartureLL.getParent()).removeView(mDepartureLL);
-                mAppBarStyleLinearLayout.addView(mDepartureLL, mAppBarStyleLinearLayout.getChildCount());*/
                 break;
         }
     }
 
 
     private void swap(){
-        Button a = (Button) mSeachButtonsLinearLayout.getChildAt(0);
-        Button b = (Button) mSeachButtonsLinearLayout.getChildAt(1);
+        Button a = (Button) mSearchButtonsLinearLayout.getChildAt(0);
+        Button b = (Button) mSearchButtonsLinearLayout.getChildAt(1);
 
         String tempHint = b.getHint().toString();
-        TransitionManager.beginDelayedTransition(mSeachButtonsLinearLayout, new ChangeBounds());
-        mSeachButtonsLinearLayout.removeView(b);
+        TransitionManager.beginDelayedTransition(mSearchButtonsLinearLayout, new ChangeBounds());
+        mSearchButtonsLinearLayout.removeView(b);
         b.setHint(a.getHint());
-        mSeachButtonsLinearLayout.addView(b, 0);
+        mSearchButtonsLinearLayout.addView(b, 0);
         LinearLayout.LayoutParams params = (LinearLayout.LayoutParams)a.getLayoutParams();
         a.setLayoutParams(b.getLayoutParams());
         b.setLayoutParams(params);
-        mSeachButtonsLinearLayout.removeView(a);
+        mSearchButtonsLinearLayout.removeView(a);
         a.setHint(tempHint);
-        mSeachButtonsLinearLayout.addView(a);
+        mSearchButtonsLinearLayout.addView(a);
     }
 
 
     @Override
     public void onFabAnimationEnd() {
         Intent intent = new Intent(getActivity(), JourneyRoutesListActivity.class);
-        intent.putExtra(Constants.INTENT_SEARCH_JOURNEY_START_STOP, ((Button) mSeachButtonsLinearLayout.getChildAt(0)).getText());
-        intent.putExtra(Constants.INTENT_SEARCH_JOURNEY_END_STOP, ((Button) mSeachButtonsLinearLayout.getChildAt(1)).getText());
+        intent.putExtra(Constants.INTENT_SEARCH_JOURNEY_START_STOP, ((Button) mSearchButtonsLinearLayout.getChildAt(0)).getText());
+        intent.putExtra(Constants.INTENT_SEARCH_JOURNEY_END_STOP, ((Button) mSearchButtonsLinearLayout.getChildAt(1)).getText());
         startActivityForResult(intent, Constants.JOURNEY_FAB_TO_LIST_REQUEST);
     }
 
@@ -158,15 +153,29 @@ public class JourneyFragment extends Fragment implements View.OnClickListener, S
                 if (data != null){
                     mSearchButton1.setText(data.getStringExtra(Constants.INTENT_SELECTED_STOP_NAME));
                     mSearchButton1.setTextColor(ContextCompat.getColor(getActivity(), R.color.white));
+                    checkAndEnableFab();
                 }
                 break;
             case Constants.JOURNEY_DESTINATION_TO_SEARCH_REQUEST:
                 if (data != null){
                     mSearchButton2.setText(data.getStringExtra(Constants.INTENT_SELECTED_STOP_NAME));
                     mSearchButton2.setTextColor(ContextCompat.getColor(getActivity(), R.color.white));
+                    checkAndEnableFab();
                 }
 
                 break;
+        }
+    }
+
+    private void checkAndEnableFab(){
+        String startStopName = ((Button) mSearchButtonsLinearLayout.getChildAt(0)).getText().toString();
+        String endStopName = ((Button) mSearchButtonsLinearLayout.getChildAt(1)).getText().toString();
+        if (!startStopName.isEmpty() && !endStopName.isEmpty()){
+            mSearchFab.setEnabled(true);
+            mSearchFab.getDrawable().setAlpha(Constants.OPAQUE);
+        }else{
+            mSearchFab.setEnabled(false);
+            mSearchFab.getDrawable().setAlpha(Constants.DESELECTED);
         }
     }
 
@@ -185,8 +194,8 @@ public class JourneyFragment extends Fragment implements View.OnClickListener, S
         mSearchButton2.setOnClickListener(this);
         mSearchButton2.setTransformationMethod(null);
 
-        mFab.setOnClickListener(this);
-        mSheetLayout.setFab(mFab);
+        mSearchFab.setOnClickListener(this);
+        mSheetLayout.setFab(mSearchFab);
         mSheetLayout.setFabAnimationEndListener(this);
     }
 }

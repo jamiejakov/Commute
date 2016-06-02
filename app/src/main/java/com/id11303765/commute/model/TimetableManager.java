@@ -20,6 +20,7 @@ public class TimetableManager {
     static final String KEY_ARRIVAL_TIME = "arrival_time";
     static final String KEY_DEPARTURE_TIME = "departure_time";
     static final String KEY_STOP_SEQUENCE = "stop_sequence";
+    static final String KEY_INDEX = "stop_time_trip_station_index";
 
     public static TimetableManager getInstance() {
         return ourInstance;
@@ -35,7 +36,7 @@ public class TimetableManager {
         mDatabaseHelper = dbHelper;
     }
 
-    public static Timetable getTimetable(Trip trip){
+    static Timetable getTimetable(Trip trip){
         Timetable timetable = findTripTimetable(trip.getID());
 
         if (timetable == null){
@@ -105,7 +106,7 @@ public class TimetableManager {
         return timetable;
     }
 
-    public static Timetable getTimetable(Trip trip, ArrayList<Stop> stops){
+    static Timetable getTimetable(Trip trip, ArrayList<Stop> stops){
         Timetable timetable = findSmallTripTimetable(trip.getID());
 
         if (timetable == null){

@@ -14,11 +14,8 @@ public class TripManager {
 
     static final String KEY_TABLE = "trip";
     static final String KEY_ID = "trip_id";
-    static final String KEY_SHARPE_ID = "shape_id";
     static final String KEY_HEADSIGN = "trip_headsign";
-    static final String KEY_DIRECTION_ID = "direction_id";
-    static final String KEY_BLOCK_ID = "block_id";
-    static final String KEY_WHEELCHAIR_ACCESSIBLE = "wheelchair_accessible";
+    static final String KEY_INDEX = "trip_id_index";
 
     public static TripManager getInstance() {
         return ourInstance;
@@ -32,7 +29,7 @@ public class TripManager {
         mDatabaseHelper = dbHelper;
     }
 
-    public static Trip getTrip(String id){
+    static Trip getTrip(String id){
         Trip trip = findTrip(id);
 
         if (trip == null){
@@ -53,10 +50,7 @@ public class TripManager {
 
                 trip = new Trip(route, calendar,
                         cursor.getString(cursor.getColumnIndex(KEY_ID)),
-                        cursor.getString(cursor.getColumnIndex(KEY_HEADSIGN)),
-                        cursor.getString(cursor.getColumnIndex(KEY_DIRECTION_ID)),
-                        cursor.getString(cursor.getColumnIndex(KEY_BLOCK_ID)),
-                        convertToBoolean(cursor.getString(cursor.getColumnIndex(KEY_WHEELCHAIR_ACCESSIBLE)))
+                        cursor.getString(cursor.getColumnIndex(KEY_HEADSIGN))
                 );
             }
             calCurs.close();
@@ -68,7 +62,7 @@ public class TripManager {
 
     private static Trip findTrip(String id){
         for(Trip t : mTrips){
-            if (t.getID() == id){
+            if (t.getID().equals(id)){
                 return t;
             }
         }

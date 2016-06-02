@@ -71,10 +71,8 @@ public class WelcomeFragment extends Fragment implements View.OnClickListener {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (data.getStringExtra(Constants.INTENT_SETTINGS_BACK).equals(Constants.INTENT_SETTINGS_BACK)){
-            FragmentManager frag = getActivity().getFragmentManager();
-            frag.beginTransaction().replace(R.id.activity_main_content_frame, new JourneyFragment()).commit();
-        }
+        FragmentManager frag = getActivity().getFragmentManager();
+        frag.beginTransaction().replace(R.id.activity_main_content_frame, new JourneyFragment()).commit();
     }
 
     private void enableButton() {
@@ -101,8 +99,8 @@ public class WelcomeFragment extends Fragment implements View.OnClickListener {
 
         @Override
         protected Void doInBackground(Void... params) {
-            mDB.populateMainTables();
-            mDB.populateStopTimesTable();
+            mDB.populateTables();
+            mDB.createIndexes();
             publishProgress();
             return null;
         }

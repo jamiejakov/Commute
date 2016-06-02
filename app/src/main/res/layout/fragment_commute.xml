@@ -192,7 +192,7 @@
         android:layout_gravity="end"
         android:layout_marginEnd="@dimen/fab_margin"
         android:clickable="true"
-        android:src="@drawable/ic_png_swap_forward"
+        android:src="@drawable/ic_png_swap"
         app:layout_constraintBottom_toTopOf="@+id/fragment_commute_bottom_sheet_ll"
         app:layout_constraintRight_toRightOf="@+id/fragment_commute_constraint_layout"
         app:layout_constraintTop_toTopOf="@+id/fragment_commute_bottom_sheet_ll" />

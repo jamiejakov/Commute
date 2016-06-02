@@ -32,7 +32,7 @@ public class Common {
                 );
             }
             if (showSeconds){
-                time = String.format(Locale.ENGLISH, "%02dsec",
+                time += String.format(Locale.ENGLISH, "%02dsec",
                         TimeUnit.MILLISECONDS.toSeconds(millis) -
                                 TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis)) -
                                 TimeUnit.MINUTES.toMinutes(TimeUnit.MILLISECONDS.toHours(millis))

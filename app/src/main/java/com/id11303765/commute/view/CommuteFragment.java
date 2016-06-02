@@ -13,6 +13,8 @@ import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.RotateAnimation;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -51,6 +53,7 @@ public class CommuteFragment extends Fragment implements View.OnClickListener {
     private ImageButton mNextButton;
     private int mStopTimeCount;
     private TextView mNextServiceText;
+    private int mRotationDirection;
 
     public CommuteFragment() {
         // Required empty public constructor
@@ -90,6 +93,9 @@ public class CommuteFragment extends Fragment implements View.OnClickListener {
         mNextButton = (ImageButton) getActivity().findViewById(R.id.fragment_commute_next_service_button);
         mNextButton.setOnClickListener(this);
         mNextServiceText = (TextView) getActivity().findViewById(R.id.fragment_commute_next_service_text);
+        mRotationDirection = 1;
+
+
     }
 
     @Override
@@ -129,6 +135,20 @@ public class CommuteFragment extends Fragment implements View.OnClickListener {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
+        if (!mIsTravelTo) {
+            mRotationDirection = -1;
+            mSwapFab.setRotation(180);
+        }
+        else{
+            mSwapFab.setRotation(0);
+            mRotationDirection = 1;
+        }
+        RotateAnimation rotate = new RotateAnimation(0f, mRotationDirection * 180,
+                Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+        rotate.setFillAfter(true);
+        rotate.setDuration(300);
+        mSwapFab.startAnimation(rotate);
+
         mIsTravelTo = !mIsTravelTo;
         editor.putBoolean(Constants.COMMUTE_TO_OR_FROM_PREF, mIsTravelTo);
         editor.apply();
@@ -162,25 +182,19 @@ public class CommuteFragment extends Fragment implements View.OnClickListener {
     private void checkIfNextExist(boolean forNext, ImageButton button1, ImageButton button2) {
         Calendar now = Calendar.getInstance();
         now.setTime(mSelectedTimetable.getStopTimes().get(mStopTimeCount - 2).getDepartureTime());
-        Timetable tmp = Common.findClosestTimetable(mSelectedCommute.getTripTimetables(),mSelectedCommute.getStartStopShortName(), now, forNext, true);
+        Timetable tmp = Common.findClosestTimetable(mSelectedCommute.getTripTimetables(), mSelectedCommute.getStartStopShortName(), now, forNext, true);
         if (tmp == null) {
             button1.setEnabled(false);
-            button1.setColorFilter(ContextCompat.getColor(getActivity(), R.color.divider));
+            button1.getDrawable().setAlpha(Constants.DESELECTED);
         } else {
             button2.setEnabled(true);
-            button2.setColorFilter(ContextCompat.getColor(getActivity(), R.color.white));
+            button1.getDrawable().setAlpha(Constants.OPAQUE);
         }
     }
 
     private void setUpScreen() {
         Route selectedRoute = mSelectedTimetable.getTrip().getRoute();
         mStopTimeCount = mSelectedTimetable.getStopTimes().size();
-
-        if (mIsTravelTo) {
-            mSwapFab.setImageDrawable(getActivity().getDrawable(R.drawable.ic_png_swap_back));
-        } else {
-            mSwapFab.setImageDrawable(getActivity().getDrawable(R.drawable.ic_png_swap_forward));
-        }
 
         getActivity().setTitle(getActivity().getString(R.string.commute) + " to " + mSelectedCommute.getEndStopShortName());
 
@@ -279,7 +293,7 @@ public class CommuteFragment extends Fragment implements View.OnClickListener {
 
     private void continueSetup() {
         mSelectedCommute = mCommuteLegs.get(0);
-        Timetable tmp = Common.findClosestTimetable(mSelectedCommute.getTripTimetables(),mSelectedCommute.getStartStopShortName(), Common.getNow(), true, true);
+        Timetable tmp = Common.findClosestTimetable(mSelectedCommute.getTripTimetables(), mSelectedCommute.getStartStopShortName(), Common.getNow(), true, true);
         if (tmp != null) {
             mSelectedTimetable = tmp;
             setUpScreen();

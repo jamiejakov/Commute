@@ -11,6 +11,8 @@ import android.transition.TransitionManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.RotateAnimation;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -30,6 +32,7 @@ public class JourneyFragment extends Fragment implements View.OnClickListener, S
     private ImageButton mSwapButton;
     private Button mSearchButton1;
     private Button mSearchButton2;
+    private int mRotationDirection;
 
 
     public JourneyFragment() {
@@ -58,6 +61,7 @@ public class JourneyFragment extends Fragment implements View.OnClickListener, S
         mSearchButtonsLinearLayout = (LinearLayout) getActivity().findViewById(R.id.fragment_journey_search_buttons_ll);
         mSearchFab.setEnabled(false);
         mSearchFab.getDrawable().setAlpha(100);
+        mRotationDirection = 1;
 
         setUpOnClickListeners();
     }
@@ -118,6 +122,13 @@ public class JourneyFragment extends Fragment implements View.OnClickListener, S
         Button a = (Button) mSearchButtonsLinearLayout.getChildAt(0);
         Button b = (Button) mSearchButtonsLinearLayout.getChildAt(1);
 
+        RotateAnimation rotate = new RotateAnimation(0f, mRotationDirection*180,
+                Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+        rotate.setFillAfter(true);
+        rotate.setDuration(300);
+        mSwapButton.startAnimation(rotate);
+        mRotationDirection *= -1;
+
         String tempHint = b.getHint().toString();
         TransitionManager.beginDelayedTransition(mSearchButtonsLinearLayout, new ChangeBounds());
         mSearchButtonsLinearLayout.removeView(b);
@@ -129,6 +140,10 @@ public class JourneyFragment extends Fragment implements View.OnClickListener, S
         mSearchButtonsLinearLayout.removeView(a);
         a.setHint(tempHint);
         mSearchButtonsLinearLayout.addView(a);
+
+
+
+
     }
 
 

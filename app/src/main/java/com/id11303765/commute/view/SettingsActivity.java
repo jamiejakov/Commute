@@ -39,6 +39,8 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             return true;
         }
         if (id == android.R.id.home) {
+            Intent intent = new Intent();
+            intent.putExtra(Constants.INTENT_SETTINGS_BACK, Constants.INTENT_SETTINGS_BACK);
             this.onBackPressed();
             return true;
         }

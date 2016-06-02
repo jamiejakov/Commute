@@ -44,8 +44,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="20dp"
                 android:layout_gravity="center"
-                android:layout_marginStart="5dp"
-                android:layout_marginEnd="5dp"
+                android:layout_marginStart="2dp"
+                android:layout_marginEnd="2dp"
                 android:contentDescription="@string/to_station_arrow"
                 android:src="@drawable/ic_towards_black_24dp"
                 android:tint="@color/primary_text" />
@@ -64,13 +64,13 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:layout_marginStart="5dp"
-                android:layout_marginEnd="5dp"
+                android:layout_marginEnd="10dp"
                 android:textColor="@color/primary_text"
                 android:textSize="@dimen/journey_text"
                 android:textStyle="bold"
                 android:text="(1hr 35min)"/>
             <ImageView
-                android:id="@+id/adapter_item_journey_route_row_transport_mode_1_image"
+                android:id="@+id/adapter_item_journey_route_row_transport_mode_train_image"
                 android:layout_width="@dimen/transport_mode_icon_width_small"
                 android:layout_height="@dimen/transport_mode_icon_width_small"
                 android:background="@xml/rounded_image_border"
@@ -78,7 +78,7 @@
                 android:contentDescription="@string/transport_mode_image"
                 android:src="@drawable/tnsw_icon_train" />
             <ImageView
-                android:id="@+id/adapter_item_journey_route_row_transport_mode_2_image"
+                android:id="@+id/adapter_item_journey_route_row_transport_mode_ferry_image"
                 android:layout_width="@dimen/transport_mode_icon_width_small"
                 android:layout_height="@dimen/transport_mode_icon_width_small"
                 android:background="@xml/rounded_image_border"
@@ -86,7 +86,7 @@
                 android:contentDescription="@string/transport_mode_image"
                 android:src="@drawable/tnsw_icon_ferry" />
             <ImageView
-                android:id="@+id/adapter_item_journey_route_row_transport_mode_3_image"
+                android:id="@+id/adapter_item_journey_route_row_transport_mode_light_rail_image"
                 android:layout_width="@dimen/transport_mode_icon_width_small"
                 android:layout_height="@dimen/transport_mode_icon_width_small"
                 android:background="@xml/rounded_image_border"
@@ -134,17 +134,46 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:layout_marginEnd="5dp"
+                android:layout_marginEnd="15dp"
                 android:textColor="@color/secondary_text"
                 android:textSize="@dimen/journey_text"
                 android:text="2"/>
+
+            <View
+                android:id="@+id/adapter_item_journey_route_row_speed_circle"
+                android:layout_width="@dimen/type_circle_size"
+                android:layout_height="18dp"
+                android:layout_marginEnd="4dp"
+                android:background="@xml/speed_circle"/>
+            <View
+                android:id="@+id/adapter_item_journey_route_row_price_circle"
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:layout_marginEnd="4dp"
+                android:background="@xml/price_circle"/>
+            <View
+                android:id="@+id/adapter_item_journey_route_row_convenience_circle"
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:background="@xml/convenience_circle"/>
 
         </LinearLayout>
         <LinearLayout
             android:id="@+id/adapter_item_journey_route_row_transfers_bottom_ll"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:layout_marginTop="3dp">
+
+            <TextView
+                android:id="@+id/adapter_item_journey_route_row_transfers_stops_list_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_marginEnd="5dp"
+                android:textColor="@color/secondary_text"
+                android:textSize="@dimen/journey_text"
+                android:text="Mascot → Central → Macquarie"/>
 
         </LinearLayout>
 

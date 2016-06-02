@@ -58,11 +58,14 @@
     <string name="launch_screen_preference_title">Preferred Launch Screen</string>
     <string name="launch_screen_preference_summary">Select which screen you would like to see on launch</string>
     <string name="launch_screen_preference_key">launch_screen_pref</string>
-    <string name="next_service_departing_in">Next Service Departing In About:</string>
+    <string name="next_service_departing_in">Next Service:</string>
     <string name="regional_trains_agency">X0000</string>
     <string name="sydney_trains_agency">x0001</string>
     <string name="service_already_departed">Service has already departed</string>
     <string name="price">Price</string>
     <string name="convenience">Convenience</string>
+    <string name="loading_timetable">Loading Timetable</string>
+    <string name="am_pm_time_format">hh:mm a</string>
+    <string name="arrow_right">→</string>
 
 </resources>

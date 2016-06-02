@@ -15,6 +15,7 @@ public class Constants {
     public static final String INTENT_SEARCH_EXCLUDE = "INTENT_SEARCH_EXCLUDE";
     public static final String INTENT_SEARCH_JOURNEY_START_STOP = "INTENT_SEARCH_JOURNEY_START_STOP";
     public static final String INTENT_SEARCH_JOURNEY_END_STOP = "INTENT_SEARCH_JOURNEY_START_STOP";
+    public static final String INTENT_SETTINGS_BACK = "INTENT_SETTINGS_BACK";
 
     public static final String SEARCHTAG = "DEBUGGING SEARCH";
     public static final String CSV_PARSER_LOG = "CSVParser";

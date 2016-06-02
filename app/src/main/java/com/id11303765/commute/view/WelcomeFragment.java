@@ -51,7 +51,7 @@ public class WelcomeFragment extends Fragment implements View.OnClickListener {
     }
 
     @Override
-    public void onStart(){
+    public void onStart() {
         super.onStart();
         DatabaseHelper dbHelper = new DatabaseHelper(getActivity());
         LaunchPopulateDbAsync a = new LaunchPopulateDbAsync(dbHelper);
@@ -59,7 +59,7 @@ public class WelcomeFragment extends Fragment implements View.OnClickListener {
     }
 
     @Override
-    public void onStop(){
+    public void onStop() {
         super.onStop();
     }
 
@@ -71,8 +71,7 @@ public class WelcomeFragment extends Fragment implements View.OnClickListener {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch (requestCode) {
-            case Constants.WELCOME_TO_SETTINGS_REQUEST:
+        if (data.getStringExtra(Constants.INTENT_SETTINGS_BACK).equals(Constants.INTENT_SETTINGS_BACK)){
             FragmentManager frag = getActivity().getFragmentManager();
             frag.beginTransaction().replace(R.id.activity_main_content_frame, new JourneyFragment()).commit();
         }
@@ -91,12 +90,12 @@ public class WelcomeFragment extends Fragment implements View.OnClickListener {
         private DatabaseHelper mDB;
 
 
-        LaunchPopulateDbAsync(DatabaseHelper db){
+        LaunchPopulateDbAsync(DatabaseHelper db) {
             mDB = db;
         }
 
         @Override
-        protected void onPreExecute(){
+        protected void onPreExecute() {
             mProgressBar.setVisibility(View.VISIBLE);
         }
 

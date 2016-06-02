@@ -28,32 +28,8 @@ public class JourneyRoutesListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         mJourneys = new ArrayList<>();
 
-        setContentView(R.layout.activity_journey_routes_list);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        setTitle("TO TEMP LOCATION");
-        setSupportActionBar(toolbar);
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setDisplayHomeAsUpEnabled(true);
-        }
-
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.app_bar_journey_route_list_tab_layout);
-        assert tabLayout != null;
-        tabLayout.addTab(tabLayout.newTab().setText(R.string.speed));
-        tabLayout.addTab(tabLayout.newTab().setText(R.string.price));
-        tabLayout.addTab(tabLayout.newTab().setText(R.string.convenience));
-        tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
-
-        RecyclerView stopRecyclerView = (RecyclerView) findViewById(R.id.activity_journey_routes_list_recyclerview);
-        final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        assert stopRecyclerView != null;
-        stopRecyclerView.setLayoutManager(layoutManager);
-        mJourneyRoutesListAdapter = new JourneyRoutesListAdapter(this,this, mJourneys);
-        stopRecyclerView.setAdapter(mJourneyRoutesListAdapter);
-
         setUpData();
+        setUpScreen();
     }
 
     @Override
@@ -69,12 +45,38 @@ public class JourneyRoutesListActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    private void setUpScreen(){
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
+        setContentView(R.layout.activity_journey_routes_list);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.app_bar_journey_route_list_tab_layout);
+        assert tabLayout != null;
+        tabLayout.addTab(tabLayout.newTab().setText(R.string.speed));
+        tabLayout.addTab(tabLayout.newTab().setText(R.string.price));
+        tabLayout.addTab(tabLayout.newTab().setText(R.string.convenience));
+        tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
+
+    }
+
     private void setUpData(){
         String startStopShortName = getIntent().getStringExtra(Constants.INTENT_SEARCH_JOURNEY_START_STOP);
         String endStopShortName = getIntent().getStringExtra(Constants.INTENT_SEARCH_JOURNEY_END_STOP);
         Calendar now = Calendar.getInstance();
         now.set(1970, 0, 1);
+        setTitle("To " + endStopShortName);
         mJourneys.add(JourneyManager.getJoureney(startStopShortName, endStopShortName, now.getTime()));
+
+        RecyclerView stopRecyclerView = (RecyclerView) findViewById(R.id.activity_journey_routes_list_recyclerview);
+        final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        assert stopRecyclerView != null;
+        stopRecyclerView.setLayoutManager(layoutManager);
+        mJourneyRoutesListAdapter = new JourneyRoutesListAdapter(this,this, mJourneys);
+        stopRecyclerView.setAdapter(mJourneyRoutesListAdapter);
 
     }
 

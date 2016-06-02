@@ -19,14 +19,13 @@ public class JourneyManager {
         mJourneys = new ArrayList<>();
     }
 
-    public static Journey getJoureney(String startStopShortName, String endStopShortName, Date timeNow){
+    public static Journey getJoureney(String startStopShortName, String endStopShortName, Date timeNow) {
         Journey journey = findJourney(startStopShortName, endStopShortName);
         if (journey == null) {
 
         }
         return journey;
     }
-
 
 
     private static Journey findJourney(String startShortName, String endShortName) {

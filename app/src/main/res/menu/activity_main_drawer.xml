@@ -18,11 +18,13 @@
         <item
             android:id="@+id/nav_saved"
             android:icon="@drawable/ic_save_black_24dp"
-            android:title="@string/saved_routes" />
+            android:title="@string/saved_routes"
+            android:enabled="false"/>
         <item
             android:id="@+id/nav_alerts"
             android:icon="@drawable/ic_report_black_24dp"
-            android:title="@string/alerts" />
+            android:title="@string/alerts"
+            android:enabled="false"/>
         <item android:title="@string/options">
             <menu>
                 <item

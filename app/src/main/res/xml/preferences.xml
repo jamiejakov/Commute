@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <PreferenceCategory
-        android:key="pref_key_storage_settings"
+        android:key="pref_key_commute_settings"
         android:title="@string/commute_settings">
 
         <Preference
@@ -28,7 +28,7 @@
     </PreferenceCategory>
 
     <PreferenceCategory
-        android:key="pref_key_storage_settings"
+        android:key="pref_key_other_settings"
         android:title="@string/other_settings">
         <ListPreference
             android:defaultValue="1"
@@ -41,7 +41,7 @@
             android:defaultValue="0"
             android:entries="@array/launch_screen_preference_array_text"
             android:entryValues="@array/launch_screen_preference_array_values"
-            android:key="@string/launch_screen_preference_key"
+            android:key="@string/key_launch_screen_preference"
             android:summary="@string/launch_screen_preference_summary"
             android:title="@string/launch_screen_preference_title" />
     </PreferenceCategory>

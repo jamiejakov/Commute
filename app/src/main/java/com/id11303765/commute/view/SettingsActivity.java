@@ -1,7 +1,6 @@
 package com.id11303765.commute.view;
 
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -9,9 +8,7 @@ import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
-import android.util.Log;
 import android.view.MenuItem;
 
 import com.id11303765.commute.R;
@@ -24,7 +21,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getFragmentManager().beginTransaction().replace(android.R.id.content, new MyPreferenceFragment()).commit();
+        getFragmentManager().beginTransaction().replace(android.R.id.content, new AppPreferenceFragment()).commit();
 
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
@@ -86,7 +83,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
     }
 
 
-    public static class MyPreferenceFragment extends PreferenceFragment {
+    public static class AppPreferenceFragment extends PreferenceFragment {
 
         @Override
         public void onCreate(final Bundle savedInstanceState) {
@@ -125,7 +122,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                 }
             });
             bindPreferenceSummaryToValue(findPreference(getString(R.string.opal_card_type)));
-            bindPreferenceSummaryToValue(findPreference(getString(R.string.launch_screen_preference_key)));
+            bindPreferenceSummaryToValue(findPreference(getString(R.string.key_launch_screen_preference)));
         }
 
         @Override

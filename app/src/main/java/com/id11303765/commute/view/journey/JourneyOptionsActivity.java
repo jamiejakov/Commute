@@ -1,27 +1,28 @@
 package com.id11303765.commute.view.journey;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+import android.preference.ListPreference;
+import android.preference.Preference;
+import android.preference.PreferenceFragment;
+import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
-import android.view.View;
 
 import com.id11303765.commute.R;
+import com.id11303765.commute.utils.AppCompatPreferenceActivity;
+import com.id11303765.commute.utils.Constants;
+import com.id11303765.commute.view.SettingsActivity;
+import com.id11303765.commute.view.StopSearchActivity;
 
-public class JourneyOptionsActivity extends AppCompatActivity {
+public class JourneyOptionsActivity extends AppCompatPreferenceActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_journey_options);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.activity_journey_options_toolbar);
-        setSupportActionBar(toolbar);
+        getFragmentManager().beginTransaction().replace(android.R.id.content, new JourneyOptionsActivity.JourneyOptionsFragment()).commit();
 
-        setTitle(R.string.journey_options);
-        setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
@@ -35,9 +36,65 @@ public class JourneyOptionsActivity extends AppCompatActivity {
             return true;
         }
         if (id == android.R.id.home) {
+            Intent intent = new Intent();
+            intent.putExtra(Constants.INTENT_SETTINGS_BACK, Constants.INTENT_SETTINGS_BACK);
             this.onBackPressed();
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private static Preference.OnPreferenceChangeListener sBindPreferenceSummaryToValueListener = new Preference.OnPreferenceChangeListener() {
+        @Override
+        public boolean onPreferenceChange(Preference preference, Object value) {
+            String stringValue = value.toString();
+            if (preference instanceof ListPreference) {
+                // For list preferences, look up the correct display value in
+                // the preference's 'entries' list.
+                ListPreference listPreference = (ListPreference) preference;
+                int index = listPreference.findIndexOfValue(stringValue);
+
+                // Set the summary to reflect the new value.
+                preference.setSummary(
+                        index >= 0
+                                ? listPreference.getEntries()[index]
+                                : null);
+
+            } else {
+                // For all other preferences, set the summary to the value's
+                // simple string representation.
+                preference.setSummary(stringValue);
+            }
+            return true;
+        }
+    };
+
+    private static void bindPreferenceSummaryToValue(Preference preference) {
+        // Set the listener to watch for value changes.
+        preference.setOnPreferenceChangeListener(sBindPreferenceSummaryToValueListener);
+
+        // Trigger the listener immediately with the preference's
+        // current value.
+        sBindPreferenceSummaryToValueListener.onPreferenceChange(preference,
+                PreferenceManager
+                        .getDefaultSharedPreferences(preference.getContext())
+                        .getString(preference.getKey(), ""));
+    }
+
+    public static class JourneyOptionsFragment extends PreferenceFragment {
+
+        @Override
+        public void onCreate(final Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            addPreferencesFromResource(R.xml.journey_preferences);
+
+        }
+
+        @Override
+        public void onActivityResult(int requestCode, int resultCode, Intent data) {
+            String value;
+            SharedPreferences.Editor editor;
+
+        }
     }
 }

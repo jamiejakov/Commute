@@ -1,7 +1,6 @@
 package com.id11303765.commute.view;
 
 import android.app.FragmentManager;
-import android.content.ClipData;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -135,13 +134,13 @@ public class MainActivity extends AppCompatActivity
     private void selectLaunchScreen() {
         FragmentManager frag = getFragmentManager();
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-        String launchScreenPref = sharedPreferences.getString(getString(R.string.launch_screen_preference_key), "0");
+        String launchScreenPref = sharedPreferences.getString(getString(R.string.key_launch_screen_preference), "0");
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
         switch (launchScreenPref) {
             case "0":
                 frag.beginTransaction().replace(R.id.activity_main_content_frame, new WelcomeFragment()).commit();
-                editor.putString(getString(R.string.launch_screen_preference_key), "1");
+                editor.putString(getString(R.string.key_launch_screen_preference), "1");
                 editor.apply();
                 break;
             case "1":

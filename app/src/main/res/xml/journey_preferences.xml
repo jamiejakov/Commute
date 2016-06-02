@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory
+        android:key="pref_key_transfer_time_settings"
+        android:title="Transfer Time">
+
+        <ListPreference
+            android:defaultValue="0"
+            android:entries="@array/launch_screen_preference_array_text"
+            android:entryValues="@array/launch_screen_preference_array_values"
+            android:key="@string/key_launch_screen_preference"
+            android:summary="Automatically select the route with the selected criteria."
+            android:title="Walking Speed" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:key="pref_key_storage_settings"
+        android:title="Opal Card">
+        <SwitchPreference
+            android:key="@string/avoid_peak_hour"
+            android:title="@string/avoid_peak_hour">
+
+        </SwitchPreference>
+        <SwitchPreference
+            android:key="@string/avoid_airport_fee"
+            android:title="@string/avoid_airport_fee">
+
+        </SwitchPreference>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:key="pref_key_quick_search_settings"
+        android:title="Quick Search">
+
+        <ListPreference
+            android:defaultValue="0"
+            android:entries="@array/launch_screen_preference_array_text"
+            android:entryValues="@array/launch_screen_preference_array_values"
+            android:key="@string/quick_search_pref"
+            android:summary="Automatically select the route with the selected criteria."
+            android:title="@string/quick_search_pref" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:key="pref_key_transport_mode_settings"
+        android:title="Transport Modes">
+
+        <SwitchPreference
+            android:key="@string/key_journey_option_train"
+            android:title="@string/trains"
+            android:icon="@drawable/tnsw_icon_train_40px">
+
+        </SwitchPreference>
+        <SwitchPreference
+            android:key="@string/key_journey_option_bus"
+            android:title="@string/buses"
+            android:enabled="false"
+            android:icon="@drawable/tnsw_icon_bus_40px"
+            android:summary="Buses are disabled in this version">
+
+        </SwitchPreference>
+        <SwitchPreference
+            android:key="@string/key_journey_option_ferry"
+            android:title="@string/ferries"
+            android:icon="@drawable/tnsw_icon_ferry_40px">
+
+        </SwitchPreference>
+        <SwitchPreference
+            android:key="@string/key_journey_option_light_rail"
+            android:title="@string/light_rail"
+            android:icon="@drawable/tnsw_icon_light_rail_40px">
+
+        </SwitchPreference>
+
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:key="pref_key_storage_settings"
+        android:title="">
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

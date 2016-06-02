@@ -24,8 +24,7 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".view.journey.JourneyOptionsActivity"
-            android:label="@string/title_activity_journey_options"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:label="@string/title_activity_journey_options" />
         <activity
             android:name=".view.journey.JourneyRoutesListActivity"
             android:label="@string/title_activity_journey_routes_list"
@@ -33,7 +32,7 @@
         <activity android:name=".view.StopSearchActivity" />
         <activity
             android:name=".view.SettingsActivity"
-            android:label="@string/title_activity_settings"></activity>
+            android:label="@string/title_activity_settings"/>
     </application>
 
 </manifest>

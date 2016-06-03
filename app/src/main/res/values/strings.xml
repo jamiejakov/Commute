@@ -84,8 +84,8 @@
     <string name="ferries">Ferries</string>
     <string name="light_rail">Light Rail</string>
     <string name="loading_alerts">Loading Alerts…</string>
-
-
+    <string name="default_preference_result">non</string>
+    <string name="title_activity_journey_route">JourneyRouteActivity</string>
 
 
 </resources>

@@ -42,6 +42,10 @@
             android:name=".view.SettingsActivity"
             android:label="@string/title_activity_settings"
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".view.journey.JourneyRouteActivity"
+            android:label="@string/title_activity_journey_route"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

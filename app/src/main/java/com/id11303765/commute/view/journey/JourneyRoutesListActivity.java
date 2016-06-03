@@ -2,7 +2,6 @@ package com.id11303765.commute.view.journey;
 
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -14,20 +13,15 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
-import android.view.View;
 
 import com.id11303765.commute.R;
 import com.id11303765.commute.controller.JourneyRoutesListAdapter;
-import com.id11303765.commute.model.CommuteManager;
 import com.id11303765.commute.model.Journey;
 import com.id11303765.commute.model.JourneyManager;
-import com.id11303765.commute.model.Timetable;
 import com.id11303765.commute.utils.Common;
 import com.id11303765.commute.utils.Constants;
-import com.id11303765.commute.view.CommuteFragment;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 
 public class JourneyRoutesListActivity extends AppCompatActivity {
     private ArrayList<Journey> mJourneys;
@@ -37,7 +31,7 @@ public class JourneyRoutesListActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_journey_routes_list);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.activity_journey_routes_list_toolbar);
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
@@ -92,7 +86,7 @@ public class JourneyRoutesListActivity extends AppCompatActivity {
 
             @Override
             public void onTabReselected(TabLayout.Tab tab) {
-
+                // Required empty constructor
             }
         });
 

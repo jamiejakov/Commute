@@ -112,9 +112,9 @@ public class MainActivity extends AppCompatActivity
 
     private boolean isCommuteEnabled() {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-        String homeStop = sharedPreferences.getString(getString(R.string.home_preference), "non");
-        String workStop = sharedPreferences.getString(getString(R.string.work_preference), "non");
-        return !homeStop.equals("non") && !workStop.equals("non");
+        String homeStop = sharedPreferences.getString(getString(R.string.home_preference), getString(R.string.default_preference_result));
+        String workStop = sharedPreferences.getString(getString(R.string.work_preference), getString(R.string.default_preference_result));
+        return !homeStop.equals(getString(R.string.default_preference_result)) && !workStop.equals(getString(R.string.default_preference_result));
     }
 
 

@@ -36,9 +36,6 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
-        }
         if (id == android.R.id.home) {
             this.onBackPressed();
             return true;

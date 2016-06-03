@@ -57,6 +57,12 @@
     <string name="launch_screen_preference_title">Preferred Launch Screen</string>
     <string name="launch_screen_preference_summary">Select which screen you would like to see on launch</string>
 
+    <string name="key_launch_screen_preference">launch_screen_pref</string>
+    <string name="key_journey_option_ferry">journey_option_ferry</string>
+    <string name="key_journey_option_light_rail">journey_option_light_rail</string>
+    <string name="key_journey_option_bus">journey_option_bus</string>
+    <string name="key_journey_option_train">journey_option_train</string>
+
     <string name="next_service_departing_in">Next Service:</string>
     <string name="regional_trains_agency">X0000</string>
     <string name="sydney_trains_agency">x0001</string>
@@ -77,11 +83,9 @@
     <string name="buses">Buses</string>
     <string name="ferries">Ferries</string>
     <string name="light_rail">Light Rail</string>
+    <string name="loading_alerts">Loading Alerts…</string>
 
-    <string name="key_launch_screen_preference">launch_screen_pref</string>
-    <string name="key_journey_option_ferry">journey_option_ferry</string>
-    <string name="key_journey_option_light_rail">journey_option_light_rail</string>
-    <string name="key_journey_option_bus">journey_option_bus</string>
-    <string name="key_journey_option_train">journey_option_train</string>
+
+
 
 </resources>

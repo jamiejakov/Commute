@@ -12,9 +12,10 @@ public class Journey {
     private boolean mCost;
     private boolean mConvenience;
     private ArrayList<JourneyLeg> mJourneyLegs;
+    private String mPK;
 
 
-    Journey(Date mDepartureTime, Date mArrivalTime, double mPrice, boolean mSpeed, boolean mCost, boolean mConvenience, ArrayList<JourneyLeg> mJourneyLegs) {
+    Journey(Date mDepartureTime, Date mArrivalTime, double mPrice, boolean mSpeed, boolean mCost, boolean mConvenience, ArrayList<JourneyLeg> mJourneyLegs, String mPK) {
         this.mDepartureTime = mDepartureTime;
         this.mArrivalTime = mArrivalTime;
         this.mPrice = mPrice;
@@ -22,6 +23,7 @@ public class Journey {
         this.mCost = mCost;
         this.mConvenience = mConvenience;
         this.mJourneyLegs = mJourneyLegs;
+        this.mPK = mPK;
     }
 
     public boolean isFast() {
@@ -50,5 +52,9 @@ public class Journey {
 
     public double getmPrice() {
         return mPrice;
+    }
+
+    public String getPK() {
+        return mPK;
     }
 }

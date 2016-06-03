@@ -257,7 +257,7 @@
                     android:paddingStart="20dp"
                     android:textAlignment="center"
                     android:textColor="@color/white"
-                    android:textSize="50sp" />
+                    android:textSize="45sp"/>
             </LinearLayout>
 
         </LinearLayout>

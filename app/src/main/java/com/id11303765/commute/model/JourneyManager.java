@@ -5,10 +5,10 @@ import android.database.Cursor;
 
 import com.id11303765.commute.utils.Common;
 
-import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.UUID;
 
 public class JourneyManager {
     private static JourneyManager ourInstance = new JourneyManager();
@@ -58,7 +58,8 @@ public class JourneyManager {
             }
             Date depTime = mJourneyLegs.get(0).getDepartAt().getTime();
             Date arrTime = mJourneyLegs.get(mJourneyLegs.size()-1).getArriveBy().getTime();
-            journey = new Journey(depTime, arrTime, 2.95, true, true, true, mJourneyLegs);
+            String uniqueID = UUID.randomUUID().toString();
+            journey = new Journey(depTime, arrTime, 2.95, true, true, true, mJourneyLegs, uniqueID);
 
         }
         return journey;

@@ -101,9 +101,6 @@ public class StopSearchActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
-        }
         if (id == android.R.id.home) {
             this.onBackPressed();
             return true;

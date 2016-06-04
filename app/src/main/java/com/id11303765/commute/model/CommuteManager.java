@@ -28,11 +28,11 @@ public class CommuteManager {
 
         if (commute == null) {
             Cursor cursor = mDatabaseHelper.getTripsContainingStops(startStops, endStops);
-            if (cursor.moveToFirst()) {
+            if (cursor != null && cursor.moveToFirst()) {
                 ArrayList<Timetable> tripTimetables = new ArrayList<>();
                 do {
                     String tripID = cursor.getString(cursor.getColumnIndex(TripManager.KEY_ID));
-                    tripTimetables.add(TimetableManager.getTimetable(TripManager.getTrip(tripID),allStops));
+                    tripTimetables.add(TimetableManager.getTimetable(TripManager.getTrip(tripID), allStops));
                 } while (cursor.moveToNext());
 
                 commute = new Commute(startStopShortName, endStopShortName, tripTimetables);
@@ -44,9 +44,9 @@ public class CommuteManager {
         return commute;
     }
 
-    private static ArrayList<String> getStopIds(ArrayList<Stop> stops){
+    private static ArrayList<String> getStopIds(ArrayList<Stop> stops) {
         ArrayList<String> ids = new ArrayList<>();
-        for(Stop s : stops){
+        for (Stop s : stops) {
             ids.add(s.getID());
         }
         return ids;

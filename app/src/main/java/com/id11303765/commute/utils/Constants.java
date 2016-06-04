@@ -5,6 +5,7 @@ public class Constants {
     public static final int JOURNEY_DEPARTURE_TO_SEARCH_REQUEST = 11;
     public static final int JOURNEY_DESTINATION_TO_SEARCH_REQUEST = 12;
     public static final int JOURNEY_OPTIONS_TO_ACTIVITY_REQUEST = 13;
+    public static final int JOURNEY_ROUTE_LIST_TO_ROUTE_REQUEST = 14;
     public static final int SETTINGS_HOME_TO_SEARCH_REQUEST = 61;
     public static final int SETTINGS_WORK_TO_SEARCH_REQUEST = 62;
     public static final int WELCOME_TO_SETTINGS_REQUEST = 1;
@@ -16,6 +17,8 @@ public class Constants {
     public static final String INTENT_SEARCH_JOURNEY_START_STOP = "INTENT_SEARCH_JOURNEY_START_STOP";
     public static final String INTENT_SEARCH_JOURNEY_END_STOP = "INTENT_SEARCH_JOURNEY_END_STOP";
     public static final String INTENT_SETTINGS_BACK = "INTENT_SETTINGS_BACK";
+    public static final String INTENT_JOURNEY_ROUTE = "INTENT_JOURNEY_ROUTE";
+    public static final String INTENT_JOURNEY_ROUTE_NUMBER = "INTENT_JOURNEY_ROUTE_NUMBER";
 
     public static final String SEARCHTAG = "DEBUGGING SEARCH";
     public static final String CSV_PARSER_LOG = "CSVParser";
@@ -23,6 +26,7 @@ public class Constants {
 
     public static final int ONE_MINUTE = 1000*60;
     public static final String COMMUTE_TO_OR_FROM_PREF = "COMMUTE_TO_OR_FROM_PREF";
+    public static final String ERROR_LOG = "error log";
 
     public static final int OPAQUE = 255;
     public static final int DESELECTED = 160;

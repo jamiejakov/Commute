@@ -15,19 +15,16 @@ import android.widget.TextView;
 import com.id11303765.commute.R;
 import com.id11303765.commute.model.Journey;
 import com.id11303765.commute.model.JourneyLeg;
-import com.id11303765.commute.model.Stop;
 import com.id11303765.commute.model.StopTime;
 import com.id11303765.commute.model.Timetable;
 import com.id11303765.commute.utils.Common;
 import com.id11303765.commute.utils.Constants;
+import com.id11303765.commute.view.journey.JourneyRouteActivity;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
 import java.util.Locale;
-import java.util.Set;
 
 
 public class JourneyRoutesListAdapter extends RecyclerView.Adapter<JourneyRoutesListAdapter.StopSearchViewHolder> {
@@ -93,39 +90,18 @@ public class JourneyRoutesListAdapter extends RecyclerView.Adapter<JourneyRoutes
         transferLocs += endStopTime.getStop().getShortName();
         holder.mTransferLocations.setText(transferLocs);
 
-        setVisibility(holder.mSpeedCircle, currentJourneyData.isFast());
-        setVisibility(holder.mPriceCircle, currentJourneyData.isCheap());
-        setVisibility(holder.mConvenienceCircle, currentJourneyData.isConvenient());
+        Common.makeViewVisible(holder.mSpeedCircle, currentJourneyData.isFast());
+        Common.makeViewVisible(holder.mPriceCircle, currentJourneyData.isCheap());
+        Common.makeViewVisible(holder.mConvenienceCircle, currentJourneyData.isConvenient());
+        holder.mSpeedCircle.getDrawable().setAlpha(Constants.OPAQUE);
+        holder.mPriceCircle.getDrawable().setAlpha(Constants.OPAQUE);
+        holder.mConvenienceCircle.getDrawable().setAlpha(Constants.OPAQUE);
+
         for (JourneyLeg jl : currentJourneyData.getJourneyLegs()) {
-            setTransportModes(holder, jl.getTimetable().getStopTimes().get(0).getStop().getStopType());
+            int mode = jl.getTimetable().getStopTimes().get(0).getStop().getStopType();
+            Common.setTransportModes(mode, holder.mTrain, holder.mBus, holder.mFerry, holder.mLightRail);
         }
 
-    }
-
-    private void setTransportModes(StopSearchViewHolder holder, int mode) {
-        switch (mode) {
-            case R.drawable.tnsw_icon_train:
-                setVisibility(holder.mTrain, true);
-                break;
-            case R.drawable.tnsw_icon_light_rail:
-                setVisibility(holder.mLightRail, true);
-                break;
-            case R.drawable.tnsw_icon_ferry:
-                setVisibility(holder.mFerry, true);
-                break;
-            case R.drawable.tnsw_icon_bus:
-                setVisibility(holder.mFerry, true);
-                break;
-        }
-    }
-
-    private void setVisibility(ImageView view, boolean enabled) {
-        if (enabled) {
-            view.setVisibility(View.VISIBLE);
-            view.getDrawable().setAlpha(Constants.OPAQUE);
-        } else {
-            view.setVisibility(View.GONE);
-        }
     }
 
     @Override
@@ -146,6 +122,7 @@ public class JourneyRoutesListAdapter extends RecyclerView.Adapter<JourneyRoutes
         private TextView mTransfers;
         private TextView mTransferLocations;
         private ImageView mTrain;
+        private ImageView mBus;
         private ImageView mFerry;
         private ImageView mLightRail;
         private ImageView mSpeedCircle;
@@ -166,23 +143,24 @@ public class JourneyRoutesListAdapter extends RecyclerView.Adapter<JourneyRoutes
             mTransfers = (TextView) view.findViewById(R.id.adapter_item_journey_route_row_transfers_number_text);
             mTransferLocations = (TextView) view.findViewById(R.id.adapter_item_journey_route_row_transfers_stops_list_text);
             mTrain = (ImageView) view.findViewById(R.id.adapter_item_journey_route_row_transport_mode_train_image);
+            mBus = (ImageView) view.findViewById(R.id.adapter_item_journey_route_row_transport_mode_bus_image);
             mFerry = (ImageView) view.findViewById(R.id.adapter_item_journey_route_row_transport_mode_ferry_image);
             mLightRail = (ImageView) view.findViewById(R.id.adapter_item_journey_route_row_transport_mode_light_rail_image);
             mSpeedCircle = (ImageView) view.findViewById(R.id.adapter_item_journey_route_row_speed_circle);
             mPriceCircle = (ImageView) view.findViewById(R.id.adapter_item_journey_route_row_price_circle);
             mConvenienceCircle = (ImageView) view.findViewById(R.id.adapter_item_journey_route_row_convenience_circle);
 
-            RelativeLayout row = (RelativeLayout) itemView.findViewById(R.id.adapter_item_station_search_relative_layout);
+            RelativeLayout row = (RelativeLayout) itemView.findViewById(R.id.adapter_item_journey_route_row_relative_layout);
             row.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View v) {
             Context context = itemView.getContext();
-            Intent intent = new Intent();
-            //intent.putExtra(Constants.INTENT_SELECTED_STOP_NAME, mName.getText());
-            //mActivity.setResult(mIntentRequest, intent);
-            //mActivity.finish();
+            Intent intent = new Intent(mActivity, JourneyRouteActivity.class);
+            intent.putExtra(Constants.INTENT_JOURNEY_ROUTE, mJourneyList.get(getAdapterPosition()).getPK());
+            intent.putExtra(Constants.INTENT_JOURNEY_ROUTE_NUMBER, mPosition.getText());
+            mActivity.startActivityForResult(intent,Constants.JOURNEY_ROUTE_LIST_TO_ROUTE_REQUEST);
         }
     }
 }

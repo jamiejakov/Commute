@@ -3,8 +3,10 @@ package com.id11303765.commute.view;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,8 +16,10 @@ import android.widget.TextView;
 
 import com.id11303765.commute.R;
 import com.id11303765.commute.model.DatabaseHelper;
+import com.id11303765.commute.utils.Common;
 import com.id11303765.commute.utils.Constants;
 import com.id11303765.commute.view.journey.JourneyFragment;
+import com.id11303765.commute.view.timetables.TimetablesFragment;
 
 
 public class WelcomeFragment extends Fragment implements View.OnClickListener {

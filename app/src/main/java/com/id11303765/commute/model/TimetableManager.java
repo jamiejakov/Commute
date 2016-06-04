@@ -32,14 +32,14 @@ public class TimetableManager {
         mSmallTripTimetables = new ArrayList<>();
     }
 
-    public static void setDatabaseHelper(DatabaseHelper dbHelper){
+    public static void setDatabaseHelper(DatabaseHelper dbHelper) {
         mDatabaseHelper = dbHelper;
     }
 
-    static Timetable getTimetable(Trip trip){
+    static Timetable getTimetable(Trip trip) {
         Timetable timetable = findTripTimetable(trip.getID());
 
-        if (timetable == null){
+        if (timetable == null) {
             Cursor cursor = mDatabaseHelper.getStopTimes(TripManager.KEY_ID, trip.getID());
 
             ArrayList<StopTime> stopTimes = new ArrayList<>();
@@ -71,10 +71,10 @@ public class TimetableManager {
         return timetable;
     }
 
-    public static Timetable getTimetable(Stop stop){
+    public static Timetable getTimetable(Stop stop) {
         Timetable timetable = findStopTimetable(stop.getID());
 
-        if (timetable == null){
+        if (timetable == null) {
             Cursor cursor = mDatabaseHelper.getStopTimes(StopManager.KEY_ID, stop.getID());
 
             ArrayList<StopTime> stopTimes = new ArrayList<>();
@@ -106,16 +106,16 @@ public class TimetableManager {
         return timetable;
     }
 
-    static Timetable getTimetable(Trip trip, ArrayList<Stop> stops){
+    static Timetable getTimetable(Trip trip, ArrayList<Stop> stops) {
         Timetable timetable = findSmallTripTimetable(trip.getID());
 
-        if (timetable == null){
+        if (timetable == null) {
             Cursor cursor = mDatabaseHelper.getStopTimesForTripAndStop(trip.getID(), stops);
 
             ArrayList<StopTime> stopTimes = new ArrayList<>();
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss", Locale.US);
 
-            if (cursor.moveToFirst()) {
+            if (cursor != null && cursor.moveToFirst()) {
                 do {
                     StopTime stopTime = null;
                     try {
@@ -141,7 +141,7 @@ public class TimetableManager {
         return timetable;
     }
 
-    private static Timetable findTripTimetable(String id){
+    private static Timetable findTripTimetable(String id) {
         for (Timetable t : mTripTimetables) {
             if (t.getTrip().getID().equals(id)) {
                 return t;
@@ -150,7 +150,7 @@ public class TimetableManager {
         return null;
     }
 
-    private static Timetable findStopTimetable(String id){
+    private static Timetable findStopTimetable(String id) {
         for (Timetable t : mStopTimetables) {
             if (t.getStop().getID().equals(id)) {
                 return t;
@@ -159,7 +159,7 @@ public class TimetableManager {
         return null;
     }
 
-    private static Timetable findSmallTripTimetable(String id){
+    private static Timetable findSmallTripTimetable(String id) {
         for (Timetable t : mSmallTripTimetables) {
             if (t.getTrip().getID().equals(id)) {
                 return t;

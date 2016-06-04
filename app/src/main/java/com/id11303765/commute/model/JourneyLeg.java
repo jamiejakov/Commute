@@ -8,13 +8,15 @@ public class JourneyLeg{
     private Stop mEndStop;
     private Calendar mDepartAt;
     private Calendar mArriveBy;
+    private double mPrice;
 
-    JourneyLeg(Timetable mTimetable, Stop mStartStop, Stop mEndStop, Calendar mDepartAt, Calendar mArriveBy) {
+    JourneyLeg(Timetable mTimetable, Stop mStartStop, Stop mEndStop, Calendar mDepartAt, Calendar mArriveBy, double mPrice) {
         this.mTimetable = mTimetable;
         this.mStartStop = mStartStop;
         this.mEndStop = mEndStop;
         this.mDepartAt = mDepartAt;
         this.mArriveBy = mArriveBy;
+        this.mPrice = mPrice;
     }
 
     public Stop getStartStop() {
@@ -35,5 +37,9 @@ public class JourneyLeg{
 
     public Timetable getTimetable() {
         return mTimetable;
+    }
+
+    public double getPrice() {
+        return mPrice;
     }
 }

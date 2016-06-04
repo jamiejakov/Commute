@@ -34,6 +34,7 @@ dependencies {
     compile 'com.android.support:design:23.4.0'
     compile 'com.android.support.constraint:constraint-layout:1.0.0-alpha1'
     compile 'com.github.coyarzun89:fabtransitionactivity:0.2.0'
+    compile 'com.cocosw:bottomsheet:1.+@aar'
     compile ('com.h6ah4i.android.widget.advrecyclerview:advrecyclerview:0.9.1@aar'){
         transitive=true
     }
@@ -41,4 +42,5 @@ dependencies {
     androidTestCompile 'com.android.support.test.espresso:espresso-core:2.2.2'
     androidTestCompile 'com.android.support.test:runner:0.5'
     androidTestCompile 'com.android.support:support-annotations:23.4.0'
+
 }

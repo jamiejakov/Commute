@@ -1,11 +1,25 @@
 package com.id11303765.commute.utils;
 
-import com.id11303765.commute.model.Stop;
+import android.app.Activity;
+import android.app.FragmentManager;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
+import android.view.View;
+
+import com.id11303765.commute.R;
 import com.id11303765.commute.model.StopTime;
 import com.id11303765.commute.model.Timetable;
+import com.id11303765.commute.view.CommuteFragment;
+import com.id11303765.commute.view.SavedRoutesFragment;
+import com.id11303765.commute.view.WelcomeFragment;
+import com.id11303765.commute.view.journey.JourneyFragment;
+import com.id11303765.commute.view.timetables.TimetablesFragment;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
@@ -18,6 +32,33 @@ public class Common {
     }
 
     private Common() {
+    }
+
+    public static void selectLaunchScreen(Activity activity) {
+        FragmentManager frag = activity.getFragmentManager();
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity.getBaseContext());
+        String launchScreenPref = sharedPreferences.getString(activity.getString(R.string.key_launch_screen_preference), "0");
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        switch (launchScreenPref) {
+            case "0":
+                frag.beginTransaction().replace(R.id.activity_main_content_frame, new WelcomeFragment()).commit();
+                editor.putString(activity.getString(R.string.key_launch_screen_preference), "1");
+                editor.apply();
+                break;
+            case "1":
+                frag.beginTransaction().replace(R.id.activity_main_content_frame, new JourneyFragment()).commit();
+                break;
+            case "2":
+                frag.beginTransaction().replace(R.id.activity_main_content_frame, new CommuteFragment()).commit();
+                break;
+            case "3":
+                frag.beginTransaction().replace(R.id.activity_main_content_frame, new TimetablesFragment()).commit();
+                break;
+            case "4":
+                frag.beginTransaction().replace(R.id.activity_main_content_frame, new SavedRoutesFragment()).commit();
+                break;
+        }
     }
 
     public static String getDurationTime(long millis, boolean showHours, boolean showMinutes, boolean showSeconds){
@@ -93,10 +134,67 @@ public class Common {
         return timetable;
     }
 
+    public static void setTransportModes(int mode, View train, View bus, View ferry, View lightRail) {
+        int num = getTransportModeNumber(mode);
+        switch (num) {
+            case 1:
+                Common.makeViewVisible(train, true);
+                break;
+            case 2:
+                Common.makeViewVisible(bus, true);
+                break;
+            case 3:
+                Common.makeViewVisible(ferry, true);
+                break;
+            case 4:
+                Common.makeViewVisible(lightRail, true);
+                break;
+        }
+    }
+
+    public static int getTransportModeNumber(int mode) {
+        switch (mode) {
+            case R.drawable.tnsw_icon_train:
+                return 1;
+            case R.drawable.tnsw_icon_bus:
+                return 2;
+            case R.drawable.tnsw_icon_ferry:
+                return 3;
+            case R.drawable.tnsw_icon_light_rail:
+                return 4;
+        }
+        return 1;
+    }
+
+    public static void makeViewVisible(View view, boolean enabled) {
+        if (enabled) {
+            view.setVisibility(View.VISIBLE);
+        } else {
+            view.setVisibility(View.GONE);
+        }
+    }
+
     public static Calendar getNow(){
         Calendar now = Calendar.getInstance();
         now.set(1970, 0, 1);
         return now;
+    }
+
+    public static boolean isNowPeak(){
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm", Locale.US);
+        Calendar now = getNow();
+        boolean result = false;
+        try {
+            Date morningPeakStart = simpleDateFormat.parse("07:00");
+            Date morningPeakEnd = simpleDateFormat.parse("09:30");
+            Date eveningPeakStart = simpleDateFormat.parse("16:00");
+            Date eveningPeakEnd = simpleDateFormat.parse("18:30");
+            result = now.getTime().after(morningPeakStart) && now.getTime().before(morningPeakEnd) ||
+                    now.getTime().after(eveningPeakStart) && now.getTime().before(eveningPeakEnd);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return result;
     }
 
 }

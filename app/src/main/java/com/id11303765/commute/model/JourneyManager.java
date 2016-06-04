@@ -1,7 +1,10 @@
 package com.id11303765.commute.model;
 
 
+import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.location.Location;
+import android.preference.PreferenceManager;
 
 import com.id11303765.commute.utils.Common;
 
@@ -25,7 +28,7 @@ public class JourneyManager {
         mJourneyLegs = new ArrayList<>();
     }
 
-    public static Journey getJourney(ArrayList<String> stops, boolean departAt, Calendar time) {
+    public static Journey getJourney(ArrayList<String> stops, boolean departAt, Calendar time, int opalCardType) {
         mJourneyLegs.clear();
         Journey journey = findJourney(stops, departAt, time);
         JourneyLeg journeyLeg;
@@ -37,7 +40,7 @@ public class JourneyManager {
                     if (departAfter == null) {
                         departAfter = time;
                     }
-                    journeyLeg = getJourneyLeg(stops.get(i), stops.get(i + 1), true, departAfter);
+                    journeyLeg = getJourneyLeg(stops.get(i), stops.get(i + 1), true, departAfter, opalCardType);
                     if (journeyLeg != null) {
                         departAfter = journeyLeg.getArriveBy();
                         mJourneyLegs.add(journeyLeg);
@@ -49,30 +52,37 @@ public class JourneyManager {
                     if (arriveBy == null) {
                         arriveBy = time;
                     }
-                    journeyLeg = getJourneyLeg(stops.get(i - 1), stops.get(i), false, arriveBy);
+                    journeyLeg = getJourneyLeg(stops.get(i - 1), stops.get(i), false, arriveBy, opalCardType);
                     if (journeyLeg != null) {
                         arriveBy = journeyLeg.getDepartAt();
                         mJourneyLegs.add(journeyLeg);
                     }
                 }
             }
-            Date depTime = mJourneyLegs.get(0).getDepartAt().getTime();
-            Date arrTime = mJourneyLegs.get(mJourneyLegs.size()-1).getArriveBy().getTime();
-            String uniqueID = UUID.randomUUID().toString();
-            journey = new Journey(depTime, arrTime, 2.95, true, true, true, mJourneyLegs, uniqueID);
-
+            if (mJourneyLegs.size() != 0) {
+                Date depTime = mJourneyLegs.get(0).getDepartAt().getTime();
+                Date arrTime = mJourneyLegs.get(mJourneyLegs.size() - 1).getArriveBy().getTime();
+                String uniqueID = UUID.randomUUID().toString();
+                double price = 0;
+                for (JourneyLeg jl : mJourneyLegs) {
+                    price += jl.getPrice();
+                }
+                journey = new Journey(depTime, arrTime, price, true, true, true, mJourneyLegs, uniqueID);
+                mJourneys.add(journey);
+            }
         }
+
         return journey;
     }
 
-    private static JourneyLeg getJourneyLeg(String startStopShortName, String endStopShortName, boolean departAt, Calendar time) {
+    private static JourneyLeg getJourneyLeg(String startStopShortName, String endStopShortName, boolean departAt, Calendar time, int opalCardTime) {
         ArrayList<Stop> startStops = StopManager.getStopsByName(startStopShortName);
         ArrayList<Stop> endStops = StopManager.getStopsByName(endStopShortName);
         ArrayList<Stop> allStops = new ArrayList<>();
         allStops.addAll(startStops);
         allStops.addAll(endStops);
         Cursor cursor = mDatabaseHelper.getTripsContainingStops(startStops, endStops);
-        if (cursor.moveToFirst()) {
+        if (cursor != null && cursor.moveToFirst()) {
             ArrayList<Timetable> smallTripTimetables = new ArrayList<>();
             do {
                 String tripID = cursor.getString(cursor.getColumnIndex(TripManager.KEY_ID));
@@ -103,7 +113,22 @@ public class JourneyManager {
             Calendar arrivingBy = Calendar.getInstance();
             arrivingBy.setTime(closestSmallTimetable.getStopTimes().get(closestSmallTimetable.getStopTimes().size() - 1).getDepartureTime());
 
-            return new JourneyLeg(closestTimetable, stops.get(stops.size() - 2), stops.get(stops.size() - 1), departingAt, arrivingBy);
+            Stop startStop = stops.get(stops.size() - 2);
+            Stop endStop = stops.get(stops.size() - 1);
+
+            int type = Common.getTransportModeNumber(endStop.getStopType());
+            Location startLoc = new Location("");
+            startLoc.setLatitude(startStop.getLat());
+            startLoc.setLongitude(startStop.getLon());
+
+            Location endLoc = new Location("");
+            endLoc.setLatitude(endStop.getLat());
+            endLoc.setLongitude(endStop.getLon());
+
+            float distance = startLoc.distanceTo(endLoc) / 1000;
+            double price = FareManager.getFare(opalCardTime, type, Common.isNowPeak(), distance).getValue();
+
+            return new JourneyLeg(closestTimetable, startStop, endStop, departingAt, arrivingBy, price);
         }
         return null;
     }
@@ -111,14 +136,14 @@ public class JourneyManager {
 
     private static Journey findJourney(ArrayList<String> stops, boolean departAt, Calendar time) {
         for (Journey journey : mJourneys) {
-            if (departAt){
+            if (departAt) {
                 if (journey.getJourneyLegs().size() == stops.size() &&
                         journey.getJourneyLegs().get(0).getDepartAt().after(time.getTime())) {
                     return journey;
                 }
-            }else{
+            } else {
                 if (journey.getJourneyLegs().size() == stops.size() &&
-                        journey.getJourneyLegs().get(journey.getJourneyLegs().size()-1).getArriveBy().before(time.getTime())) {
+                        journey.getJourneyLegs().get(journey.getJourneyLegs().size() - 1).getArriveBy().before(time.getTime())) {
                     return journey;
                 }
             }
@@ -126,12 +151,13 @@ public class JourneyManager {
         return null;
     }
 
-    private void findStartEndStops(String start, String end) {
-
-    }
-
-    private void findStartEndTimetables() {
-
+    public static Journey findJourney(String PK) {
+        for (Journey journey : mJourneys) {
+            if (journey.getPK().equals(PK)) {
+                return journey;
+            }
+        }
+        return null;
     }
 
     public static void setDatabaseHelper(DatabaseHelper dbHelper) {

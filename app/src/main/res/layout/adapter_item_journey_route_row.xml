@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/adapter_item_station_search_relative_layout"
+    android:id="@+id/adapter_item_journey_route_row_relative_layout"
     android:layout_width="match_parent"
     android:layout_height="100dp"
     android:background="@xml/ripple"
@@ -78,6 +78,16 @@
                 android:background="@xml/rounded_image_border"
                 android:contentDescription="@string/transport_mode_image"
                 android:src="@drawable/tnsw_icon_train"
+                android:visibility="gone" />
+
+            <ImageView
+                android:id="@+id/adapter_item_journey_route_row_transport_mode_bus_image"
+                android:layout_width="@dimen/transport_mode_icon_width_small"
+                android:layout_height="@dimen/transport_mode_icon_width_small"
+                android:layout_marginEnd="2dp"
+                android:background="@xml/rounded_image_border"
+                android:contentDescription="@string/transport_mode_image"
+                android:src="@drawable/tnsw_icon_bus"
                 android:visibility="gone" />
 
             <ImageView

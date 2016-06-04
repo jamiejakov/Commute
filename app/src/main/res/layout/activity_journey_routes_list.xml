@@ -44,6 +44,16 @@
 
         </android.support.v7.widget.RecyclerView>
 
+        <TextView
+            android:visibility="gone"
+            android:id="@+id/activity_journey_no_results_text"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:layout_below="@+id/activity_journey_app_bar"
+            android:text="@string/no_routes_found">
+        </TextView>
+
     </RelativeLayout>
 
 

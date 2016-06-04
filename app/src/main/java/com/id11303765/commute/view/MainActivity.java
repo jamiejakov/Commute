@@ -19,11 +19,13 @@ import com.id11303765.commute.R;
 import com.id11303765.commute.model.AgencyManager;
 import com.id11303765.commute.model.CommuteManager;
 import com.id11303765.commute.model.DatabaseHelper;
+import com.id11303765.commute.model.FareManager;
 import com.id11303765.commute.model.JourneyManager;
 import com.id11303765.commute.model.RouteManager;
 import com.id11303765.commute.model.StopManager;
 import com.id11303765.commute.model.TimetableManager;
 import com.id11303765.commute.model.TripManager;
+import com.id11303765.commute.utils.Common;
 import com.id11303765.commute.view.journey.JourneyFragment;
 import com.id11303765.commute.view.timetables.TimetablesFragment;
 
@@ -39,7 +41,7 @@ public class MainActivity extends AppCompatActivity
 
         setUpDrawer();
         setUpDatabaseHelpers();
-        selectLaunchScreen();
+        Common.selectLaunchScreen(this);
     }
 
     @Override
@@ -127,33 +129,7 @@ public class MainActivity extends AppCompatActivity
         TimetableManager.setDatabaseHelper(dbHelper);
         CommuteManager.setDatabaseHelper(dbHelper);
         JourneyManager.setDatabaseHelper(dbHelper);
-    }
-
-    private void selectLaunchScreen() {
-        FragmentManager frag = getFragmentManager();
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-        String launchScreenPref = sharedPreferences.getString(getString(R.string.key_launch_screen_preference), "0");
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-
-        switch (launchScreenPref) {
-            case "0":
-                frag.beginTransaction().replace(R.id.activity_main_content_frame, new WelcomeFragment()).commit();
-                editor.putString(getString(R.string.key_launch_screen_preference), "1");
-                editor.apply();
-                break;
-            case "1":
-                frag.beginTransaction().replace(R.id.activity_main_content_frame, new JourneyFragment()).commit();
-                break;
-            case "2":
-                frag.beginTransaction().replace(R.id.activity_main_content_frame, new CommuteFragment()).commit();
-                break;
-            case "3":
-                frag.beginTransaction().replace(R.id.activity_main_content_frame, new TimetablesFragment()).commit();
-                break;
-            case "4":
-                frag.beginTransaction().replace(R.id.activity_main_content_frame, new SavedRoutesFragment()).commit();
-                break;
-        }
+        FareManager.setDatabaseHelper(dbHelper);
     }
 
 }

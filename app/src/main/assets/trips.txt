@@ -1,4 +1,4 @@
-“2-T1-A-sj2-1","TA+4l200+7","87.TA.2-T1-A-sj2-1.1.H","2-T1-A-sj2-1.1.H","Berowra Station","0","7+25","1"
+"2-T1-A-sj2-1","TA+4l200+7","87.TA.2-T1-A-sj2-1.1.H","2-T1-A-sj2-1.1.H","Berowra Station","0","7+25","1"
 "2-T1-A-sj2-1","TA+4l200+7","79.TA.2-T1-A-sj2-1.1.H","2-T1-A-sj2-1.1.H","Berowra Station","0","7+26","1"
 "2-T1-A-sj2-1","TA+4l200+7","73.TA.2-T1-A-sj2-1.1.H","2-T1-A-sj2-1.1.H","Berowra Station","0","7+27","1"
 "2-T1-A-sj2-1","TA+4l200+7","63.TA.2-T1-A-sj2-1.1.H","2-T1-A-sj2-1.1.H","Berowra Station","0","7+28","1"

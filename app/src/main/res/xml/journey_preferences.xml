@@ -6,8 +6,8 @@
 
         <ListPreference
             android:defaultValue="0"
-            android:entries="@array/launch_screen_preference_array_text"
-            android:entryValues="@array/launch_screen_preference_array_values"
+            android:entries="@array/walking_journey_options_array_text"
+            android:entryValues="@array/walking_journey_options_array_values"
             android:key="@string/key_launch_screen_preference"
             android:summary="Automatically select the route with the selected criteria."
             android:title="Walking Speed" />
@@ -35,12 +35,12 @@
         android:title="Quick Search">
 
         <ListPreference
-            android:defaultValue="0"
-            android:entries="@array/launch_screen_preference_array_text"
-            android:entryValues="@array/launch_screen_preference_array_values"
-            android:key="@string/quick_search_pref"
-            android:summary="Automatically select the route with the selected criteria."
-            android:title="@string/quick_search_pref" />
+            android:defaultValue="1"
+            android:entries="@array/quick_search_journey_options_array_text"
+            android:entryValues="@array/quick_search_journey_options_array_values"
+            android:key="@string/default_search_pref"
+            android:summary="Sort the routes based on on your preference."
+            android:title="@string/default_search_pref" />
 
     </PreferenceCategory>
 
@@ -51,7 +51,8 @@
         <SwitchPreference
             android:key="@string/key_journey_option_train"
             android:title="@string/trains"
-            android:icon="@drawable/tnsw_icon_train_40px">
+            android:icon="@drawable/tnsw_icon_train_40px"
+            android:defaultValue="true">
 
         </SwitchPreference>
         <SwitchPreference
@@ -65,13 +66,15 @@
         <SwitchPreference
             android:key="@string/key_journey_option_ferry"
             android:title="@string/ferries"
-            android:icon="@drawable/tnsw_icon_ferry_40px">
+            android:icon="@drawable/tnsw_icon_ferry_40px"
+            android:defaultValue="true">
 
         </SwitchPreference>
         <SwitchPreference
             android:key="@string/key_journey_option_light_rail"
             android:title="@string/light_rail"
-            android:icon="@drawable/tnsw_icon_light_rail_40px">
+            android:icon="@drawable/tnsw_icon_light_rail_40px"
+            android:defaultValue="true">
 
         </SwitchPreference>
 

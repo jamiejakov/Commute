@@ -44,6 +44,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         createStopTable(db);
         createTripTable(db);
         createStopTimesTable(db);
+        createOpalFareTable(db);
     }
 
     @Override
@@ -196,6 +197,23 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return cursor;
     }
 
+    Cursor getAllFares(){
+        SQLiteDatabase db = getReadableDatabase();
+
+        String[] columns = new String[]{FareManager.KEY_DISTANCE, FareManager.KEY_TYPE,
+                FareManager.KEY_TRANSPORT, FareManager.KEY_PEAK, FareManager.KEY_VALUE};
+        Cursor cursor = db.query(FareManager.KEY_TABLE, columns, null, null, null, null, null);
+
+        if (cursor == null) {
+            return null;
+        } else if (!cursor.moveToFirst()) {
+            cursor.close();
+            return null;
+        }
+        db.close();
+        return cursor;
+    }
+
     Cursor getStopTimesForTripAndStop(String tripId, ArrayList<Stop> stops) {
         SQLiteDatabase db = getReadableDatabase();
 
@@ -229,6 +247,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         readCSV(StopManager.KEY_TABLE, "stops.txt");
         readCSV(TripManager.KEY_TABLE, "trips.txt");
         readCSV(TimetableManager.KEY_TABLE, "stop_times.txt");
+        readCSV(FareManager.KEY_TABLE, "fares.txt");
     }
 
     private void readCSV(String table, String file) {
@@ -263,6 +282,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             case TimetableManager.KEY_TABLE:
                 populateStopTimeTable(db, buffer);
                 break;
+            case FareManager.KEY_TABLE:
+                populateOpalFareTable(db, buffer);
         }
 
         db.setTransactionSuccessful();
@@ -419,6 +440,29 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         Log.d(Constants.CSV_PARSER_LOG, "Stop Times Added");
     }
 
+    private void populateOpalFareTable(SQLiteDatabase db, BufferedReader buffer){
+        String line;
+        try {
+            while ((line = buffer.readLine()) != null) {
+                String[] columns = line.split(Constants.CSV_SPLIT);
+                if (columns.length != 5) {
+                    Log.d(Constants.CSV_PARSER_LOG, "Skipping Bad CSV Row in Fares");
+                    continue;
+                }
+                ContentValues cv = new ContentValues();
+                cv.put(FareManager.KEY_DISTANCE, Integer.parseInt(columns[0].replaceAll("\"", "").trim()));
+                cv.put(FareManager.KEY_TYPE, Integer.parseInt(columns[1].replaceAll("\"", "").trim()));
+                cv.put(FareManager.KEY_TRANSPORT, Integer.parseInt(columns[2].replaceAll("\"", "").trim()));
+                cv.put(FareManager.KEY_PEAK, Integer.parseInt(columns[3].replaceAll("\"", "").trim()));
+                cv.put(FareManager.KEY_VALUE, Double.parseDouble(columns[4].replaceAll("\"", "").trim()));
+                db.insert(FareManager.KEY_TABLE, null, cv);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Log.d(Constants.CSV_PARSER_LOG, "Fares Added");
+    }
+
     /*-------------- CREATE INDEXES  --------------*/
 
     public void createIndexes(){
@@ -522,6 +566,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 TripManager.KEY_TABLE + "(" + TripManager.KEY_ID + ")," +
                 " FOREIGN KEY (" + StopManager.KEY_ID + ") REFERENCES " +
                 StopManager.KEY_TABLE + "(" + StopManager.KEY_ID + ")" +
+                ");"
+        );
+    }
+
+    private void createOpalFareTable(SQLiteDatabase db) {
+        db.execSQL("DROP TABLE IF EXISTS " + FareManager.KEY_TABLE);
+        db.execSQL("CREATE TABLE " + FareManager.KEY_TABLE + "( " +
+                FareManager.KEY_DISTANCE + " INTEGER NOT NULL," +
+                FareManager.KEY_TYPE + " INTEGER NOT NULL," +
+                FareManager.KEY_TRANSPORT + " INTEGER NOT NULL," +
+                FareManager.KEY_PEAK + " INTEGER NOT NULL," +
+                FareManager.KEY_VALUE + " DOUBLE NOT NULL" +
                 ");"
         );
     }

@@ -27,6 +27,7 @@ public class JourneyOptionsActivity extends AppCompatPreferenceActivity {
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
+        setTitle(getString(R.string.journey_options));
     }
 
     @Override

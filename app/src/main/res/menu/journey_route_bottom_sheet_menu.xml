@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/journey_route_share"
+        android:icon="@drawable/ic_share_black_24dp"
+        android:title="@string/share_route" />
+    <item
+        android:id="@+id/journey_route_save_route"
+        android:icon="@drawable/ic_save_black_24dp"
+        android:title="@string/save_route" />
+    <item
+        android:id="@+id/journey_route_add_to_cal"
+        android:icon="@drawable/ic_event_black_24dp"
+        android:title="@string/add_to_calendar" />
+    <item
+        android:id="@+id/journey_route_set_commute"
+        android:icon="@drawable/ic_directions_railway_black_24dp"
+        android:title="@string/set_as_commute" />
+
+</menu>

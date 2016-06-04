@@ -1,10 +1,8 @@
 package com.id11303765.commute.model;
 
 
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.location.Location;
-import android.preference.PreferenceManager;
 
 import com.id11303765.commute.utils.Common;
 
@@ -98,41 +96,59 @@ public class JourneyManager {
             Timetable closestTimetable = TimetableManager.getTimetable(TripManager.getTrip(closestSmallTimetable.getTrip().getID()));
 
             ArrayList<Stop> stops = new ArrayList<>();
+            ArrayList<Integer> stopSequences = new ArrayList<>();
 
             for (StopTime stopTime : closestTimetable.getStopTimes()) {
                 if (stopTime.getStop().getShortName().equals(startStopShortName)) {
                     stops.add(stopTime.getStop());
+                    stopSequences.add(stopTime.getStopSequence());
                 }
                 if (stopTime.getStop().getShortName().equals(endStopShortName)) {
                     stops.add(stopTime.getStop());
+                    stopSequences.add(stopTime.getStopSequence());
                 }
             }
+            Stop startStop = stops.get(stops.size() - 2);
+            Stop endStop = stops.get(stops.size() - 1);
 
             Calendar departingAt = Calendar.getInstance();
             departingAt.setTime(closestSmallTimetable.getStopTimes().get(closestSmallTimetable.getStopTimes().size() - 2).getDepartureTime());
             Calendar arrivingBy = Calendar.getInstance();
             arrivingBy.setTime(closestSmallTimetable.getStopTimes().get(closestSmallTimetable.getStopTimes().size() - 1).getDepartureTime());
 
-            Stop startStop = stops.get(stops.size() - 2);
-            Stop endStop = stops.get(stops.size() - 1);
-
+            removeExtraStopTimes(stopSequences, closestTimetable);
             int type = Common.getTransportModeNumber(endStop.getStopType());
-            Location startLoc = new Location("");
-            startLoc.setLatitude(startStop.getLat());
-            startLoc.setLongitude(startStop.getLon());
-
-            Location endLoc = new Location("");
-            endLoc.setLatitude(endStop.getLat());
-            endLoc.setLongitude(endStop.getLon());
-
-            float distance = startLoc.distanceTo(endLoc) / 1000;
-            double price = FareManager.getFare(opalCardTime, type, Common.isNowPeak(), distance).getValue();
+            float distance = calculateDistance(startStop, endStop);
+            double price = FareManager.getFare(opalCardTime, type, Common.isPeakNow(), distance).getValue();
 
             return new JourneyLeg(closestTimetable, startStop, endStop, departingAt, arrivingBy, price);
         }
         return null;
     }
 
+    private static float calculateDistance(Stop startStop, Stop endStop){
+        Location startLoc = new Location("");
+        startLoc.setLatitude(startStop.getLat());
+        startLoc.setLongitude(startStop.getLon());
+
+        Location endLoc = new Location("");
+        endLoc.setLatitude(endStop.getLat());
+        endLoc.setLongitude(endStop.getLon());
+        return startLoc.distanceTo(endLoc) / 1000;
+    }
+
+    private static void removeExtraStopTimes(ArrayList<Integer> stopSequences, Timetable closestTimetable){
+        int startStopSequence = stopSequences.get(stopSequences.size() - 2);
+        int endStopSequence = stopSequences.get(stopSequences.size() - 1);
+
+        ArrayList<StopTime> stopTimesToRemove = new ArrayList<>();
+        for (StopTime stopTime : closestTimetable.getStopTimes()){
+            if (stopTime.getStopSequence() < startStopSequence || stopTime.getStopSequence() > endStopSequence){
+                stopTimesToRemove.add(stopTime);
+            }
+        }
+        closestTimetable.getStopTimes().removeAll(stopTimesToRemove);
+    }
 
     private static Journey findJourney(ArrayList<String> stops, boolean departAt, Calendar time) {
         for (Journey journey : mJourneys) {

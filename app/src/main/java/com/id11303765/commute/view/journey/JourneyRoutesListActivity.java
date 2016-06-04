@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.TabLayout;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.content.IntentCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -25,7 +24,11 @@ import com.id11303765.commute.model.JourneyManager;
 import com.id11303765.commute.utils.Common;
 import com.id11303765.commute.utils.Constants;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Locale;
 
 public class JourneyRoutesListActivity extends AppCompatActivity {
     private ArrayList<Journey> mJourneys;
@@ -114,7 +117,27 @@ public class JourneyRoutesListActivity extends AppCompatActivity {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
         String opalCardType = sharedPreferences.getString(getString(R.string.opal_card_type), "1");
 
-        JourneyRoutesListActivity.LoadJourneysAsync loadCommute = new JourneyRoutesListActivity.LoadJourneysAsync(stops, this, Integer.parseInt(opalCardType));
+        Calendar time = Common.getNow();
+
+        if (Common.isPeakNow()){
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm", Locale.US);
+            try {
+                if (time.getTime().after(simpleDateFormat.parse(getString(R.string.evening_peak_start)))){
+                    time.setTime(simpleDateFormat.parse(getString(R.string.evening_peak_end)));
+                }else{
+                    time.setTime(simpleDateFormat.parse(getString(R.string.morning_peak_end)));
+                }
+
+
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+
+
+        boolean departAt = true;
+
+        JourneyRoutesListActivity.LoadJourneysAsync loadCommute = new JourneyRoutesListActivity.LoadJourneysAsync(stops, this, Integer.parseInt(opalCardType),departAt, time);
         loadCommute.execute();
 
     }
@@ -144,11 +167,15 @@ public class JourneyRoutesListActivity extends AppCompatActivity {
         private ArrayList<String> mStops;
         private Context mContext;
         private int mOpalType;
+        private Calendar mDepartAtOrArriveByTime;
+        private boolean mDepartAt;
 
-        LoadJourneysAsync(ArrayList<String> stops, Context context, int opalType) {
+        LoadJourneysAsync(ArrayList<String> stops, Context context, int opalType, boolean departAt, Calendar time) {
             mStops = stops;
             mContext = context;
             mOpalType = opalType;
+            mDepartAt = departAt;
+            mDepartAtOrArriveByTime = time;
         }
 
         @Override
@@ -161,7 +188,7 @@ public class JourneyRoutesListActivity extends AppCompatActivity {
 
         @Override
         protected Void doInBackground(Void... params) {
-            Journey journey = JourneyManager.getJourney(mStops, true, Common.getNow(), mOpalType);
+            Journey journey = JourneyManager.getJourney(mStops, mDepartAt, mDepartAtOrArriveByTime, mOpalType);
             if (journey!=null){
                 mJourneys.add(journey);
             }

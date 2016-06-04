@@ -5,7 +5,7 @@
         android:id="@+id/activity_search_menu_search_item"
         android:title="@string/app_name"
         android:hint="@string/search_hint"
-        android:icon="@drawable/abc_ic_search_api_mtrl_alpha"
+        android:icon="@drawable/ic_search_black_24dp"
         app:showAsAction="collapseActionView|ifRoom"
         app:actionViewClass="android.support.v7.widget.SearchView"/>
 </menu>

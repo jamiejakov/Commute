@@ -1,13 +1,16 @@
 package com.id11303765.commute.view.journey;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.AppBarLayout;
 import android.app.Fragment;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
 import android.transition.ChangeBounds;
 import android.transition.TransitionManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,14 +19,17 @@ import android.view.animation.RotateAnimation;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.github.fabtransitionactivity.SheetLayout;
 import com.id11303765.commute.R;
 import com.id11303765.commute.utils.Constants;
 import com.id11303765.commute.view.StopSearchActivity;
 
+import java.util.ArrayList;
 
-public class JourneyFragment extends Fragment implements View.OnClickListener, SheetLayout.OnFabAnimationEndListener{
+
+public class JourneyFragment extends Fragment implements View.OnClickListener, SheetLayout.OnFabAnimationEndListener {
     private View mCustomView;
     private float mElevation;
     private SheetLayout mSheetLayout;
@@ -32,6 +38,7 @@ public class JourneyFragment extends Fragment implements View.OnClickListener, S
     private ImageButton mSwapButton;
     private Button mSearchButton1;
     private Button mSearchButton2;
+    private Button mTimeButton;
     private int mRotationDirection;
 
 
@@ -84,8 +91,12 @@ public class JourneyFragment extends Fragment implements View.OnClickListener, S
     @Override
     public void onClick(View v) {
         Intent intent;
-        String text;
+        ArrayList<String> excludeArray = new ArrayList<>();
         switch (v.getId()){
+            case R.id.fragment_journey_time_option_button:
+                startActivityForResult(new Intent(getActivity(), JourneyTimeSelectionActivity.class),
+                        Constants.JOURNEY_TIME_OPTIONS_TO_ACTIVITY_REQUEST);
+                break;
             case R.id.fragment_journey_more_options_ll:
                 startActivityForResult(new Intent(getActivity(), JourneyOptionsActivity.class),
                         Constants.JOURNEY_OPTIONS_TO_ACTIVITY_REQUEST);
@@ -96,19 +107,25 @@ public class JourneyFragment extends Fragment implements View.OnClickListener, S
             case R.id.fragment_journey_departure_button:
                 intent = new Intent(getActivity(), StopSearchActivity.class);
                 intent.putExtra(Constants.INTENT_REQUEST, Constants.JOURNEY_DEPARTURE_TO_SEARCH_REQUEST);
-                text = mSearchButton2.getText().toString();
-                if (!text.matches("")){
-                    intent.putExtra(Constants.INTENT_SEARCH_EXCLUDE, text);
+
+                checkOtherStopAlreadySelected(excludeArray, mSearchButton2);
+                checkAvoidAirport(excludeArray);
+                if (!excludeArray.isEmpty()){
+                    intent.putExtra(Constants.INTENT_SEARCH_EXCLUDE, excludeArray);
                 }
+
                 startActivityForResult(intent, Constants.JOURNEY_DEPARTURE_TO_SEARCH_REQUEST);
                 break;
             case R.id.fragment_journey_destination_button:
                 intent = new Intent(getActivity(), StopSearchActivity.class);
                 intent.putExtra(Constants.INTENT_REQUEST, Constants.JOURNEY_DESTINATION_TO_SEARCH_REQUEST);
-                text = mSearchButton1.getText().toString();
-                if (!text.matches("")){
-                    intent.putExtra(Constants.INTENT_SEARCH_EXCLUDE, text);
+
+                checkOtherStopAlreadySelected(excludeArray, mSearchButton1);
+                checkAvoidAirport(excludeArray);
+                if (!excludeArray.isEmpty()){
+                    intent.putExtra(Constants.INTENT_SEARCH_EXCLUDE, excludeArray);
                 }
+
                 startActivityForResult(intent, Constants.JOURNEY_DESTINATION_TO_SEARCH_REQUEST);
                 break;
             case R.id.fragment_journey_swap_button:
@@ -117,6 +134,20 @@ public class JourneyFragment extends Fragment implements View.OnClickListener, S
         }
     }
 
+    private void checkOtherStopAlreadySelected(ArrayList<String> excludeArray, Button button){
+        String text = button.getText().toString();
+        if (!text.matches("")){
+            excludeArray.add(text);
+        }
+    }
+
+    private void checkAvoidAirport(ArrayList<String> excludeArray){
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity().getBaseContext());
+        boolean avoidAirport = sharedPreferences.getBoolean(getString(R.string.avoid_airport_fee), true);
+        if (avoidAirport){
+            excludeArray.add("Airport");
+        }
+    }
 
     private void swap(){
         Button a = (Button) mSearchButtonsLinearLayout.getChildAt(0);
@@ -141,9 +172,6 @@ public class JourneyFragment extends Fragment implements View.OnClickListener, S
         a.setHint(tempHint);
         mSearchButtonsLinearLayout.addView(a);
 
-
-
-
     }
 
 
@@ -162,8 +190,6 @@ public class JourneyFragment extends Fragment implements View.OnClickListener, S
             case Constants.JOURNEY_FAB_TO_LIST_REQUEST:
                 mSheetLayout.contractFab();
                 break;
-            case Constants.JOURNEY_OPTIONS_TO_ACTIVITY_REQUEST:
-                break;
             case Constants.JOURNEY_DEPARTURE_TO_SEARCH_REQUEST:
                 if (data != null){
                     mSearchButton1.setText(data.getStringExtra(Constants.INTENT_SELECTED_STOP_NAME));
@@ -177,7 +203,9 @@ public class JourneyFragment extends Fragment implements View.OnClickListener, S
                     mSearchButton2.setTextColor(ContextCompat.getColor(getActivity(), R.color.white));
                     checkAndEnableFab();
                 }
-
+                break;
+            case Constants.JOURNEY_TIME_OPTIONS_TO_ACTIVITY_REQUEST:
+                mTimeButton.setText("");
                 break;
         }
     }
@@ -212,5 +240,10 @@ public class JourneyFragment extends Fragment implements View.OnClickListener, S
         mSearchFab.setOnClickListener(this);
         mSheetLayout.setFab(mSearchFab);
         mSheetLayout.setFabAnimationEndListener(this);
+
+        mTimeButton = (Button) getActivity().findViewById(R.id.fragment_journey_time_option_button);
+        mTimeButton.setOnClickListener(this);
     }
+
+
 }

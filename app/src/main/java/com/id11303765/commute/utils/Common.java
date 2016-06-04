@@ -2,6 +2,7 @@ package com.id11303765.commute.utils;
 
 import android.app.Activity;
 import android.app.FragmentManager;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.view.View;
@@ -26,6 +27,7 @@ import java.util.concurrent.TimeUnit;
 
 public class Common {
     private static Common ourInstance = new Common();
+    private static Context mContext;
 
     public static Common getInstance() {
         return ourInstance;
@@ -34,45 +36,22 @@ public class Common {
     private Common() {
     }
 
-    public static void selectLaunchScreen(Activity activity) {
-        FragmentManager frag = activity.getFragmentManager();
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity.getBaseContext());
-        String launchScreenPref = sharedPreferences.getString(activity.getString(R.string.key_launch_screen_preference), "0");
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-
-        switch (launchScreenPref) {
-            case "0":
-                frag.beginTransaction().replace(R.id.activity_main_content_frame, new WelcomeFragment()).commit();
-                editor.putString(activity.getString(R.string.key_launch_screen_preference), "1");
-                editor.apply();
-                break;
-            case "1":
-                frag.beginTransaction().replace(R.id.activity_main_content_frame, new JourneyFragment()).commit();
-                break;
-            case "2":
-                frag.beginTransaction().replace(R.id.activity_main_content_frame, new CommuteFragment()).commit();
-                break;
-            case "3":
-                frag.beginTransaction().replace(R.id.activity_main_content_frame, new TimetablesFragment()).commit();
-                break;
-            case "4":
-                frag.beginTransaction().replace(R.id.activity_main_content_frame, new SavedRoutesFragment()).commit();
-                break;
-        }
+    public static void setContext(Context context) {
+        mContext = context;
     }
 
-    public static String getDurationTime(long millis, boolean showHours, boolean showMinutes, boolean showSeconds){
-        String time ="";
+    public static String getDurationTime(long millis, boolean showHours, boolean showMinutes, boolean showSeconds) {
+        String time = "";
         if (millis > Constants.ONE_MINUTE * 60) {
-            if (showHours){
+            if (showHours) {
                 time = String.format(Locale.ENGLISH, "%2dhr ", TimeUnit.MILLISECONDS.toHours(millis));
             }
-            if (showMinutes){
+            if (showMinutes) {
                 time += String.format(Locale.ENGLISH, "%02dmin ",
                         TimeUnit.MILLISECONDS.toMinutes(millis) - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(millis))
                 );
             }
-            if (showSeconds){
+            if (showSeconds) {
                 time += String.format(Locale.ENGLISH, "%02dsec",
                         TimeUnit.MILLISECONDS.toSeconds(millis) -
                                 TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis)) -
@@ -82,11 +61,11 @@ public class Common {
 
 
         } else if (millis > Constants.ONE_MINUTE) {
-            if (showMinutes){
+            if (showMinutes) {
                 time = String.format(Locale.ENGLISH, "%02dmin ",
                         TimeUnit.MILLISECONDS.toMinutes(millis));
             }
-            if (showSeconds){
+            if (showSeconds) {
                 time += String.format(Locale.ENGLISH, "%02dsec",
                         TimeUnit.MILLISECONDS.toSeconds(millis) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis)));
             }
@@ -104,10 +83,10 @@ public class Common {
         for (Timetable t : timetables) {
             StopTime st;
             Calendar departureOrArrivalTime = Calendar.getInstance();
-            if (forDeparture){
+            if (forDeparture) {
                 st = t.getStopTimes().get(t.getStopTimes().size() - 2);
                 departureOrArrivalTime.setTime(st.getDepartureTime());
-            }else{
+            } else {
                 st = t.getStopTimes().get(t.getStopTimes().size() - 1);
                 departureOrArrivalTime.setTime(st.getArrivalTime());
             }
@@ -174,21 +153,21 @@ public class Common {
         }
     }
 
-    public static Calendar getNow(){
+    public static Calendar getNow() {
         Calendar now = Calendar.getInstance();
         now.set(1970, 0, 1);
         return now;
     }
 
-    public static boolean isNowPeak(){
+    public static boolean isPeakNow() {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm", Locale.US);
         Calendar now = getNow();
         boolean result = false;
         try {
-            Date morningPeakStart = simpleDateFormat.parse("07:00");
-            Date morningPeakEnd = simpleDateFormat.parse("09:30");
-            Date eveningPeakStart = simpleDateFormat.parse("16:00");
-            Date eveningPeakEnd = simpleDateFormat.parse("18:30");
+            Date morningPeakStart = simpleDateFormat.parse(mContext.getString(R.string.morning_peak_start));
+            Date morningPeakEnd = simpleDateFormat.parse(mContext.getString(R.string.morning_peak_end));
+            Date eveningPeakStart = simpleDateFormat.parse(mContext.getString(R.string.evening_peak_start));
+            Date eveningPeakEnd = simpleDateFormat.parse(mContext.getString(R.string.evening_peak_end));
             result = now.getTime().after(morningPeakStart) && now.getTime().before(morningPeakEnd) ||
                     now.getTime().after(eveningPeakStart) && now.getTime().before(eveningPeakEnd);
         } catch (ParseException e) {

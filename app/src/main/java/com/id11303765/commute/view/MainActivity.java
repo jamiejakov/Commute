@@ -1,5 +1,6 @@
 package com.id11303765.commute.view;
 
+import android.app.Activity;
 import android.app.FragmentManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -41,7 +42,8 @@ public class MainActivity extends AppCompatActivity
 
         setUpDrawer();
         setUpDatabaseHelpers();
-        Common.selectLaunchScreen(this);
+        Common.setContext(this);
+        selectLaunchScreen();
     }
 
     @Override
@@ -82,6 +84,33 @@ public class MainActivity extends AppCompatActivity
 
         mDrawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void selectLaunchScreen() {
+        FragmentManager frag = getFragmentManager();
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+        String launchScreenPref = sharedPreferences.getString(getString(R.string.key_launch_screen_preference), "0");
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        switch (launchScreenPref) {
+            case "0":
+                frag.beginTransaction().replace(R.id.activity_main_content_frame, new WelcomeFragment()).commit();
+                editor.putString(getString(R.string.key_launch_screen_preference), "1");
+                editor.apply();
+                break;
+            case "1":
+                frag.beginTransaction().replace(R.id.activity_main_content_frame, new JourneyFragment()).commit();
+                break;
+            case "2":
+                frag.beginTransaction().replace(R.id.activity_main_content_frame, new CommuteFragment()).commit();
+                break;
+            case "3":
+                frag.beginTransaction().replace(R.id.activity_main_content_frame, new TimetablesFragment()).commit();
+                break;
+            case "4":
+                frag.beginTransaction().replace(R.id.activity_main_content_frame, new SavedRoutesFragment()).commit();
+                break;
+        }
     }
 
     private void setUpDrawer() {

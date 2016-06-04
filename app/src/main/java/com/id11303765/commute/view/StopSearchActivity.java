@@ -25,7 +25,7 @@ public class StopSearchActivity extends AppCompatActivity {
 
     private StopSearchAdapter mStopSearchAdapter;
     private ArrayList<Stop> mStopList;
-    private String mExcludeSearch;
+    private ArrayList<String> mExcludedStopNames;
 
 
     @Override
@@ -38,7 +38,7 @@ public class StopSearchActivity extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
         int intentRequest = getIntent().getIntExtra(Constants.INTENT_REQUEST, 0);
-        mExcludeSearch = getIntent().getStringExtra(Constants.INTENT_SEARCH_EXCLUDE);
+        mExcludedStopNames = getIntent().getStringArrayListExtra(Constants.INTENT_SEARCH_EXCLUDE);
         mStopList = new ArrayList<>();
         RecyclerView stopRecyclerView = (RecyclerView) findViewById(R.id.activity_stop_search_recyclerview);
         final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
@@ -76,7 +76,7 @@ public class StopSearchActivity extends AppCompatActivity {
                 ArrayList<Stop> list = StopManager.getStopsByName(s);
                 for (Stop stop : list){
                     if (containsStop(stop) == null){
-                        if (mExcludeSearch == null || !stop.getShortName().toLowerCase().equals(mExcludeSearch.toLowerCase())){
+                        if (mExcludedStopNames == null || !excludedStop(stop)){
                             mStopList.add(stop);
                         }
                     }
@@ -96,6 +96,15 @@ public class StopSearchActivity extends AppCompatActivity {
             }
         }
         return null;
+    }
+
+    private boolean excludedStop(Stop stop){
+        for (String s : mExcludedStopNames){
+            if (stop.getShortName().toLowerCase().contains(s.toLowerCase())){
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override

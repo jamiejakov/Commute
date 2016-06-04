@@ -91,6 +91,16 @@
     <string name="add_to_calendar">Add to Calendar</string>
     <string name="save_route">Save Route</string>
     <string name="no_routes_found">No Routes were found, please try a different search.</string>
+    <string name="morning_peak_start">07:00</string>
+    <string name="morning_peak_end">09:00</string>
+    <string name="evening_peak_start">16:00</string>
+    <string name="evening_peak_end">18:30</string>
+    <string name="title_activity_journey_time_selection">JourneyTimeSelectionActivity</string>
+    <string name="reset_time_button">Reset Time Button</string>
+    <string name="depart_at">Depart At</string>
+    <string name="arrive_by">Arrive by</string>
+    <string name="time_options">Time Options</string>
+    <string name="today">Today</string>
 
 
 </resources>

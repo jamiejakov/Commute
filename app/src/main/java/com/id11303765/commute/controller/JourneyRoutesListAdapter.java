@@ -74,7 +74,7 @@ public class JourneyRoutesListAdapter extends RecyclerView.Adapter<JourneyRoutes
         holder.mPrice.setText(String.valueOf(currentJourneyData.getmPrice()));
 
         int transfers = currentJourneyData.getJourneyLegs().size() - 1;
-        String transferText = " " + String.valueOf(transfers);
+        String transferText = String.valueOf(transfers);
         holder.mTransfers.setText(transferText);
         if (transfers == 0) {
             holder.mTransfers.setTypeface(holder.mTransfers.getTypeface(), Typeface.BOLD);

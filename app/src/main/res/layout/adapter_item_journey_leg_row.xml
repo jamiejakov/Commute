@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/adapter_item_journey_leg_row_relative_layout"
     android:layout_width="match_parent"
-    android:layout_height="160dp"
+    android:layout_height="180dp"
     android:layout_marginEnd="@dimen/fab_margin"
     android:layout_marginStart="@dimen/fab_margin">
 

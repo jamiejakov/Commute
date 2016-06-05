@@ -5,19 +5,18 @@
     android:layout_width="match_parent"
     android:layout_height="40dp"
     android:layout_marginEnd="@dimen/fab_margin"
-    android:layout_marginStart="@dimen/fab_margin"
+    android:layout_marginStart="39dp"
     android:layout_marginTop="-2dp">
 
 
     <TextView
         android:id="@+id/adapter_item_stop_row_time"
-        android:layout_width="wrap_content"
+        android:layout_width="60dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="23dp"
+        android:layout_marginStart="1px"
         android:layout_marginTop="2dp"
-        android:paddingStart="1px"
         android:textColor="@color/primary_text"
-        tools:ignore="RtlSymmetry" />
+        tools:ignore="RtlSymmetry"/>
 
     <RelativeLayout
         android:id="@+id/adapter_item_journey_stop_row_line_ll"

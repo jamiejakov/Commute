@@ -307,7 +307,7 @@
             android:textAllCaps="false"
             android:layout_marginTop="1dp"
             android:layout_toEndOf="@+id/activity_journey_route_end_stop_indicator_rl"
-            android:background="@xml/stop_map_button_shape"
+            android:background="@xml/ripple"
             android:clickable="true"
             android:paddingStart="5dp"
             android:textColor="@color/primary"

@@ -235,7 +235,7 @@ public class JourneyRouteActivity extends AppCompatActivity implements RecyclerV
         TextView stopName = (TextView) findViewById(R.id.activity_journey_route_end_stop_name);
         FrameLayout lineLine = (FrameLayout) findViewById(R.id.activity_journey_stop_row_leg_line_fl);
 
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("hh:mma", Locale.US);
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(getString(R.string.am_pm_time_format), Locale.US);
         destinationTime.setText(simpleDateFormat.format(mJourney.getArrivalTime()));
 
         GradientDrawable stopIndicatorShape = (GradientDrawable) stopIndicator.getBackground();
@@ -292,7 +292,7 @@ public class JourneyRouteActivity extends AppCompatActivity implements RecyclerV
     }
 
     private String createCalendarDescription(){
-        DateFormat date = new SimpleDateFormat(getString(R.string.am_pm_time_format), Locale.ENGLISH);
+        DateFormat date = new SimpleDateFormat(getString(R.string.am_pm_time_format_no_space), Locale.ENGLISH);
         long duration = mJourney.getArrivalTime().getTime() - mJourney.getDepartureTime().getTime();
         int transfers = mJourney.getJourneyLegs().size() - 1;
         String description = mJourney.getJourneyLegs().get(0).getStartStop().getShortName() + getString(R.string.to_arrow_right) +
@@ -302,6 +302,7 @@ public class JourneyRouteActivity extends AppCompatActivity implements RecyclerV
         description += getString(R.string.line) + getString(R.string.enter);
         description += getString(R.string.duration) + Common.getDurationTime(duration, true, true, false) + getString(R.string.enter);
         description += getString(R.string.transfers) + String.valueOf(transfers) + getString(R.string.enter);
+        description += getString(R.string.price_$) + String.valueOf(mJourney.getmPrice()) + getString(R.string.enter);
         description += getString(R.string.line) + getString(R.string.enter);
         for (JourneyLeg leg : mJourney.getJourneyLegs()) {
             Date departureTime = leg.getTimetable().getStopTimes().get(0).getDepartureTime();

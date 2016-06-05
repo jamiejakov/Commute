@@ -76,7 +76,7 @@
     <string name="dollar_sign">$</string>
     <string name="loading_routes">Loading Routes…</string>
     <string name="price_$">Price: $</string>
-    <string name="transfers">Transfers:</string>
+    <string name="transfers">"Transfers: "</string>
     <string name="avoid_peak_hour">Avoid Peak Hour</string>
     <string name="avoid_airport_fee">Avoid Airport Fee</string>
     <string name="default_search_pref">Default Search Filter</string>
@@ -110,7 +110,7 @@
     <string name="title_activity_stop_map">Map</string>
     <string name="set_commute_success_message">Journey stops have been set as preferred commute</string>
     <string name="enter">\n</string>
-    <string name="to_arrow_right"> ⇒ </string>
+    <string name="to_arrow_right">" ⇒ "</string>
     <string name="line">———————————————</string>
     <string name="duration">"Duration: "</string>
     <string name="stop_square">"■  "</string>

@@ -1,6 +1,8 @@
 package com.id11303765.commute.view.journey;
 
+import android.app.Activity;
 import android.content.DialogInterface;
+import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.NinePatchDrawable;
 import android.os.Build;
 import android.os.Bundle;
@@ -14,6 +16,8 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -35,18 +39,21 @@ import com.id11303765.commute.utils.AbstractExpandableDataProvider;
 import com.id11303765.commute.utils.Common;
 import com.id11303765.commute.utils.Constants;
 
+import org.w3c.dom.Text;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
 public class JourneyRouteActivity extends AppCompatActivity implements RecyclerViewExpandableItemManager.OnGroupCollapseListener,
-        RecyclerViewExpandableItemManager.OnGroupExpandListener {
+        RecyclerViewExpandableItemManager.OnGroupExpandListener, View.OnClickListener {
     private static final String SAVED_STATE_EXPANDABLE_ITEM_MANAGER = "RecyclerViewExpandableItemManager";
     private Journey mJourney;
     private RecyclerView mRecyclerView;
     private RecyclerView.LayoutManager mLayoutManager;
     private RecyclerView.Adapter mWrappedAdapter;
     private RecyclerViewExpandableItemManager mRecyclerViewExpandableItemManager;
+    private Activity mActivity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +61,8 @@ public class JourneyRouteActivity extends AppCompatActivity implements RecyclerV
 
         String journeyPK = getIntent().getStringExtra(Constants.INTENT_JOURNEY_ROUTE);
         mJourney = JourneyManager.findJourney(journeyPK);
+
+        mActivity = this;
 
         if (mJourney != null) {
             setUpScreen(savedInstanceState);
@@ -113,6 +122,11 @@ public class JourneyRouteActivity extends AppCompatActivity implements RecyclerV
         }
     }
 
+    @Override
+    public void onClick(View v) {
+
+    }
+
     private void setUpScreen(Bundle savedInstanceState) {
         setContentView(R.layout.activity_journey_route);
         Toolbar toolbar = (Toolbar) findViewById(R.id.activity_journey_route_toolbar);
@@ -142,7 +156,7 @@ public class JourneyRouteActivity extends AppCompatActivity implements RecyclerV
         mRecyclerViewExpandableItemManager.setOnGroupCollapseListener(this);
 
         //adapter
-        final JourneyRouteLegVisualAdapter routeAdapter = new JourneyRouteLegVisualAdapter(getDataProvider(), mJourney.getJourneyLegs());
+        final JourneyRouteLegVisualAdapter routeAdapter = new JourneyRouteLegVisualAdapter(this, this, mJourney.getJourneyLegs());
         mWrappedAdapter = mRecyclerViewExpandableItemManager.createWrappedAdapter(routeAdapter);       // wrap for expanding
         final GeneralItemAnimator animator = new RefactoredDefaultItemAnimator();
 
@@ -155,18 +169,28 @@ public class JourneyRouteActivity extends AppCompatActivity implements RecyclerV
         mRecyclerView.setItemAnimator(animator);
         mRecyclerView.setHasFixedSize(false);
 
-        // additional decorations
-        //noinspection StatementWithEmptyBody
-        if (supportsViewElevation()) {
-            // Lollipop or later has native drop shadow feature. ItemShadowDecorator is not required.
-        } else {
-            mRecyclerView.addItemDecoration(new ItemShadowDecorator((NinePatchDrawable) ContextCompat.getDrawable(this, R.drawable.material_shadow_z1_mdpi)));
-        }
-        mRecyclerView.addItemDecoration(new SimpleListDividerDecorator(ContextCompat.getDrawable(this, R.xml.list_divider_h), true));
-
         mRecyclerViewExpandableItemManager.attachRecyclerView(mRecyclerView);
 
+        setUpEndStop();
+    }
 
+    private void setUpEndStop(){
+        TextView destinationTime = (TextView) findViewById(R.id.activity_journey_route_end_time);
+        TextView stopIndicator = (TextView) findViewById(R.id.activity_journey_route_end_stop_indicator);
+        TextView stopName = (TextView) findViewById(R.id.activity_journey_route_end_stop_name);
+        FrameLayout lineLine = (FrameLayout) findViewById(R.id.activity_journey_stop_row_leg_line_fl);
+
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("hh:mma", Locale.US);
+        destinationTime.setText(simpleDateFormat.format(mJourney.getArrivalTime()));
+
+        GradientDrawable stopIndicatorShape = (GradientDrawable) stopIndicator.getBackground();
+        JourneyLeg lastLeg = mJourney.getJourneyLegs().get(mJourney.getJourneyLegs().size()-1);
+        stopIndicatorShape.setColor(lastLeg.getTimetable().getTrip().getRoute().getColor());
+
+        lineLine.setBackgroundColor(lastLeg.getTimetable().getTrip().getRoute().getColor());
+
+        stopName.setText(lastLeg.getEndStop().getShortName());
+        stopName.setOnClickListener(this);
     }
 
     private void setUpTopInfo(){
@@ -183,7 +207,9 @@ public class JourneyRouteActivity extends AppCompatActivity implements RecyclerV
         LinearLayout priceLayout = (LinearLayout) findViewById(R.id.activity_journey_route_price_ll);
         LinearLayout convenienceLayout = (LinearLayout) findViewById(R.id.activity_journey_route_convenience_ll);
 
-        String title = "Route " + getIntent().getStringExtra(Constants.INTENT_JOURNEY_ROUTE_NUMBER);
+        String title = mJourney.getJourneyLegs().get(0).getStartStop().getShortName() + " to " +
+                mJourney.getJourneyLegs().get(mJourney.getJourneyLegs().size()-1).getEndStop().getShortName() +
+                " - Route " + getIntent().getStringExtra(Constants.INTENT_JOURNEY_ROUTE_NUMBER);
         setTitle(title);
 
         DateFormat date = new SimpleDateFormat(getString(R.string.am_pm_time_format), Locale.ENGLISH);
@@ -238,8 +264,5 @@ public class JourneyRouteActivity extends AppCompatActivity implements RecyclerV
         return (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP);
     }
 
-    public AbstractExpandableDataProvider getDataProvider() {
-        return this.getDataProvider();
-    }
 
 }

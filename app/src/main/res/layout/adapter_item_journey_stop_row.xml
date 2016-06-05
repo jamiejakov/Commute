@@ -1,65 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/adapter_item_journey_stop_row_relative_layout"
     android:layout_width="match_parent"
-    android:layout_height="132dp"
+    android:layout_height="40dp"
     android:layout_marginEnd="@dimen/fab_margin"
-    android:layout_marginStart="@dimen/fab_margin">
+    android:layout_marginStart="@dimen/fab_margin"
+    android:layout_marginTop="-2dp">
 
-    <LinearLayout
-        android:id="@+id/adapter_item_stop_row_left_ll"
+
+    <TextView
+        android:id="@+id/adapter_item_stop_row_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="5dp"
-        android:orientation="vertical">
+        android:layout_marginStart="23dp"
+        android:layout_marginTop="2dp"
+        android:paddingStart="1px"
+        android:textColor="@color/primary_text"
+        tools:ignore="RtlSymmetry" />
 
-
-        <TextView
-            android:id="@+id/adapter_item_stop_row_time"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
-            android:text="10:30pm"
-            android:textColor="@color/primary_text" />
-
-
-    </LinearLayout>
-
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/adapter_item_journey_stop_row_line_ll"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_marginStart="10dp"
-        android:layout_marginTop="-2dp"
-        android:layout_toEndOf="@+id/adapter_item_stop_row_left_ll"
+        android:layout_toEndOf="@+id/adapter_item_stop_row_time"
         android:gravity="center"
         android:orientation="vertical">
+
+        <FrameLayout
+            android:id="@+id/adapter_item_journey_stop_row_leg_line_fl"
+            android:layout_width="8dp"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/adapter_item_journey_stop_row_stop_indicator_shape_tv"
+            android:layout_centerInParent="true"
+            android:layout_marginTop="-2dp"
+            android:background="#52A13F"/>
 
         <TextView
             android:id="@+id/adapter_item_journey_stop_row_stop_indicator_shape_tv"
             android:layout_width="wrap_content"
             android:layout_height="20dp"
-            android:background="@xml/stop_circle"
-            android:elevation="2dp" />
+            android:background="@xml/stop_circle" />
 
-    </LinearLayout>
+    </RelativeLayout>
 
-    <LinearLayout
-        android:id="@+id/adapter_item_journey_stop_row_right_ll"
-        android:layout_width="match_parent"
+
+    <TextView
+        android:id="@+id/adapter_item_journey_stop_row_stop_name_tv"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
         android:layout_toEndOf="@+id/adapter_item_journey_stop_row_line_ll"
-        android:orientation="vertical">
-
-        <TextView
-            android:id="@+id/adapter_item_journey_stop_row_stop_name_tv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Green Square"
-            android:textColor="@color/primary_text"
-            android:textSize="15sp" />
-
-    </LinearLayout>
+        android:textColor="@color/primary_text"
+        android:textSize="15sp" />
 
 </RelativeLayout>

@@ -104,6 +104,9 @@
     <string name="airport">Airport</string>
     <string name="cancel">Cancel</string>
     <string name="done">Done</string>
+    <string name="start">Start</string>
+    <string name="end">End</string>
+    <string name="title_activity_stop_map">Map</string>
 
 
 </resources>

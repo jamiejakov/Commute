@@ -4,11 +4,15 @@ package com.id11303765.commute.model;
 import android.database.Cursor;
 import android.location.Location;
 
+import com.id11303765.commute.R;
 import com.id11303765.commute.utils.Common;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 import java.util.UUID;
 
 public class JourneyManager {
@@ -92,6 +96,18 @@ public class JourneyManager {
                 closestSmallTimetable = Common.findClosestTimetable(smallTripTimetables, startStopShortName, time, true, true);
             } else {
                 closestSmallTimetable = Common.findClosestTimetable(smallTripTimetables, endStopShortName, time, false, false);
+            }
+            if (closestSmallTimetable == null){
+                try {
+                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm", Locale.US);
+                    Calendar cal = Calendar.getInstance();
+                    Date morningTrain = simpleDateFormat.parse("04:00");
+                    cal.setTime(morningTrain);
+                    closestSmallTimetable = Common.findClosestTimetable(smallTripTimetables, startStopShortName,cal, true, true);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+
             }
             Timetable closestTimetable = TimetableManager.getTimetable(TripManager.getTrip(closestSmallTimetable.getTrip().getID()));
 

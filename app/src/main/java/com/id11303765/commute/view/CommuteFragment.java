@@ -201,33 +201,33 @@ public class CommuteFragment extends Fragment implements View.OnClickListener {
         }
 
         RelativeLayout bottomSheet = (RelativeLayout) getActivity().findViewById(R.id.fragment_commute_bottom_sheet_ll);
-        TextView route_line_name = (TextView) getActivity().findViewById(R.id.fragment_commute_line_name_tv);
+        TextView routeLineName = (TextView) getActivity().findViewById(R.id.fragment_commute_line_name_tv);
 
         TextView destination = (TextView) getActivity().findViewById(R.id.fragment_commute_commute_destination_tv);
-        String desString = "for " + mSelectedTimetable.getTrip().getHeadSign();
 
         String line = selectedRoute.getLongName();
         FrameLayout routeType = (FrameLayout) getActivity().findViewById(R.id.fragment_commute_line_number_frame);
         if (selectedRoute.getAgency().getID().equals(getString(R.string.sydney_trains_agency))) {
             routeType.setVisibility(View.VISIBLE);
-            GradientDrawable route_shape = (GradientDrawable) routeType.getBackground();
-            route_shape.setColor(selectedRoute.getColor());
+            GradientDrawable lineShape = (GradientDrawable) routeType.getBackground();
+            lineShape.setColor(selectedRoute.getColor());
 
-            TextView route_line_number = (TextView) getActivity().findViewById(R.id.fragment_commute_line_number_tv);
-            route_line_number.setText(line.substring(0, 2));
-            route_line_name.setText(line.substring(2, line.length()));
+            TextView routeLineNumber = (TextView) getActivity().findViewById(R.id.fragment_commute_line_number_tv);
+            routeLineNumber.setText(line.substring(0, 2));
+            routeLineName.setText(line.substring(2, line.length()));
 
         } else {
-            route_line_name.setText(line);
+            routeLineName.setText(line);
             routeType.setVisibility(View.GONE);
         }
 
+        String desString = "for " + mSelectedTimetable.getTrip().getHeadSign();
         destination.setText(desString);
 
-        TextView startPlatform = (TextView) getActivity().findViewById(R.id.fragment_commute_stop_from_name);
-        startPlatform.setText(mSelectedTimetable.getStopTimes().get(mStopTimeCount - 2).getStop().getName());
-        TextView endPlatform = (TextView) getActivity().findViewById(R.id.fragment_commute_stop_to_name);
-        endPlatform.setText(mSelectedTimetable.getStopTimes().get(mStopTimeCount - 1).getStop().getName());
+        TextView startStop = (TextView) getActivity().findViewById(R.id.fragment_commute_stop_from_name);
+        startStop.setText(mSelectedTimetable.getStopTimes().get(mStopTimeCount - 2).getStop().getName());
+        TextView endStop = (TextView) getActivity().findViewById(R.id.fragment_commute_stop_to_name);
+        endStop.setText(mSelectedTimetable.getStopTimes().get(mStopTimeCount - 1).getStop().getName());
 
         bottomSheet.setBackgroundColor(selectedRoute.getColor());
         DateFormat date = new SimpleDateFormat(getString(R.string.am_pm_time_format), Locale.ENGLISH);

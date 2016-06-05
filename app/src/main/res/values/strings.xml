@@ -101,6 +101,9 @@
     <string name="arrive_by">Arrive by</string>
     <string name="time_options">Time Options</string>
     <string name="today">Today</string>
+    <string name="airport">Airport</string>
+    <string name="cancel">Cancel</string>
+    <string name="done">Done</string>
 
 
 </resources>

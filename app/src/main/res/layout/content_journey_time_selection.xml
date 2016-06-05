@@ -25,19 +25,20 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="55dp"
             android:layout_marginLeft="-80dp"
-            android:paddingStart="14dp"
+            android:layout_marginTop="55dp"
             android:paddingEnd="16dp"
+            android:paddingStart="14dp"
             tools:ignore="RtlSymmetry">
+
             <ImageView
                 android:id="@+id/activity_journey_time_selection_reset_time"
                 style="@style/Widget.AppCompat.Button.Borderless"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:padding="10dp"
                 android:background="@xml/swap_button_ripple"
                 android:contentDescription="@string/reset_time_button"
+                android:padding="10dp"
                 android:src="@drawable/ic_update_black_24dp"
                 android:tint="@color/primary" />
         </LinearLayout>
@@ -47,19 +48,60 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:gravity="center"
+        android:layout_below="@+id/activity_journey_time_selection_time_ll"
         android:layout_marginTop="20dp"
-        android:layout_below="@+id/activity_journey_time_selection_time_ll">
+        android:gravity="center">
 
         <Button
             android:id="@+id/activity_journey_time_selection_date_button"
+            style="@style/Widget.AppCompat.Button.Borderless"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            style="@style/Widget.AppCompat.Button.Borderless"
-            android:textColor="@color/primary"
-            android:text="@string/today"/>
+            android:text="@string/today"
+            android:textColor="@color/primary" />
 
     </LinearLayout>
+
+    <Button
+        android:id="@+id/activity_journey_time_selection_leave_now_button"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="@dimen/fab_margin"
+        android:layout_marginStart="@dimen/fab_margin"
+        android:paddingEnd="@dimen/fab_margin"
+        android:textColor="@color/primary"
+        android:paddingStart="@dimen/fab_margin"
+        android:text="@string/leave_now" />
+
+
+    <Button
+        android:id="@+id/activity_journey_time_selection_cancel_button"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toStartOf="@+id/activity_journey_time_selection_done_button"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="@dimen/fab_margin"
+        android:layout_marginStart="@dimen/fab_margin"
+        android:paddingEnd="@dimen/fab_margin"
+        android:textColor="@color/primary_text"
+        android:paddingStart="@dimen/fab_margin"
+        android:text="@string/cancel" />
+
+    <Button
+        android:id="@+id/activity_journey_time_selection_done_button"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginBottom="@dimen/fab_margin"
+        android:layout_marginEnd="@dimen/fab_margin"
+        android:textColor="@color/primary"
+        android:text="@string/done" />
 
 
 

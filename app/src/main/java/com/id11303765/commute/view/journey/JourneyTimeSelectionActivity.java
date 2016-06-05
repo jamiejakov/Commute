@@ -1,6 +1,7 @@
 package com.id11303765.commute.view.journey;
 
 import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.media.Image;
 import android.os.Build;
@@ -35,6 +36,9 @@ public class JourneyTimeSelectionActivity extends AppCompatActivity implements V
     private Button mDateButton;
     private ImageView mResetTime;
     private TimePicker mTimePicker;
+    private Button mLeaveNowButton;
+    private Button mDoneButton;
+    private Button mCancelButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,11 +62,18 @@ public class JourneyTimeSelectionActivity extends AppCompatActivity implements V
 
         mDateButton = (Button) findViewById(R.id.activity_journey_time_selection_date_button);
         mDateButton.setOnClickListener(this);
-
         mResetTime = (ImageView) findViewById(R.id.activity_journey_time_selection_reset_time);
         mResetTime.setOnClickListener(this);
+        mLeaveNowButton = (Button) findViewById(R.id.activity_journey_time_selection_leave_now_button);
+        mLeaveNowButton.setOnClickListener(this);
+        mCancelButton = (Button) findViewById(R.id.activity_journey_time_selection_cancel_button);
+        mCancelButton.setOnClickListener(this);
+        mDoneButton = (Button) findViewById(R.id.activity_journey_time_selection_done_button);
+        mDoneButton.setOnClickListener(this);
 
         mTimePicker = (TimePicker) findViewById(R.id.activity_journey_time_selection_time_picker);
+
+        setTime();
     }
 
     @Override
@@ -84,11 +95,85 @@ public class JourneyTimeSelectionActivity extends AppCompatActivity implements V
             case R.id.activity_journey_time_selection_reset_time:
                 resetPickers();
                 break;
+            case R.id.activity_journey_time_selection_leave_now_button:
+                leaveNow();
+                break;
+            case R.id.activity_journey_time_selection_done_button:
+                setResult(Constants.JOURNEY_TIME_OPTIONS_TO_ACTIVITY_REQUEST, prepareIntent());
+                finish();
+                break;
+            case R.id.activity_journey_time_selection_cancel_button:
+                this.onBackPressed();
+                break;
         }
     }
 
+    private Intent prepareIntent(){
+        Intent intent = new Intent();
+        String tabString = mTabLayout.getTabAt(mTabLayout.getSelectedTabPosition()).getText().toString() + " ";
+        String timeHour = String.valueOf(mTimePicker.getCurrentHour());
+        String timeMinute = String.valueOf(mTimePicker.getCurrentMinute());
+        boolean departAt = tabString.trim().equals(getString(R.string.depart_at));
+
+        if (mTimePicker.getCurrentMinute() < 10) {
+            timeMinute = "0" + mTimePicker.getCurrentMinute();
+        }
+        if (mTimePicker.getCurrentHour() >= 12) {
+            if (mTimePicker.getCurrentHour() > 12) {
+                timeHour = String.valueOf(mTimePicker.getCurrentHour() - 12);
+            }
+            timeMinute += "pm";
+        } else {
+            timeMinute += "am";
+        }
+        String timeString = timeHour + ":" + timeMinute + ", ";
+        intent.putExtra(Constants.INTENT_TIME_OPTION, tabString + timeString + mDateButton.getText());
+        intent.putExtra(Constants.INTENT_TIME_DEPART_AT_BOOL, departAt);
+        return intent;
+    }
+
+
+    private void leaveNow(){
+        Intent intent = new Intent();
+        intent.putExtra(Constants.INTENT_TIME_OPTION, getString(R.string.leave_now));
+        intent.putExtra(Constants.INTENT_TIME_DEPART_AT_BOOL, true);
+        setResult(Constants.JOURNEY_TIME_OPTIONS_TO_ACTIVITY_REQUEST, intent);
+        finish();
+    }
+
+    private void setTime() {
+        String fullText = getIntent().getStringExtra(Constants.INTENT_TIME_OPTION);
+        if (!fullText.equals(getString(R.string.leave_now))) {
+            String[] columns = fullText.split(",");
+
+            String timeString;
+            if (columns[0].contains(mTabLayout.getTabAt(0).getText())) {
+                timeString = columns[0].trim().substring(Math.min(columns[0].length(), mTabLayout.getTabAt(0).getText().length()));
+                mTabLayout.getTabAt(0).select();
+            } else {
+                timeString = columns[0].trim().substring(Math.min(columns[0].length(), mTabLayout.getTabAt(1).getText().length()));
+                mTabLayout.getTabAt(1).select();
+            }
+            setTimeFromString(timeString);
+            mDateButton.setText(columns[1].trim());
+        }
+    }
+
+    private void setTimeFromString(String string) {
+        Calendar c = Common.parseStringToCal(string, "hh:mma");
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            mTimePicker.setCurrentHour(c.get(Calendar.HOUR_OF_DAY));
+            mTimePicker.setCurrentMinute(c.get(Calendar.MINUTE));
+        }else {
+            mTimePicker.setHour(c.get(Calendar.HOUR_OF_DAY));
+            mTimePicker.setMinute(c.get(Calendar.MINUTE));
+        }
+
+    }
+
     private void showDatePicker() {
-        final SimpleDateFormat dateFormatter = new SimpleDateFormat("EE, dd MMM yyyy", Locale.US);
+        final SimpleDateFormat dateFormatter = new SimpleDateFormat("dd MMM yyyy (EE)", Locale.US);
         Date selected;
         Calendar newCalendar = Calendar.getInstance();
         try {
@@ -120,18 +205,11 @@ public class JourneyTimeSelectionActivity extends AppCompatActivity implements V
     }
 
     private void resetPickers() {
-        TimePicker timepicker = (TimePicker) findViewById(R.id.activity_journey_time_selection_time_picker);
         mDateButton.setText(getString(R.string.today));
 
         Calendar cal = Calendar.getInstance();
-
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            timepicker.setCurrentHour(cal.get(Calendar.HOUR_OF_DAY));
-            timepicker.setCurrentMinute(cal.get(Calendar.MINUTE));
-        } else {
-            timepicker.setHour(cal.get(Calendar.HOUR_OF_DAY));
-            timepicker.setMinute(cal.get(Calendar.MINUTE));
-        }
+        String time = cal.get(Calendar.HOUR_OF_DAY) + ":" + cal.get(Calendar.MINUTE);
+        setTimeFromString(time);
     }
 
 }

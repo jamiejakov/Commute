@@ -13,6 +13,8 @@ public class Constants {
     public static final int STOP_SELECT_TO_BACK_REQUEST = 101;
 
     public static final String INTENT_SELECTED_STOP_NAME = "INTENT_SELECTED_STOP_NAME";
+    public static final String INTENT_TIME_OPTION = "INTENT_TIME_OPTION";
+    public static final String INTENT_TIME_DEPART_AT_BOOL = "INTENT_TIME_DEPART_AT_BOOL";
     public static final String INTENT_REQUEST = "INTENT_REQUEST";
     public static final String INTENT_SEARCH_EXCLUDE = "INTENT_SEARCH_EXCLUDE";
     public static final String INTENT_SEARCH_JOURNEY_START_STOP = "INTENT_SEARCH_JOURNEY_START_STOP";

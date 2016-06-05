@@ -159,21 +159,32 @@ public class Common {
         return now;
     }
 
-    public static boolean isPeakNow() {
+    public static boolean isPeak(Calendar time) {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm", Locale.US);
-        Calendar now = getNow();
         boolean result = false;
         try {
             Date morningPeakStart = simpleDateFormat.parse(mContext.getString(R.string.morning_peak_start));
             Date morningPeakEnd = simpleDateFormat.parse(mContext.getString(R.string.morning_peak_end));
             Date eveningPeakStart = simpleDateFormat.parse(mContext.getString(R.string.evening_peak_start));
             Date eveningPeakEnd = simpleDateFormat.parse(mContext.getString(R.string.evening_peak_end));
-            result = now.getTime().after(morningPeakStart) && now.getTime().before(morningPeakEnd) ||
-                    now.getTime().after(eveningPeakStart) && now.getTime().before(eveningPeakEnd);
+            result = time.getTime().after(morningPeakStart) && time.getTime().before(morningPeakEnd) ||
+                    time.getTime().after(eveningPeakStart) && time.getTime().before(eveningPeakEnd);
         } catch (ParseException e) {
             e.printStackTrace();
         }
         return result;
+    }
+
+    public static Calendar parseStringToCal(String string, String format){
+        SimpleDateFormat sdf = new SimpleDateFormat(format, Locale.US);
+        Date date = null;
+        try {
+            date = sdf.parse(string);
+        } catch (ParseException e) {
+        }
+        Calendar c = Calendar.getInstance();
+        c.setTime(date);
+        return c;
     }
 
 }

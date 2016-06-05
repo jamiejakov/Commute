@@ -40,7 +40,7 @@ public class JourneyFragment extends Fragment implements View.OnClickListener, S
     private Button mSearchButton2;
     private Button mTimeButton;
     private int mRotationDirection;
-
+    private boolean mDepartAtOption;
 
     public JourneyFragment() {
         // Required empty public constructor
@@ -66,9 +66,11 @@ public class JourneyFragment extends Fragment implements View.OnClickListener, S
         mSheetLayout = (SheetLayout) getActivity().findViewById(R.id.fragment_journey_sheet_layout);
         mSwapButton = (ImageButton) getActivity().findViewById(R.id.fragment_journey_swap_button);
         mSearchButtonsLinearLayout = (LinearLayout) getActivity().findViewById(R.id.fragment_journey_search_buttons_ll);
+
         mSearchFab.setEnabled(false);
         mSearchFab.getDrawable().setAlpha(100);
         mRotationDirection = 1;
+        mDepartAtOption = true;
 
         setUpOnClickListeners();
     }
@@ -94,8 +96,9 @@ public class JourneyFragment extends Fragment implements View.OnClickListener, S
         ArrayList<String> excludeArray = new ArrayList<>();
         switch (v.getId()){
             case R.id.fragment_journey_time_option_button:
-                startActivityForResult(new Intent(getActivity(), JourneyTimeSelectionActivity.class),
-                        Constants.JOURNEY_TIME_OPTIONS_TO_ACTIVITY_REQUEST);
+                intent = new Intent(getActivity(), JourneyTimeSelectionActivity.class);
+                intent.putExtra(Constants.INTENT_TIME_OPTION, mTimeButton.getText().toString());
+                startActivityForResult(intent, Constants.JOURNEY_TIME_OPTIONS_TO_ACTIVITY_REQUEST);
                 break;
             case R.id.fragment_journey_more_options_ll:
                 startActivityForResult(new Intent(getActivity(), JourneyOptionsActivity.class),
@@ -145,7 +148,7 @@ public class JourneyFragment extends Fragment implements View.OnClickListener, S
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity().getBaseContext());
         boolean avoidAirport = sharedPreferences.getBoolean(getString(R.string.avoid_airport_fee), true);
         if (avoidAirport){
-            excludeArray.add("Airport");
+            excludeArray.add(getString(R.string.airport));
         }
     }
 
@@ -180,6 +183,8 @@ public class JourneyFragment extends Fragment implements View.OnClickListener, S
         Intent intent = new Intent(getActivity(), JourneyRoutesListActivity.class);
         intent.putExtra(Constants.INTENT_SEARCH_JOURNEY_START_STOP, ((Button) mSearchButtonsLinearLayout.getChildAt(0)).getText());
         intent.putExtra(Constants.INTENT_SEARCH_JOURNEY_END_STOP, ((Button) mSearchButtonsLinearLayout.getChildAt(1)).getText());
+        intent.putExtra(Constants.INTENT_TIME_OPTION, mTimeButton.getText().toString());
+        intent.putExtra(Constants.INTENT_TIME_DEPART_AT_BOOL,mDepartAtOption);
         startActivityForResult(intent, Constants.JOURNEY_FAB_TO_LIST_REQUEST);
     }
 
@@ -205,7 +210,10 @@ public class JourneyFragment extends Fragment implements View.OnClickListener, S
                 }
                 break;
             case Constants.JOURNEY_TIME_OPTIONS_TO_ACTIVITY_REQUEST:
-                mTimeButton.setText("");
+                if (data!=null){
+                    mTimeButton.setText(data.getStringExtra(Constants.INTENT_TIME_OPTION));
+                    mDepartAtOption = (data.getBooleanExtra(Constants.INTENT_TIME_DEPART_AT_BOOL, true));
+                }
                 break;
         }
     }

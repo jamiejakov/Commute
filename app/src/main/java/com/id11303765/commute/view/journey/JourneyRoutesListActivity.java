@@ -38,19 +38,9 @@ public class JourneyRoutesListActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_journey_routes_list);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.activity_journey_routes_list_toolbar);
-        setSupportActionBar(toolbar);
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setDisplayHomeAsUpEnabled(true);
-        }
-        mJourneys = new ArrayList<>();
-        mTabLayout = (TabLayout) findViewById(R.id.app_bar_journey_route_list_tab_layout);
 
-
-        setUpData();
         setUpScreen();
+        setUpData();
     }
 
     @Override
@@ -64,6 +54,18 @@ public class JourneyRoutesListActivity extends AppCompatActivity {
     }
 
     private void setUpScreen(){
+        setContentView(R.layout.activity_journey_routes_list);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.activity_journey_routes_list_toolbar);
+        setSupportActionBar(toolbar);
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
+        setUpTabs();
+    }
+
+    private void setUpTabs(){
+        mTabLayout = (TabLayout) findViewById(R.id.app_bar_journey_route_list_tab_layout);
         TabLayout.Tab speedTab = mTabLayout.newTab().setText(R.string.speed);
         speedTab.setIcon(R.drawable.ic_directions_speed_black_24dp);
         speedTab.getIcon().setColorFilter(ContextCompat.getColor(JourneyRoutesListActivity.this, R.color.white), PorterDuff.Mode.SRC_IN);
@@ -106,10 +108,15 @@ public class JourneyRoutesListActivity extends AppCompatActivity {
     }
 
     private void setUpData(){
-        mJourneys.clear();
         String startStopShortName = getIntent().getStringExtra(Constants.INTENT_SEARCH_JOURNEY_START_STOP);
         String endStopShortName = getIntent().getStringExtra(Constants.INTENT_SEARCH_JOURNEY_END_STOP);
+        boolean departAt =  getIntent().getBooleanExtra(Constants.INTENT_TIME_DEPART_AT_BOOL, true);
+        mJourneys = new ArrayList<>();
+        mJourneys.clear();
+
+
         setTitle("Routes To " + endStopShortName);
+
         ArrayList<String> stops = new ArrayList<>();
         stops.add(startStopShortName);
         stops.add(endStopShortName);
@@ -117,29 +124,55 @@ public class JourneyRoutesListActivity extends AppCompatActivity {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
         String opalCardType = sharedPreferences.getString(getString(R.string.opal_card_type), "1");
 
-        Calendar time = Common.getNow();
+        Calendar time = getTimeWithPeakAdjust(departAt);
 
-        if (Common.isPeakNow()){
+        JourneyRoutesListActivity.LoadJourneysAsync loadCommute = new JourneyRoutesListActivity.LoadJourneysAsync(stops, this, Integer.parseInt(opalCardType),departAt, time);
+        loadCommute.execute();
+    }
+
+    private Calendar getTimeWithPeakAdjust(boolean departAt){
+        Calendar time = getTime();
+        if (Common.isPeak(time)){
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm", Locale.US);
             try {
                 if (time.getTime().after(simpleDateFormat.parse(getString(R.string.evening_peak_start)))){
-                    time.setTime(simpleDateFormat.parse(getString(R.string.evening_peak_end)));
+                    if (departAt){
+                        time.setTime(simpleDateFormat.parse(getString(R.string.evening_peak_end)));
+                    }else{
+                        time.setTime(simpleDateFormat.parse(getString(R.string.evening_peak_start)));
+                    }
+
                 }else{
-                    time.setTime(simpleDateFormat.parse(getString(R.string.morning_peak_end)));
+                    if (departAt){
+                        time.setTime(simpleDateFormat.parse(getString(R.string.morning_peak_end)));
+                    }else{
+                        time.setTime(simpleDateFormat.parse(getString(R.string.morning_peak_start)));
+                    }
+
                 }
-
-
             } catch (ParseException e) {
                 e.printStackTrace();
             }
         }
+        return time;
+    }
 
+    private Calendar getTime(){
+        Calendar time = Common.getNow();
 
-        boolean departAt = true;
+        String fullText = getIntent().getStringExtra(Constants.INTENT_TIME_OPTION);
+        if (!fullText.equals(getString(R.string.leave_now))) {
+            String[] columns = fullText.split(",");
 
-        JourneyRoutesListActivity.LoadJourneysAsync loadCommute = new JourneyRoutesListActivity.LoadJourneysAsync(stops, this, Integer.parseInt(opalCardType),departAt, time);
-        loadCommute.execute();
-
+            String timeString;
+            if (columns[0].contains(getString(R.string.depart_at))) {
+                timeString = columns[0].trim().substring(Math.min(columns[0].length(), getString(R.string.depart_at).length()));
+            } else {
+                timeString = columns[0].trim().substring(Math.min(columns[0].length(), getString(R.string.arrive_by).length()));
+            }
+            time = Common.parseStringToCal(timeString, "hh:mma");
+        }
+        return time;
     }
 
     private void continueSetup() {

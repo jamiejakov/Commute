@@ -46,7 +46,7 @@ public class JourneyManager {
                 }
             } else {
                 Calendar arriveBy = null;
-                for (int i = stops.size() - 1; i >= 0; i--) {
+                for (int i = stops.size() - 1; i > 0; i--) {
                     if (arriveBy == null) {
                         arriveBy = time;
                     }
@@ -91,7 +91,7 @@ public class JourneyManager {
             if (departAt) {
                 closestSmallTimetable = Common.findClosestTimetable(smallTripTimetables, startStopShortName, time, true, true);
             } else {
-                closestSmallTimetable = Common.findClosestTimetable(smallTripTimetables, startStopShortName, time, false, false);
+                closestSmallTimetable = Common.findClosestTimetable(smallTripTimetables, endStopShortName, time, false, false);
             }
             Timetable closestTimetable = TimetableManager.getTimetable(TripManager.getTrip(closestSmallTimetable.getTrip().getID()));
 
@@ -119,7 +119,7 @@ public class JourneyManager {
             removeExtraStopTimes(stopSequences, closestTimetable);
             int type = Common.getTransportModeNumber(endStop.getStopType());
             float distance = calculateDistance(startStop, endStop);
-            double price = FareManager.getFare(opalCardTime, type, Common.isPeakNow(), distance).getValue();
+            double price = FareManager.getFare(opalCardTime, type, Common.isPeak(Common.getNow()), distance).getValue();
 
             return new JourneyLeg(closestTimetable, startStop, endStop, departingAt, arrivingBy, price);
         }

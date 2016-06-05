@@ -310,7 +310,6 @@
             android:background="@xml/stop_map_button_shape"
             android:clickable="true"
             android:paddingStart="5dp"
-            android:text="Mascot"
             android:textColor="@color/primary"
             android:textSize="@dimen/line_and_destination_text"
             android:textStyle="bold" />

@@ -15,11 +15,6 @@
             android:id="@+id/nav_timetable"
             android:icon="@drawable/ic_timetable"
             android:title="@string/timetables" />
-        <item
-            android:id="@+id/nav_saved"
-            android:icon="@drawable/ic_save_black_24dp"
-            android:title="@string/saved_routes"
-            android:enabled="false"/>
         <item android:title="@string/options">
             <menu>
                 <item

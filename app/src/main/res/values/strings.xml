@@ -71,6 +71,7 @@
     <string name="convenience">Convenience</string>
     <string name="loading_timetable">Loading Timetable</string>
     <string name="am_pm_time_format">hh:mm a</string>
+    <string name="am_pm_time_format_no_space">hh:mma</string>
     <string name="arrow_right">→</string>
     <string name="dollar_sign">$</string>
     <string name="loading_routes">Loading Routes…</string>
@@ -107,6 +108,17 @@
     <string name="start">Start</string>
     <string name="end">End</string>
     <string name="title_activity_stop_map">Map</string>
+    <string name="set_commute_success_message">Journey stops have been set as preferred commute</string>
+    <string name="enter">\n</string>
+    <string name="to_arrow_right"> ⇒ </string>
+    <string name="line">———————————————</string>
+    <string name="duration">"Duration: "</string>
+    <string name="stop_square">"■  "</string>
+    <string name="to_stop_arrow_down">"↓  "</string>
+    <string name="tilda">〜</string>
+    <string name="calendar_event_success">Calendar event added</string>
+    <string name="journey_from">"Journey from "</string>
+    <string name="calendar_event">vnd.android.cursor.item/event</string>
 
 
 </resources>

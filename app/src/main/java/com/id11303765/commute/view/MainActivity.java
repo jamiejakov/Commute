@@ -74,8 +74,6 @@ public class MainActivity extends AppCompatActivity
             frag.beginTransaction().replace(R.id.activity_main_content_frame, new CommuteFragment()).commit();
         } else if (id == R.id.nav_timetable) {
             frag.beginTransaction().replace(R.id.activity_main_content_frame, new TimetablesFragment()).commit();
-        } else if (id == R.id.nav_saved) {
-            frag.beginTransaction().replace(R.id.activity_main_content_frame, new SavedRoutesFragment()).commit();
         } else if (id == R.id.nav_settings) {
             startActivity(new Intent(this, SettingsActivity.class));
         } else if (id == R.id.nav_about) {
@@ -106,9 +104,6 @@ public class MainActivity extends AppCompatActivity
                 break;
             case "3":
                 frag.beginTransaction().replace(R.id.activity_main_content_frame, new TimetablesFragment()).commit();
-                break;
-            case "4":
-                frag.beginTransaction().replace(R.id.activity_main_content_frame, new SavedRoutesFragment()).commit();
                 break;
         }
     }

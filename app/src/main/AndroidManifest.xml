@@ -73,8 +73,9 @@
             android:value="@string/google_maps_key" />
 
         <activity
-            android:name=".view.journey.StopMapActivity"
-            android:label="@string/title_activity_stop_map"/>
+            android:name=".view.journey.JourneyStopMapActivity"
+            android:label="@string/title_activity_stop_map"
+            android:theme="@style/AppTheme"/>
     </application>
 
 </manifest>

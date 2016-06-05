@@ -2,6 +2,7 @@ package com.id11303765.commute.view.journey;
 
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -10,10 +11,14 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.id11303765.commute.R;
+import com.id11303765.commute.utils.Constants;
 
-public class StopMapActivity extends FragmentActivity implements OnMapReadyCallback {
+public class JourneyStopMapActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
+    private String mName;
+    private double mLat;
+    private double mLon;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,6 +28,9 @@ public class StopMapActivity extends FragmentActivity implements OnMapReadyCallb
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+
+        setTitle("Map for " + mName);
     }
 
 
@@ -38,10 +46,13 @@ public class StopMapActivity extends FragmentActivity implements OnMapReadyCallb
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-
+        mName = getIntent().getStringExtra(Constants.INTENT_JOURNEY_STOP_NAME);
+        mLat = getIntent().getDoubleExtra(Constants.INTENT_JOURNEY_STOP_LAT, 0);
+        mLon = getIntent().getDoubleExtra(Constants.INTENT_JOURNEY_STOP_LON, 0);
         // Add a marker in Sydney and move the camera
+        //LatLng sydney = new LatLng(mLat, mLon);
         LatLng sydney = new LatLng(-34, 151);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
+        mMap.addMarker(new MarkerOptions().position(sydney).title("SYD"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
     }
 }

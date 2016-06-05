@@ -37,8 +37,6 @@ public class JourneyRouteLegVisualAdapter extends AbstractExpandableItemAdapter<
     private boolean[] mOpen;
     private int[] mRotationDirection;
 
-    private static final String TAG = "MyExpandableItemAdapter";
-
     public JourneyRouteLegVisualAdapter(Context context, Activity activity, ArrayList<JourneyLeg> journeyLegs) {
         mActivity = activity;
         mContext = context;
@@ -103,7 +101,7 @@ public class JourneyRouteLegVisualAdapter extends AbstractExpandableItemAdapter<
         // child item
         //final AbstractExpandableDataProvider.BaseData item = mProvider.getGroupItem(groupPosition);
         JourneyLeg currentJourneyLeg = mJourneyLegList.get(groupPosition);
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("hh:mma", Locale.US);
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(mActivity.getString(R.string.am_pm_time_format), Locale.US);
 
         if (groupPosition == 0) {
             Common.makeViewVisible(holder.mArrivalTime, false);
@@ -173,7 +171,7 @@ public class JourneyRouteLegVisualAdapter extends AbstractExpandableItemAdapter<
         //final AbstractExpandableDataProvider.ChildData item = mProvider.getChildItem(groupPosition, childPosition);
         StopTime currentStopTime = mJourneyLegList.get(groupPosition).getTimetable().getStopTimes().get(childPosition + 1);
 
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("hh:mma", Locale.US);
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(mActivity.getString(R.string.am_pm_time_format), Locale.US);
         holder.mArrivalAtStopTime.setText(simpleDateFormat.format(currentStopTime.getArrivalTime()));
 
         GradientDrawable stopIndicatorShape = (GradientDrawable) holder.mStopIndicator.getBackground();

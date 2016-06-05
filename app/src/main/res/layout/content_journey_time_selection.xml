@@ -22,27 +22,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="-80dp"
-            android:layout_marginTop="55dp"
-            android:paddingEnd="16dp"
-            android:paddingStart="14dp"
-            tools:ignore="RtlSymmetry">
-
-            <ImageView
-                android:id="@+id/activity_journey_time_selection_reset_time"
-                style="@style/Widget.AppCompat.Button.Borderless"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:background="@xml/swap_button_ripple"
-                android:contentDescription="@string/reset_time_button"
-                android:padding="10dp"
-                android:src="@drawable/ic_update_black_24dp"
-                android:tint="@color/primary" />
-        </LinearLayout>
-
     </LinearLayout>
 
     <LinearLayout

@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,12 +24,9 @@ import com.id11303765.commute.R;
 import com.id11303765.commute.model.Commute;
 import com.id11303765.commute.model.CommuteManager;
 import com.id11303765.commute.model.Route;
-import com.id11303765.commute.model.StopTime;
 import com.id11303765.commute.model.Timetable;
 import com.id11303765.commute.utils.Common;
 import com.id11303765.commute.utils.Constants;
-
-import org.w3c.dom.Text;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -38,7 +34,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
-import java.util.concurrent.TimeUnit;
 
 
 public class CommuteFragment extends Fragment implements View.OnClickListener {
@@ -229,17 +224,17 @@ public class CommuteFragment extends Fragment implements View.OnClickListener {
 
         destination.setText(desString);
 
-        TextView startPlatform = (TextView) getActivity().findViewById(R.id.fragment_commute_station_from_name);
+        TextView startPlatform = (TextView) getActivity().findViewById(R.id.fragment_commute_stop_from_name);
         startPlatform.setText(mSelectedTimetable.getStopTimes().get(mStopTimeCount - 2).getStop().getName());
-        TextView endPlatform = (TextView) getActivity().findViewById(R.id.fragment_commute_station_to_name);
+        TextView endPlatform = (TextView) getActivity().findViewById(R.id.fragment_commute_stop_to_name);
         endPlatform.setText(mSelectedTimetable.getStopTimes().get(mStopTimeCount - 1).getStop().getName());
 
         bottomSheet.setBackgroundColor(selectedRoute.getColor());
         DateFormat date = new SimpleDateFormat(getString(R.string.am_pm_time_format), Locale.ENGLISH);
-        TextView departureTime = (TextView) getActivity().findViewById(R.id.fragment_commute_station_from_time);
+        TextView departureTime = (TextView) getActivity().findViewById(R.id.fragment_commute_stop_from_time);
         Date departureTimeDate = mSelectedTimetable.getStopTimes().get(mStopTimeCount - 2).getDepartureTime();
         departureTime.setText(date.format(departureTimeDate));
-        TextView arrivalTime = (TextView) getActivity().findViewById(R.id.fragment_commute_station_to_time);
+        TextView arrivalTime = (TextView) getActivity().findViewById(R.id.fragment_commute_stop_to_time);
         arrivalTime.setText(date.format(mSelectedTimetable.getStopTimes().get(mStopTimeCount - 1).getArrivalTime()));
 
         checkIfNextExist(false, mPrevButton, mNextButton);

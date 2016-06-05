@@ -241,10 +241,84 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/activity_journey_routes_list_recyclerview"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_below="@+id/activity_journey_route_top_info_ll">
 
     </android.support.v7.widget.RecyclerView>
+
+    <RelativeLayout
+        android:id="@+id/adapter_item_station_search_relative_layout"
+        android:layout_width="match_parent"
+        android:layout_marginTop="-2dp"
+        android:layout_marginStart="@dimen/fab_margin"
+        android:layout_marginEnd="@dimen/fab_margin"
+        android:layout_below="@+id/activity_journey_routes_list_recyclerview"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:id="@+id/adapter_item_journey_leg_row_left_ll"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center">
+
+                <TextView
+                    android:textColor="@color/primary_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/journey_text"
+                    android:text="10:35pm"/>
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/adapter_item_journey_leg_row_line_ll"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_marginStart="15dp"
+            android:layout_toEndOf="@+id/adapter_item_journey_leg_row_left_ll"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/adapter_item_journey_leg_row_stop_indicator_shape_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:layout_gravity="center"
+                android:textColor="@color/white"
+                android:background="@xml/stop_start_or_end_shape"
+                android:text="End"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/adapter_item_journey_leg_row_right_ll"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="-2dp"
+            android:layout_marginStart="15dp"
+            android:layout_toEndOf="@+id/adapter_item_journey_leg_row_line_ll"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/primary"
+                android:textSize="@dimen/line_and_destination_text"
+                android:textStyle="bold"
+                android:text="Mascot"/>
+
+        </LinearLayout>
+
+    </RelativeLayout>
 
 
 </RelativeLayout>

@@ -34,7 +34,6 @@ import java.util.Locale;
 public class JourneyTimeSelectionActivity extends AppCompatActivity implements View.OnClickListener {
     private TabLayout mTabLayout;
     private Button mDateButton;
-    private ImageView mResetTime;
     private TimePicker mTimePicker;
     private Button mLeaveNowButton;
     private Button mDoneButton;
@@ -62,8 +61,6 @@ public class JourneyTimeSelectionActivity extends AppCompatActivity implements V
 
         mDateButton = (Button) findViewById(R.id.activity_journey_time_selection_date_button);
         mDateButton.setOnClickListener(this);
-        mResetTime = (ImageView) findViewById(R.id.activity_journey_time_selection_reset_time);
-        mResetTime.setOnClickListener(this);
         mLeaveNowButton = (Button) findViewById(R.id.activity_journey_time_selection_leave_now_button);
         mLeaveNowButton.setOnClickListener(this);
         mCancelButton = (Button) findViewById(R.id.activity_journey_time_selection_cancel_button);
@@ -91,9 +88,6 @@ public class JourneyTimeSelectionActivity extends AppCompatActivity implements V
         switch (view.getId()) {
             case R.id.activity_journey_time_selection_date_button:
                 showDatePicker();
-                break;
-            case R.id.activity_journey_time_selection_reset_time:
-                resetPickers();
                 break;
             case R.id.activity_journey_time_selection_leave_now_button:
                 leaveNow();
@@ -202,14 +196,6 @@ public class JourneyTimeSelectionActivity extends AppCompatActivity implements V
         }, newCalendar.get(Calendar.YEAR), newCalendar.get(Calendar.MONTH), newCalendar.get(Calendar.DAY_OF_MONTH));
 
         toDatePickerDialog.show();
-    }
-
-    private void resetPickers() {
-        mDateButton.setText(getString(R.string.today));
-
-        Calendar cal = Calendar.getInstance();
-        String time = cal.get(Calendar.HOUR_OF_DAY) + ":" + cal.get(Calendar.MINUTE);
-        setTimeFromString(time);
     }
 
 }

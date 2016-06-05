@@ -13,4 +13,5 @@
     <dimen name="transport_mode_icon_width">30dp</dimen>
     <dimen name="transport_mode_icon_width_small">20dp</dimen>
     <dimen name="type_circle_size">18dp</dimen>
+    <dimen name="journey_route_visual_stop_height">30dp</dimen>
 </resources>

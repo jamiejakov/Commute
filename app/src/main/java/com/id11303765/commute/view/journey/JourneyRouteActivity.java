@@ -1,9 +1,15 @@
 package com.id11303765.commute.view.journey;
 
 import android.content.DialogInterface;
+import android.graphics.drawable.NinePatchDrawable;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Parcelable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
@@ -13,11 +19,19 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.cocosw.bottomsheet.BottomSheet;
+import com.h6ah4i.android.widget.advrecyclerview.animator.GeneralItemAnimator;
+import com.h6ah4i.android.widget.advrecyclerview.animator.RefactoredDefaultItemAnimator;
+import com.h6ah4i.android.widget.advrecyclerview.decoration.ItemShadowDecorator;
+import com.h6ah4i.android.widget.advrecyclerview.decoration.SimpleListDividerDecorator;
+import com.h6ah4i.android.widget.advrecyclerview.expandable.RecyclerViewExpandableItemManager;
 import com.id11303765.commute.R;
+import com.id11303765.commute.controller.JourneyRouteLegVisualAdapter;
+import com.id11303765.commute.controller.JourneyRoutesListAdapter;
 import com.id11303765.commute.model.Journey;
 import com.id11303765.commute.model.JourneyLeg;
 import com.id11303765.commute.model.JourneyManager;
 import com.id11303765.commute.model.StopTime;
+import com.id11303765.commute.utils.AbstractExpandableDataProvider;
 import com.id11303765.commute.utils.Common;
 import com.id11303765.commute.utils.Constants;
 
@@ -25,8 +39,14 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
-public class JourneyRouteActivity extends AppCompatActivity {
+public class JourneyRouteActivity extends AppCompatActivity implements RecyclerViewExpandableItemManager.OnGroupCollapseListener,
+        RecyclerViewExpandableItemManager.OnGroupExpandListener {
+    private static final String SAVED_STATE_EXPANDABLE_ITEM_MANAGER = "RecyclerViewExpandableItemManager";
     private Journey mJourney;
+    private RecyclerView mRecyclerView;
+    private RecyclerView.LayoutManager mLayoutManager;
+    private RecyclerView.Adapter mWrappedAdapter;
+    private RecyclerViewExpandableItemManager mRecyclerViewExpandableItemManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +56,7 @@ public class JourneyRouteActivity extends AppCompatActivity {
         mJourney = JourneyManager.findJourney(journeyPK);
 
         if (mJourney != null) {
-            setUpScreen();
+            setUpScreen(savedInstanceState);
         }else{
             Log.d(Constants.ERROR_LOG, "Could not find journey");
             finish();
@@ -71,7 +91,29 @@ public class JourneyRouteActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void setUpScreen() {
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        if (mRecyclerViewExpandableItemManager != null) {
+            outState.putParcelable(
+                    SAVED_STATE_EXPANDABLE_ITEM_MANAGER,
+                    mRecyclerViewExpandableItemManager.getSavedState());
+        }
+    }
+
+    @Override
+    public void onGroupCollapse(int groupPosition, boolean fromUser) {
+    }
+
+    @Override
+    public void onGroupExpand(int groupPosition, boolean fromUser) {
+        if (fromUser) {
+            adjustScrollPositionOnGroupExpanded(groupPosition);
+        }
+    }
+
+    private void setUpScreen(Bundle savedInstanceState) {
         setContentView(R.layout.activity_journey_route);
         Toolbar toolbar = (Toolbar) findViewById(R.id.activity_journey_route_toolbar);
         setSupportActionBar(toolbar);
@@ -80,12 +122,49 @@ public class JourneyRouteActivity extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
-
         setUpTopInfo();
+        setUpRouteVisualisation(savedInstanceState);
 
         //Set Up RecyclerView all rows in loop
         // if first, add the Start box and make the line above it gone.
         // if last, add the End box and make the line below it gone.
+
+
+    }
+
+    private void setUpRouteVisualisation(Bundle savedInstanceState){
+        mRecyclerView = (RecyclerView) findViewById(R.id.activity_journey_routes_list_recyclerview);
+        mLayoutManager = new LinearLayoutManager(this);
+
+        final Parcelable eimSavedState = (savedInstanceState != null) ? savedInstanceState.getParcelable(SAVED_STATE_EXPANDABLE_ITEM_MANAGER) : null;
+        mRecyclerViewExpandableItemManager = new RecyclerViewExpandableItemManager(eimSavedState);
+        mRecyclerViewExpandableItemManager.setOnGroupExpandListener(this);
+        mRecyclerViewExpandableItemManager.setOnGroupCollapseListener(this);
+
+        //adapter
+        final JourneyRouteLegVisualAdapter routeAdapter = new JourneyRouteLegVisualAdapter(getDataProvider(), mJourney.getJourneyLegs());
+        mWrappedAdapter = mRecyclerViewExpandableItemManager.createWrappedAdapter(routeAdapter);       // wrap for expanding
+        final GeneralItemAnimator animator = new RefactoredDefaultItemAnimator();
+
+        // Change animations are enabled by default since support-v7-recyclerview v22.
+        // Need to disable them when using animation indicator.
+        animator.setSupportsChangeAnimations(false);
+
+        mRecyclerView.setLayoutManager(mLayoutManager);
+        mRecyclerView.setAdapter(mWrappedAdapter);  // requires *wrapped* adapter
+        mRecyclerView.setItemAnimator(animator);
+        mRecyclerView.setHasFixedSize(false);
+
+        // additional decorations
+        //noinspection StatementWithEmptyBody
+        if (supportsViewElevation()) {
+            // Lollipop or later has native drop shadow feature. ItemShadowDecorator is not required.
+        } else {
+            mRecyclerView.addItemDecoration(new ItemShadowDecorator((NinePatchDrawable) ContextCompat.getDrawable(this, R.drawable.material_shadow_z1_mdpi)));
+        }
+        mRecyclerView.addItemDecoration(new SimpleListDividerDecorator(ContextCompat.getDrawable(this, R.xml.list_divider_h), true));
+
+        mRecyclerViewExpandableItemManager.attachRecyclerView(mRecyclerView);
 
 
     }
@@ -145,10 +224,22 @@ public class JourneyRouteActivity extends AppCompatActivity {
             int mode = jl.getTimetable().getStopTimes().get(0).getStop().getStopType();
             Common.setTransportModes(mode, trainImage, busImage, ferryImage, lightRailImage);
         }
-
-
     }
 
+    private void adjustScrollPositionOnGroupExpanded(int groupPosition) {
+        int childItemHeight = getResources().getDimensionPixelSize(R.dimen.journey_route_visual_stop_height);
+        int topMargin = (int) (getResources().getDisplayMetrics().density * 16); // top-spacing: 16dp
+        int bottomMargin = topMargin; // bottom-spacing: 16dp
 
+        mRecyclerViewExpandableItemManager.scrollToGroup(groupPosition, childItemHeight, topMargin, bottomMargin);
+    }
+
+    private boolean supportsViewElevation() {
+        return (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP);
+    }
+
+    public AbstractExpandableDataProvider getDataProvider() {
+        return this.getDataProvider();
+    }
 
 }

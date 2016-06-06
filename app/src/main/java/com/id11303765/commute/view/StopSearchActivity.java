@@ -100,7 +100,8 @@ public class StopSearchActivity extends AppCompatActivity {
 
     private boolean excludedStop(Stop stop){
         for (String s : mExcludedStopNames){
-            if (stop.getShortName().toLowerCase().contains(s.toLowerCase())){
+            if (stop.getShortName().toLowerCase().contains(s.toLowerCase()) &&
+                    !stop.getShortName().toLowerCase().contains(" " + s.toLowerCase())){
                 return true;
             }
         }

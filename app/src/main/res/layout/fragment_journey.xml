@@ -53,8 +53,9 @@
                 style="@style/Widget.AppCompat.Button.Borderless"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
                 android:src="@drawable/ic_swap_vert_black_24dp"
-                android:background="@xml/swap_button_ripple"
                 android:tint="@color/white"
                 app:layout_constraintLeft_toLeftOf="@+id/fragment_journey_search_text_and_swap_ll"
                 app:layout_constraintTop_toBottomOf="@+id/fragment_journey_from_tv" />
@@ -86,24 +87,21 @@
                 android:id="@+id/fragment_journey_departure_button"
                 style="@style/Widget.AppCompat.Button.Borderless"
                 android:layout_width="match_parent"
-                android:layout_height="35dp"
+                android:layout_height="40dp"
                 android:hint="@string/choose_starting_point"
                 android:paddingEnd="10dp"
                 android:paddingStart="10dp"
                 android:textAlignment="textStart"
-                android:background="@xml/journey_button_shape"
                 app:layout_constraintTop_toTopOf="@+id/fragment_journey_search_buttons_ll"
                 app:layout_constraintLeft_toLeftOf="@+id/fragment_journey_search_buttons_ll"
-                tools:layout_constraintRight_creator="1"
-                android:elevation="0dp"/>
+                tools:layout_constraintRight_creator="1" />
 
             <Button
                 android:id="@+id/fragment_journey_destination_button"
                 style="@style/Widget.AppCompat.Button.Borderless"
                 android:layout_width="match_parent"
-                android:layout_height="35dp"
+                android:layout_height="40dp"
                 android:layout_marginTop="25dp"
-                android:background="@xml/journey_button_shape"
                 android:hint="@string/choose_destination"
                 android:paddingEnd="10dp"
                 android:paddingStart="10dp"
@@ -136,7 +134,8 @@
         android:layout_gravity="bottom"
         app:ft_container_gravity="center"
         app:ft_color="@color/primary"
-        android:elevation="12dp"/>
+        android:elevation="12dp"
+        tools:targetApi="lollipop" />
 
     <Button
         android:id="@+id/fragment_journey_time_option_button"
@@ -146,9 +145,8 @@
         android:layout_marginStart="@dimen/fab_margin"
         android:layout_marginTop="50dp"
         android:backgroundTint="@color/white"
-        android:drawableLeft="@drawable/ic_schedule_black_24dp"
+        android:drawableLeft="@drawable/ic_schedule_color_primary_24dp"
         android:drawablePadding="20dp"
-        android:drawableTint="@color/primary"
         android:paddingEnd="20dp"
         android:paddingStart="20dp"
         android:text="@string/leave_now"
@@ -174,15 +172,13 @@
         app:layout_constraintRight_toRightOf="@+id/fragment_commute_constraint_layout"
         app:layout_constraintTop_toBottomOf="@+id/fragment_journey_time_option_button">
 
-
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginBottom="5dp"
             android:layout_marginTop="5dp"
             android:layout_weight="1"
-            android:drawableTint="@color/primary"
-            android:drawableTop="@drawable/ic_directions_walk_black_24dp"
+            android:drawableTop="@drawable/ic_directions_walk_color_primary_24dp"
             android:text="@string/speed"
             android:textAlignment="center"
             android:textColor="@color/secondary_text"
@@ -194,8 +190,7 @@
             android:layout_marginBottom="5dp"
             android:layout_marginTop="5dp"
             android:layout_weight="1"
-            android:drawableTint="@color/primary"
-            android:drawableTop="@drawable/ic_credit_card_black_24dp"
+            android:drawableTop="@drawable/ic_credit_card_color_primary_24dp"
             android:text="@string/opal_card"
             android:textAlignment="center"
             android:textColor="@color/secondary_text"
@@ -209,8 +204,7 @@
             android:layout_marginStart="10dp"
             android:layout_marginTop="5dp"
             android:layout_weight="1"
-            android:drawableTint="@color/primary"
-            android:drawableTop="@drawable/ic_layers_black_24dp"
+            android:drawableTop="@drawable/ic_layers_color_primary_24dp"
             android:text="@string/quick_search"
             android:textAlignment="center"
             android:textColor="@color/secondary_text"
@@ -222,8 +216,7 @@
             android:layout_marginBottom="5dp"
             android:layout_marginTop="5dp"
             android:layout_weight="1"
-            android:drawableTint="@color/primary"
-            android:drawableTop="@drawable/ic_directions_railway_black_24dp"
+            android:drawableTop="@drawable/ic_directions_railway_color_primary_24dp"
             android:text="@string/transport"
             android:textAlignment="center"
             android:textColor="@color/secondary_text"

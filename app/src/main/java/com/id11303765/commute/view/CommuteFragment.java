@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.SharedPreferences;
 import android.graphics.drawable.GradientDrawable;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.preference.PreferenceManager;
@@ -90,7 +91,10 @@ public class CommuteFragment extends Fragment implements View.OnClickListener {
         mNextServiceText = (TextView) getActivity().findViewById(R.id.fragment_commute_next_service_text);
         mRotationDirection = 1;
 
-
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            mPrevButton.setBackground(getActivity().getDrawable(R.drawable.swap_button_ripple));
+            mNextButton.setBackground(getActivity().getDrawable(R.drawable.swap_button_ripple));
+        }
     }
 
     @Override
@@ -238,6 +242,8 @@ public class CommuteFragment extends Fragment implements View.OnClickListener {
         arrivalTime.setText(date.format(mSelectedTimetable.getStopTimes().get(mStopTimeCount - 1).getArrivalTime()));
 
         checkIfNextExist(false, mPrevButton, mNextButton);
+
+
 
         setETA(departureTimeDate);
     }

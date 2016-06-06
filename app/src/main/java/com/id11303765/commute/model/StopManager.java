@@ -75,7 +75,8 @@ public class StopManager {
 
     private static void findStopByNameAndAddToList(String name, ArrayList<Stop> list) {
         for (Stop s : mStops) {
-            if (s.getShortName().toLowerCase().contains(name.toLowerCase())) {
+            if (s.getShortName().toLowerCase().contains(name.toLowerCase()) &&
+                    !s.getShortName().toLowerCase().contains(" " + name.toLowerCase())){
                 list.add(s);
             }
         }

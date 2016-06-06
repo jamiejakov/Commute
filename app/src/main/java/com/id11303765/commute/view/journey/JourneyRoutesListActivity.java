@@ -132,7 +132,7 @@ public class JourneyRoutesListActivity extends AppCompatActivity {
 
     private Calendar getTimeWithPeakAdjust(boolean departAt){
         Calendar time = getTime();
-        if (Common.isPeak(time)){
+        if (Common.isPeak(time) && Common.isWorkday(time)){
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm", Locale.US);
             try {
                 if (time.getTime().after(simpleDateFormat.parse(getString(R.string.evening_peak_start)))){
@@ -162,15 +162,14 @@ public class JourneyRoutesListActivity extends AppCompatActivity {
 
         String fullText = getIntent().getStringExtra(Constants.INTENT_TIME_OPTION);
         if (!fullText.equals(getString(R.string.leave_now))) {
-            String[] columns = fullText.split(",");
 
             String timeString;
-            if (columns[0].contains(getString(R.string.depart_at))) {
-                timeString = columns[0].trim().substring(Math.min(columns[0].length(), getString(R.string.depart_at).length()));
+            if (fullText.contains(getString(R.string.depart_at))) {
+                timeString = fullText.trim().substring(Math.min(fullText.length(), getString(R.string.depart_at).length()));
             } else {
-                timeString = columns[0].trim().substring(Math.min(columns[0].length(), getString(R.string.arrive_by).length()));
+                timeString = fullText.trim().substring(Math.min(fullText.length(), getString(R.string.arrive_by).length()));
             }
-            time = Common.parseStringToCal(timeString, "hh:mma");
+            time = Common.parseStringToCal(timeString, "hh:mma, dd MMM yyy (EE)");
         }
         return time;
     }

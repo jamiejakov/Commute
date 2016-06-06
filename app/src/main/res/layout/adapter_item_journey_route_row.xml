@@ -3,8 +3,8 @@
     android:id="@+id/adapter_item_journey_route_row_relative_layout"
     android:layout_width="match_parent"
     android:layout_height="100dp"
-    android:background="@xml/ripple"
     android:clickable="true">
+    <!--android:background="@xml/ripple"-->
 
     <TextView
         android:id="@+id/adapter_item_journey_route_row_route_bullet"

@@ -57,4 +57,12 @@ public class Journey {
     public String getPK() {
         return mPK;
     }
+
+    public Stop getStartStop(){
+        return mJourneyLegs.get(0).getStartStop();
+    }
+
+    public Stop getEndStop(){
+        return mJourneyLegs.get(mJourneyLegs.size()-1).getEndStop();
+    }
 }

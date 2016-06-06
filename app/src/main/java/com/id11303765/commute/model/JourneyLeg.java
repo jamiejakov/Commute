@@ -9,8 +9,10 @@ public class JourneyLeg{
     private Calendar mDepartAt;
     private Calendar mArriveBy;
     private double mPrice;
+    private String mPK;
 
-    JourneyLeg(Timetable mTimetable, Stop mStartStop, Stop mEndStop, Calendar mDepartAt, Calendar mArriveBy, double mPrice) {
+    JourneyLeg(String pk, Timetable mTimetable, Stop mStartStop, Stop mEndStop, Calendar mDepartAt, Calendar mArriveBy, double mPrice) {
+        this.mPK = pk;
         this.mTimetable = mTimetable;
         this.mStartStop = mStartStop;
         this.mEndStop = mEndStop;
@@ -27,11 +29,11 @@ public class JourneyLeg{
         return mEndStop;
     }
 
-    Calendar getDepartAt() {
+    public Calendar getDepartAt() {
         return mDepartAt;
     }
 
-    Calendar getArriveBy() {
+    public Calendar getArriveBy() {
         return mArriveBy;
     }
 
@@ -41,5 +43,9 @@ public class JourneyLeg{
 
     public double getPrice() {
         return mPrice;
+    }
+
+    public String getPK(){
+        return mPK;
     }
 }

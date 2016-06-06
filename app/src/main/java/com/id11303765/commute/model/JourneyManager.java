@@ -77,7 +77,7 @@ public class JourneyManager {
         return journey;
     }
 
-    private static JourneyLeg getJourneyLeg(String startStopShortName, String endStopShortName, boolean departAt, Calendar time, int opalCardTime) {
+    private static JourneyLeg getJourneyLeg(String startStopShortName, String endStopShortName, boolean departAt, Calendar time, int opalCardType) {
         ArrayList<Stop> startStops = StopManager.getStopsByName(startStopShortName);
         ArrayList<Stop> endStops = StopManager.getStopsByName(endStopShortName);
         ArrayList<Stop> allStops = new ArrayList<>();
@@ -86,28 +86,31 @@ public class JourneyManager {
         Cursor cursor = mDatabaseHelper.getTripsContainingStops(startStops, endStops);
         if (cursor != null && cursor.moveToFirst()) {
             ArrayList<Timetable> smallTripTimetables = new ArrayList<>();
+            ArrayList<Timetable> smallTripTimetablesNextDay = new ArrayList<>();
             do {
                 String tripID = cursor.getString(cursor.getColumnIndex(TripManager.KEY_ID));
-                smallTripTimetables.add(TimetableManager.getTimetable(TripManager.getTrip(tripID), allStops));
-            } while (cursor.moveToNext());
-
-            Timetable closestSmallTimetable;
-            if (departAt) {
-                closestSmallTimetable = Common.findClosestTimetable(smallTripTimetables, startStopShortName, time, true, true);
-            } else {
-                closestSmallTimetable = Common.findClosestTimetable(smallTripTimetables, endStopShortName, time, false, false);
-            }
-            if (closestSmallTimetable == null){
-                try {
-                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm", Locale.US);
-                    Calendar cal = Calendar.getInstance();
-                    Date morningTrain = simpleDateFormat.parse("04:00");
-                    cal.setTime(morningTrain);
-                    closestSmallTimetable = Common.findClosestTimetable(smallTripTimetables, startStopShortName,cal, true, true);
-                } catch (ParseException e) {
-                    e.printStackTrace();
+                Trip trip = TripManager.getTrip(tripID);
+                if (trip.getCalendar()[time.get(Calendar.DAY_OF_WEEK) - 1]) {
+                    smallTripTimetables.add(TimetableManager.getTimetable(trip, allStops));
+                }
+                if (trip.getCalendar()[time.get(Calendar.DAY_OF_WEEK)]){
+                    smallTripTimetablesNextDay.add(TimetableManager.getTimetable(trip, allStops));
                 }
 
+            } while (cursor.moveToNext());
+
+            Calendar justTimeNoDate = Common.getNow();
+            justTimeNoDate.set(Calendar.HOUR_OF_DAY, time.get(Calendar.HOUR_OF_DAY));
+            justTimeNoDate.set(Calendar.MINUTE, time.get(Calendar.MINUTE));
+            Timetable closestSmallTimetable;
+            if (departAt) {
+                closestSmallTimetable = Common.findClosestTimetable(smallTripTimetables, startStopShortName, justTimeNoDate, true, true);
+            } else {
+                closestSmallTimetable = Common.findClosestTimetable(smallTripTimetables, endStopShortName, justTimeNoDate, false, false);
+            }
+            if (closestSmallTimetable == null) {
+                Calendar cal = Common.parseStringToCal("01:00", "HH:mm");
+                closestSmallTimetable = Common.findClosestTimetable(smallTripTimetablesNextDay, startStopShortName, cal, true, true);
             }
             Timetable closestTimetable = TimetableManager.getTimetable(TripManager.getTrip(closestSmallTimetable.getTrip().getID()));
 
@@ -135,14 +138,17 @@ public class JourneyManager {
             removeExtraStopTimes(stopSequences, closestTimetable);
             int type = Common.getTransportModeNumber(endStop.getStopType());
             float distance = calculateDistance(startStop, endStop);
-            double price = FareManager.getFare(opalCardTime, type, Common.isPeak(Common.getNow()), distance).getValue();
-
-            return new JourneyLeg(closestTimetable, startStop, endStop, departingAt, arrivingBy, price);
+            double price = FareManager.getFare(opalCardType, type, Common.isPeak(Common.getNow()), distance).getValue();
+            if (time.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY && price > 2.50){
+                price = 2.50;
+            }
+            String uniqueID = UUID.randomUUID().toString();
+            return new JourneyLeg(uniqueID, closestTimetable, startStop, endStop, departingAt, arrivingBy, price);
         }
         return null;
     }
 
-    private static float calculateDistance(Stop startStop, Stop endStop){
+    private static float calculateDistance(Stop startStop, Stop endStop) {
         Location startLoc = new Location("");
         startLoc.setLatitude(startStop.getLat());
         startLoc.setLongitude(startStop.getLon());
@@ -153,13 +159,13 @@ public class JourneyManager {
         return startLoc.distanceTo(endLoc) / 1000;
     }
 
-    private static void removeExtraStopTimes(ArrayList<Integer> stopSequences, Timetable closestTimetable){
+    private static void removeExtraStopTimes(ArrayList<Integer> stopSequences, Timetable closestTimetable) {
         int startStopSequence = stopSequences.get(stopSequences.size() - 2);
         int endStopSequence = stopSequences.get(stopSequences.size() - 1);
 
         ArrayList<StopTime> stopTimesToRemove = new ArrayList<>();
-        for (StopTime stopTime : closestTimetable.getStopTimes()){
-            if (stopTime.getStopSequence() < startStopSequence || stopTime.getStopSequence() > endStopSequence){
+        for (StopTime stopTime : closestTimetable.getStopTimes()) {
+            if (stopTime.getStopSequence() < startStopSequence || stopTime.getStopSequence() > endStopSequence) {
                 stopTimesToRemove.add(stopTime);
             }
         }

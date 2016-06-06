@@ -2,8 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/adapter_item_station_search_relative_layout"
     android:layout_width="match_parent"
-    android:layout_height="60dp"
-    android:background="@xml/ripple">
+    android:layout_height="60dp">
+    <!--android:background="@xml/ripple"-->
 
     <ImageView
         android:id="@+id/adapter_item_station_search_transport_image_view"

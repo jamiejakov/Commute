@@ -4,6 +4,7 @@ package com.id11303765.commute.model;
 import android.database.Cursor;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class CommuteManager {
     private static CommuteManager ourInstance = new CommuteManager();
@@ -32,7 +33,10 @@ public class CommuteManager {
                 ArrayList<Timetable> tripTimetables = new ArrayList<>();
                 do {
                     String tripID = cursor.getString(cursor.getColumnIndex(TripManager.KEY_ID));
-                    tripTimetables.add(TimetableManager.getTimetable(TripManager.getTrip(tripID), allStops));
+                    Trip trip = TripManager.getTrip(tripID);
+                    if (trip.getCalendar()[Calendar.getInstance().get(Calendar.DAY_OF_WEEK)-1]){
+                        tripTimetables.add(TimetableManager.getTimetable(trip, allStops));
+                    }
                 } while (cursor.moveToNext());
 
                 commute = new Commute(startStopShortName, endStopShortName, tripTimetables);
@@ -44,14 +48,6 @@ public class CommuteManager {
         return commute;
     }
 
-    private static ArrayList<String> getStopIds(ArrayList<Stop> stops) {
-        ArrayList<String> ids = new ArrayList<>();
-        for (Stop s : stops) {
-            ids.add(s.getID());
-        }
-        return ids;
-    }
-
     private static Commute findCommute(String startShortName, String endShortName) {
         for (Commute commute : mCommutes) {
             if (commute.getStartStopShortName().equals(startShortName) &&
@@ -60,14 +56,6 @@ public class CommuteManager {
             }
         }
         return null;
-    }
-
-    private void findStartEndStops(String start, String end) {
-
-    }
-
-    private void findStartEndTimetables() {
-
     }
 
     public static void setDatabaseHelper(DatabaseHelper dbHelper) {

@@ -2,6 +2,7 @@ package com.id11303765.commute.view.journey;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.AppBarLayout;
@@ -10,7 +11,6 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
 import android.transition.ChangeBounds;
 import android.transition.TransitionManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,7 +19,6 @@ import android.view.animation.RotateAnimation;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.github.fabtransitionactivity.SheetLayout;
 import com.id11303765.commute.R;
@@ -66,27 +65,32 @@ public class JourneyFragment extends Fragment implements View.OnClickListener, S
         mSheetLayout = (SheetLayout) getActivity().findViewById(R.id.fragment_journey_sheet_layout);
         mSwapButton = (ImageButton) getActivity().findViewById(R.id.fragment_journey_swap_button);
         mSearchButtonsLinearLayout = (LinearLayout) getActivity().findViewById(R.id.fragment_journey_search_buttons_ll);
+        mSearchButton1 = (Button) getActivity().findViewById(R.id.fragment_journey_departure_button);
+        mSearchButton2 = (Button) getActivity().findViewById(R.id.fragment_journey_destination_button);
+        mTimeButton = (Button) getActivity().findViewById(R.id.fragment_journey_time_option_button);
 
-        mSearchFab.setEnabled(false);
-        mSearchFab.getDrawable().setAlpha(100);
-        mRotationDirection = 1;
-        mDepartAtOption = true;
-
-        setUpOnClickListeners();
+        setUpElements();
     }
 
     @Override
     public void onStart(){
         super.onStart();
         AppBarLayout appBar = (AppBarLayout) getActivity().findViewById(R.id.app_bar_main_appbar);
-        mElevation = appBar.getElevation();
-        appBar.setElevation(0);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            mElevation = appBar.getElevation();
+            appBar.setElevation(0);
+            mSearchButton1.setBackground(getActivity().getDrawable(R.drawable.journey_button_shape));
+            mSearchButton2.setBackground(getActivity().getDrawable(R.drawable.journey_button_shape));
+            mSwapButton.setBackground(getActivity().getDrawable(R.drawable.swap_button_ripple));
+        }
     }
 
     @Override
     public void onStop(){
         AppBarLayout appBar = (AppBarLayout) getActivity().findViewById(R.id.app_bar_main_appbar);
-        appBar.setElevation(mElevation);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            appBar.setElevation(mElevation);
+        }
         super.onStop();
     }
 
@@ -164,7 +168,10 @@ public class JourneyFragment extends Fragment implements View.OnClickListener, S
         mRotationDirection *= -1;
 
         String tempHint = b.getHint().toString();
-        TransitionManager.beginDelayedTransition(mSearchButtonsLinearLayout, new ChangeBounds());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            TransitionManager.beginDelayedTransition(mSearchButtonsLinearLayout, new ChangeBounds());
+        }
+
         mSearchButtonsLinearLayout.removeView(b);
         b.setHint(a.getHint());
         mSearchButtonsLinearLayout.addView(b, 0);
@@ -231,17 +238,14 @@ public class JourneyFragment extends Fragment implements View.OnClickListener, S
     }
 
 
-    private void setUpOnClickListeners(){
+    private void setUpElements(){
         LinearLayout optionsButtonLL = (LinearLayout) getActivity().findViewById(R.id.fragment_journey_more_options_ll);
         optionsButtonLL.setOnClickListener(this);
 
-
         mSwapButton.setOnClickListener(this);
 
-        mSearchButton1 = (Button) getActivity().findViewById(R.id.fragment_journey_departure_button);
         mSearchButton1.setOnClickListener(this);
         mSearchButton1.setTransformationMethod(null);
-        mSearchButton2 = (Button) getActivity().findViewById(R.id.fragment_journey_destination_button);
         mSearchButton2.setOnClickListener(this);
         mSearchButton2.setTransformationMethod(null);
 
@@ -249,8 +253,12 @@ public class JourneyFragment extends Fragment implements View.OnClickListener, S
         mSheetLayout.setFab(mSearchFab);
         mSheetLayout.setFabAnimationEndListener(this);
 
-        mTimeButton = (Button) getActivity().findViewById(R.id.fragment_journey_time_option_button);
         mTimeButton.setOnClickListener(this);
+
+        mSearchFab.setEnabled(false);
+        mSearchFab.getDrawable().setAlpha(100);
+        mRotationDirection = 1;
+        mDepartAtOption = true;
     }
 
 

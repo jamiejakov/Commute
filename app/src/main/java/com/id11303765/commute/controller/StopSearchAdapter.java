@@ -3,6 +3,7 @@ package com.id11303765.commute.controller;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -60,6 +61,7 @@ public class StopSearchAdapter extends RecyclerView.Adapter<StopSearchAdapter.St
 
         private TextView mName;
         private ImageView mImage;
+        private RelativeLayout mLayout;
 
         /**
          * Initialising all the UI elements and linking them to the xml layout file
@@ -67,10 +69,13 @@ public class StopSearchAdapter extends RecyclerView.Adapter<StopSearchAdapter.St
         public StopSearchViewHolder(View view) {
             super(view);
             view.setOnClickListener(this);
+            mLayout = (RelativeLayout) view.findViewById(R.id.adapter_item_station_search_relative_layout);
             mName = (TextView) view.findViewById(R.id.adapter_item_journey_route_row_route_bullet);
             mImage = (ImageView) view.findViewById(R.id.adapter_item_station_search_transport_image_view);
-            RelativeLayout row = (RelativeLayout) itemView.findViewById(R.id.adapter_item_station_search_relative_layout);
-            row.setOnClickListener(this);
+            mLayout.setOnClickListener(this);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                mLayout.setBackground(mActivity.getDrawable(R.drawable.ripple));
+            }
         }
 
         @Override

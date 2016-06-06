@@ -161,26 +161,35 @@ public class Common {
 
     public static boolean isPeak(Calendar time) {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm", Locale.US);
+        Calendar justTimeNoDate = Common.getNow();
+        justTimeNoDate.set(Calendar.HOUR_OF_DAY, time.get(Calendar.HOUR_OF_DAY));
+        justTimeNoDate.set(Calendar.MINUTE, time.get(Calendar.MINUTE));
         boolean result = false;
         try {
             Date morningPeakStart = simpleDateFormat.parse(mContext.getString(R.string.morning_peak_start));
             Date morningPeakEnd = simpleDateFormat.parse(mContext.getString(R.string.morning_peak_end));
             Date eveningPeakStart = simpleDateFormat.parse(mContext.getString(R.string.evening_peak_start));
             Date eveningPeakEnd = simpleDateFormat.parse(mContext.getString(R.string.evening_peak_end));
-            result = time.getTime().after(morningPeakStart) && time.getTime().before(morningPeakEnd) ||
-                    time.getTime().after(eveningPeakStart) && time.getTime().before(eveningPeakEnd);
+            result = justTimeNoDate.getTime().after(morningPeakStart) && justTimeNoDate.getTime().before(morningPeakEnd) ||
+                    justTimeNoDate.getTime().after(eveningPeakStart) && justTimeNoDate.getTime().before(eveningPeakEnd);
         } catch (ParseException e) {
             e.printStackTrace();
         }
         return result;
     }
 
-    public static Calendar parseStringToCal(String string, String format){
+    public static boolean isWorkday(Calendar time) {
+        int dayOfWeek = time.get(Calendar.DAY_OF_WEEK);
+        return dayOfWeek != Calendar.SATURDAY && dayOfWeek != Calendar.SUNDAY;
+    }
+
+    public static Calendar parseStringToCal(String string, String format) {
         SimpleDateFormat sdf = new SimpleDateFormat(format, Locale.US);
         Date date = null;
         try {
             date = sdf.parse(string);
         } catch (ParseException e) {
+            e.printStackTrace();
         }
         Calendar c = Calendar.getInstance();
         c.setTime(date);

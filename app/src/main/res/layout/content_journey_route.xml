@@ -181,7 +181,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="10dp"
                     android:gravity="center"
-                    android:text="@string/speed"
+                    android:text="@string/fast"
                     android:textColor="@color/secondary_text" />
             </LinearLayout>
 
@@ -205,7 +205,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_marginEnd="10dp"
-                    android:text="@string/price"
+                    android:text="@string/cheap"
                     android:textColor="@color/secondary_text" />
 
             </LinearLayout>
@@ -230,7 +230,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:text="@string/convenience"
+                    android:text="@string/convenient"
                     android:textColor="@color/secondary_text" />
             </LinearLayout>
 
@@ -271,27 +271,26 @@
             android:layout_width="wrap_content"
             android:layout_height="30dp"
             android:layout_marginStart="10dp"
-            android:gravity="center"
-            android:layout_toEndOf="@+id/activity_journey_route_end_time">
+            android:layout_toEndOf="@+id/activity_journey_route_end_time"
+            android:gravity="center">
 
             <FrameLayout
                 android:id="@+id/activity_journey_stop_row_leg_line_fl"
-                android:layout_marginTop="-2dp"
                 android:layout_width="8dp"
                 android:layout_height="match_parent"
-                android:layout_centerInParent="true"
                 android:layout_above="@+id/activity_journey_route_end_stop_indicator"
-                android:background="#52A13F">
-            </FrameLayout>
+                android:layout_centerInParent="true"
+                android:layout_marginTop="-2dp"
+                android:background="#52A13F"/>
 
             <TextView
                 android:id="@+id/activity_journey_route_end_stop_indicator"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
                 android:layout_gravity="center"
                 android:background="@xml/stop_end_shape"
                 android:text="@string/end"
-                android:layout_alignParentBottom="true"
                 android:textAlignment="center"
                 android:textColor="@color/white" />
         </RelativeLayout>
@@ -299,20 +298,18 @@
 
         <TextView
             android:id="@+id/activity_journey_route_end_stop_name"
-            android:layout_width="match_parent"
-            android:layout_height="35dp"
-            android:layout_marginStart="5dp"
             style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="-6dp"
+            android:layout_toEndOf="@+id/activity_journey_route_end_stop_indicator_rl"
+            android:clickable="true"
             android:textAlignment="viewStart"
             android:textAllCaps="false"
-            android:layout_marginTop="1dp"
-            android:layout_toEndOf="@+id/activity_journey_route_end_stop_indicator_rl"
-            android:background="@xml/ripple"
-            android:clickable="true"
-            android:paddingStart="5dp"
             android:textColor="@color/primary"
             android:textSize="@dimen/line_and_destination_text"
-            android:textStyle="bold" />
+            android:textStyle="bold"/>
 
     </RelativeLayout>
 

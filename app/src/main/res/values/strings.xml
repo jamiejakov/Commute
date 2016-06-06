@@ -72,6 +72,7 @@
     <string name="loading_timetable">Loading Timetable</string>
     <string name="am_pm_time_format">hh:mm a</string>
     <string name="am_pm_time_format_no_space">hh:mma</string>
+    <string name="day_month_year_weekday_date_format">dd MMM yyyy (EE)</string>
     <string name="arrow_right">→</string>
     <string name="dollar_sign">$</string>
     <string name="loading_routes">Loading Routes…</string>
@@ -119,6 +120,9 @@
     <string name="calendar_event_success">Calendar event added</string>
     <string name="journey_from">"Journey from "</string>
     <string name="calendar_event">vnd.android.cursor.item/event</string>
+    <string name="fast">Fast</string>
+    <string name="cheap">Cheap</string>
+    <string name="convenient">Convenient</string>
 
 
 </resources>

@@ -3,6 +3,7 @@ package com.id11303765.commute.controller;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.drawable.GradientDrawable;
+import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -98,14 +99,16 @@ public class JourneyRouteLegVisualAdapter extends AbstractExpandableItemAdapter<
 
     @Override
     public void onBindGroupViewHolder(RouteLegViewHolder holder, int groupPosition, int viewType) {
-        // child item
-        //final AbstractExpandableDataProvider.BaseData item = mProvider.getGroupItem(groupPosition);
         JourneyLeg currentJourneyLeg = mJourneyLegList.get(groupPosition);
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(mActivity.getString(R.string.am_pm_time_format), Locale.US);
 
         if (groupPosition == 0) {
             Common.makeViewVisible(holder.mArrivalTime, false);
-            holder.mStopIndicator.setBackground(mActivity.getDrawable(R.drawable.stop_start_shape));
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
+                holder.mStopIndicator.setBackground(mActivity.getDrawable(R.drawable.stop_start_shape));
+            }else{
+                holder.mStopIndicator.setBackground(mActivity.getResources().getDrawable(R.drawable.stop_start_shape));
+            }
             GradientDrawable stopIndicatorShape = (GradientDrawable) holder.mStopIndicator.getBackground();
             stopIndicatorShape.setColor(currentJourneyLeg.getTimetable().getTrip().getRoute().getColor());
             holder.mStopIndicator.setText(R.string.start);
@@ -168,7 +171,6 @@ public class JourneyRouteLegVisualAdapter extends AbstractExpandableItemAdapter<
 
     @Override
     public void onBindChildViewHolder(StopViewHolder holder, int groupPosition, int childPosition, int viewType) {
-        //final AbstractExpandableDataProvider.ChildData item = mProvider.getChildItem(groupPosition, childPosition);
         StopTime currentStopTime = mJourneyLegList.get(groupPosition).getTimetable().getStopTimes().get(childPosition + 1);
 
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(mActivity.getString(R.string.am_pm_time_format), Locale.US);

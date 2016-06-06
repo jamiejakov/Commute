@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
+import android.os.Build;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -52,17 +53,16 @@ public class JourneyRoutesListAdapter extends RecyclerView.Adapter<JourneyRoutes
         DateFormat date = new SimpleDateFormat(mActivity.getString(R.string.am_pm_time_format), Locale.ENGLISH);
         StopTime startStopTime = null;
         for (StopTime st : currentJourneyData.getJourneyLegs().get(0).getTimetable().getStopTimes()) {
-            if (st.getStop().equals(currentJourneyData.getJourneyLegs().get(0).getStartStop())) {
+            if (st.getStop().equals(currentJourneyData.getStartStop())) {
                 startStopTime = st;
             }
         }
         holder.mFromTime.setText(date.format(startStopTime.getDepartureTime()));
 
         int lastLeg = currentJourneyData.getJourneyLegs().size() - 1;
-        int lastStopPos = currentJourneyData.getJourneyLegs().get(lastLeg).getTimetable().getStopTimes().size() - 1;
         StopTime endStopTime = null;
         for (StopTime st : currentJourneyData.getJourneyLegs().get(lastLeg).getTimetable().getStopTimes()) {
-            if (st.getStop().equals(currentJourneyData.getJourneyLegs().get(0).getEndStop())) {
+            if (st.getStop().equals(currentJourneyData.getEndStop())) {
                 endStopTime = st;
             }
         }
@@ -98,8 +98,7 @@ public class JourneyRoutesListAdapter extends RecyclerView.Adapter<JourneyRoutes
         holder.mConvenienceCircle.getDrawable().setAlpha(Constants.OPAQUE);
 
         for (JourneyLeg jl : currentJourneyData.getJourneyLegs()) {
-            int mode = jl.getTimetable().getStopTimes().get(0).getStop().getStopType();
-            Common.setTransportModes(mode, holder.mTrain, holder.mBus, holder.mFerry, holder.mLightRail);
+            Common.setTransportModes(jl.getStartStop().getStopType(), holder.mTrain, holder.mBus, holder.mFerry, holder.mLightRail);
         }
 
     }
@@ -151,6 +150,9 @@ public class JourneyRoutesListAdapter extends RecyclerView.Adapter<JourneyRoutes
             mConvenienceCircle = (ImageView) view.findViewById(R.id.adapter_item_journey_route_row_convenience_circle);
 
             RelativeLayout row = (RelativeLayout) itemView.findViewById(R.id.adapter_item_journey_route_row_relative_layout);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                row.setBackground(mActivity.getDrawable(R.drawable.ripple));
+            }
             row.setOnClickListener(this);
         }
 

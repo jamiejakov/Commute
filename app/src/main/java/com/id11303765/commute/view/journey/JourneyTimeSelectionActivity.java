@@ -154,7 +154,7 @@ public class JourneyTimeSelectionActivity extends AppCompatActivity implements V
     }
 
     private void setTimeFromString(String string) {
-        Calendar c = Common.parseStringToCal(string, "hh:mma");
+        Calendar c = Common.parseStringToCal(string, getString(R.string.am_pm_time_format_no_space));
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             mTimePicker.setCurrentHour(c.get(Calendar.HOUR_OF_DAY));
@@ -167,7 +167,7 @@ public class JourneyTimeSelectionActivity extends AppCompatActivity implements V
     }
 
     private void showDatePicker() {
-        final SimpleDateFormat dateFormatter = new SimpleDateFormat("dd MMM yyyy (EE)", Locale.US);
+        final SimpleDateFormat dateFormatter = new SimpleDateFormat(getString(R.string.day_month_year_weekday_date_format), Locale.US);
         Date selected;
         Calendar newCalendar = Calendar.getInstance();
         try {

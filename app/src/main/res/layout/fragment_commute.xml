@@ -185,17 +185,7 @@
         </LinearLayout>
     </LinearLayout>
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fragment_journey_search_fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end"
-        android:layout_marginEnd="@dimen/fab_margin"
-        android:clickable="true"
-        android:src="@drawable/ic_png_swap"
-        app:layout_constraintBottom_toTopOf="@+id/fragment_commute_bottom_sheet_ll"
-        app:layout_constraintRight_toRightOf="@+id/fragment_commute_constraint_layout"
-        app:layout_constraintTop_toTopOf="@+id/fragment_commute_bottom_sheet_ll" />
+
 
     <RelativeLayout
         android:id="@+id/fragment_commute_bottom_sheet_ll"
@@ -274,6 +264,18 @@
             android:tint="@color/white" />
 
     </RelativeLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fragment_journey_search_fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:layout_marginEnd="@dimen/fab_margin"
+        android:clickable="true"
+        android:src="@drawable/ic_png_swap"
+        app:layout_constraintBottom_toTopOf="@+id/fragment_commute_bottom_sheet_ll"
+        app:layout_constraintRight_toRightOf="@+id/fragment_commute_constraint_layout"
+        app:layout_constraintTop_toTopOf="@+id/fragment_commute_bottom_sheet_ll" />
 
 
 </android.support.constraint.ConstraintLayout>

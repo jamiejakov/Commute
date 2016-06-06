@@ -1,8 +1,11 @@
 package com.id11303765.commute.view.journey;
 
+import android.app.ActionBar;
+import android.os.Build;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
-import android.support.v7.app.ActionBar;
+import android.view.MenuItem;
+import android.widget.Toolbar;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -26,11 +29,31 @@ public class JourneyStopMapActivity extends FragmentActivity implements OnMapRea
         setContentView(R.layout.activity_stop_map);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
+                .findFragmentById(R.id.activity_stop_map_fragment);
         mapFragment.getMapAsync(this);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.activity_stop_map_toolbar);
 
-
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            setActionBar(toolbar);
+            ActionBar actionBar = getActionBar();
+            if (actionBar != null) {
+                actionBar.setDisplayHomeAsUpEnabled(true);
+            }
+        }
+        mName = getIntent().getStringExtra(Constants.INTENT_JOURNEY_STOP_NAME);
+        mLat = getIntent().getDoubleExtra(Constants.INTENT_JOURNEY_STOP_LAT, 0);
+        mLon = getIntent().getDoubleExtra(Constants.INTENT_JOURNEY_STOP_LON, 0);
         setTitle("Map for " + mName);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == android.R.id.home) {
+            this.onBackPressed();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
 
@@ -46,13 +69,10 @@ public class JourneyStopMapActivity extends FragmentActivity implements OnMapRea
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        mName = getIntent().getStringExtra(Constants.INTENT_JOURNEY_STOP_NAME);
-        mLat = getIntent().getDoubleExtra(Constants.INTENT_JOURNEY_STOP_LAT, 0);
-        mLon = getIntent().getDoubleExtra(Constants.INTENT_JOURNEY_STOP_LON, 0);
+
         // Add a marker in Sydney and move the camera
-        //LatLng sydney = new LatLng(mLat, mLon);
-        LatLng sydney = new LatLng(-34, 151);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("SYD"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        LatLng sydney = new LatLng(mLat, mLon);
+        mMap.addMarker(new MarkerOptions().position(sydney).title(mName));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(sydney, 16));
     }
 }

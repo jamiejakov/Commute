@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -30,10 +31,13 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 
+/**
+ * Class that displays the list of the best routes available between the selected start and end stops
+ * Should utilise the A* algorithm http://www.wikiwand.com/en/A*_search_algorithm
+ * will implement eventually
+ */
 public class JourneyRoutesListActivity extends AppCompatActivity {
     private ArrayList<Journey> mJourneys;
-    private JourneyRoutesListAdapter mJourneyRoutesListAdapter;
-    private TabLayout mTabLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +57,9 @@ public class JourneyRoutesListActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Setup the UI
+     */
     private void setUpScreen(){
         setContentView(R.layout.activity_journey_routes_list);
         Toolbar toolbar = (Toolbar) findViewById(R.id.activity_journey_routes_list_toolbar);
@@ -64,58 +71,80 @@ public class JourneyRoutesListActivity extends AppCompatActivity {
         setUpTabs();
     }
 
+    /**
+     * Set up the top tabs and their icons
+     */
     private void setUpTabs(){
-        mTabLayout = (TabLayout) findViewById(R.id.app_bar_journey_route_list_tab_layout);
-        TabLayout.Tab speedTab = mTabLayout.newTab().setText(R.string.speed);
-        speedTab.setIcon(R.drawable.ic_directions_speed_black_24dp);
-        speedTab.getIcon().setColorFilter(ContextCompat.getColor(JourneyRoutesListActivity.this, R.color.white), PorterDuff.Mode.SRC_IN);
-        mTabLayout.addTab(speedTab);
-        speedTab.getIcon().setAlpha(Constants.DESELECTED);
-        TabLayout.Tab priceTab = mTabLayout.newTab().setText(R.string.price);
-        priceTab.setIcon(R.drawable.ic_attach_money_black_24dp);
-        priceTab.getIcon().setColorFilter(ContextCompat.getColor(JourneyRoutesListActivity.this, R.color.white), PorterDuff.Mode.SRC_IN);
-        priceTab.getIcon().setAlpha(Constants.DESELECTED);
-        mTabLayout.addTab(priceTab);
-        TabLayout.Tab convenienceTab = mTabLayout.newTab().setText(R.string.convenience);
-        convenienceTab.setIcon(R.drawable.ic_event_seat_black_24dp);
-        convenienceTab.getIcon().setColorFilter(ContextCompat.getColor(JourneyRoutesListActivity.this, R.color.white), PorterDuff.Mode.SRC_IN);
-        convenienceTab.getIcon().setAlpha(Constants.DESELECTED);
-        mTabLayout.addTab(convenienceTab);
-        mTabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
-
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-        int defaultTabPref = Integer.parseInt(sharedPreferences.getString(getString(R.string.default_search_pref), "1"));
-        mTabLayout.getTabAt(defaultTabPref-1).select();
-        mTabLayout.getTabAt(defaultTabPref-1).getIcon().setAlpha(Constants.OPAQUE);
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.app_bar_journey_route_list_tab_layout);
+        assert tabLayout != null;
+        TabLayout.Tab speedTab = tabLayout.newTab().setText(R.string.speed);
 
-        mTabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+        speedTab.setIcon(R.drawable.ic_directions_speed_black_24dp);
+        Drawable speedIcon = speedTab.getIcon();
+        assert speedIcon != null;
+        speedIcon.setColorFilter(ContextCompat.getColor(JourneyRoutesListActivity.this, R.color.white), PorterDuff.Mode.SRC_IN);
+        tabLayout.addTab(speedTab);
+        speedTab.getIcon().setAlpha(Constants.DESELECTED);
+
+        TabLayout.Tab priceTab = tabLayout.newTab().setText(R.string.price);
+        priceTab.setIcon(R.drawable.ic_attach_money_black_24dp);
+        Drawable priceIcon = priceTab.getIcon();
+        assert priceIcon != null;
+        priceIcon.setColorFilter(ContextCompat.getColor(JourneyRoutesListActivity.this, R.color.white), PorterDuff.Mode.SRC_IN);
+        priceIcon.setAlpha(Constants.DESELECTED);
+        tabLayout.addTab(priceTab);
+
+        TabLayout.Tab convenienceTab = tabLayout.newTab().setText(R.string.convenience);
+        convenienceTab.setIcon(R.drawable.ic_event_seat_black_24dp);
+        Drawable convenienceIcon = convenienceTab.getIcon();
+        assert convenienceIcon != null;
+        convenienceIcon.setColorFilter(ContextCompat.getColor(JourneyRoutesListActivity.this, R.color.white), PorterDuff.Mode.SRC_IN);
+        convenienceIcon.setAlpha(Constants.DESELECTED);
+        tabLayout.addTab(convenienceTab);
+        tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
+
+        int defaultTabPref = Integer.parseInt(sharedPreferences.getString(getString(R.string.default_search_pref), "1"));
+        TabLayout.Tab tab = tabLayout.getTabAt(defaultTabPref-1);
+        if (tab != null && tab.getIcon()!=null) {
+            tab.select();
+            tab.getIcon().setAlpha(Constants.OPAQUE);
+        }
+
+        tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                tab.getIcon().setAlpha(Constants.OPAQUE);
+                Drawable tabIcon = tab.getIcon();
+                if (tabIcon != null) {
+                    tabIcon.setAlpha(Constants.OPAQUE);
+                }
             }
 
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
-                tab.getIcon().setAlpha(Constants.DESELECTED);
+                Drawable tabIcon = tab.getIcon();
+                if (tabIcon != null) {
+                    tabIcon.setAlpha(Constants.DESELECTED);
+                }
             }
 
             @Override
             public void onTabReselected(TabLayout.Tab tab) {
-                // Required empty constructor
             }
         });
 
     }
 
+    /**
+     * Setup the initial data and call the Async task to fetch the journeys from the DB
+     */
     private void setUpData(){
         String startStopShortName = getIntent().getStringExtra(Constants.INTENT_SEARCH_JOURNEY_START_STOP);
         String endStopShortName = getIntent().getStringExtra(Constants.INTENT_SEARCH_JOURNEY_END_STOP);
         boolean departAt =  getIntent().getBooleanExtra(Constants.INTENT_TIME_DEPART_AT_BOOL, true);
         mJourneys = new ArrayList<>();
-        mJourneys.clear();
 
-
-        setTitle("Routes To " + endStopShortName);
+        setTitle(getString(R.string.routes_to_space) + endStopShortName);
 
         ArrayList<String> stops = new ArrayList<>();
         stops.add(startStopShortName);
@@ -130,23 +159,28 @@ public class JourneyRoutesListActivity extends AppCompatActivity {
         loadCommute.execute();
     }
 
+    /**
+     * Get the departure/arrival time with the adjustment for Peak Hour if it has been set in journey options
+     * @param departAt - true: departure time; false: arrival time
+     * @return calendar with adjusted time.
+     */
     private Calendar getTimeWithPeakAdjust(boolean departAt){
         Calendar time = getTime();
         if (Common.isPeak(time) && Common.isWorkday(time)){
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm", Locale.US);
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat(Constants.DATE_FORMAT_HH24_MM, Locale.US);
             try {
-                if (time.getTime().after(simpleDateFormat.parse(getString(R.string.evening_peak_start)))){
+                if (time.getTime().after(simpleDateFormat.parse(Constants.EVENING_PEAK_START))){
                     if (departAt){
-                        time.setTime(simpleDateFormat.parse(getString(R.string.evening_peak_end)));
+                        time.setTime(simpleDateFormat.parse(Constants.EVENING_PEAK_END));
                     }else{
-                        time.setTime(simpleDateFormat.parse(getString(R.string.evening_peak_start)));
+                        time.setTime(simpleDateFormat.parse(Constants.EVENING_PEAK_START));
                     }
 
                 }else{
                     if (departAt){
-                        time.setTime(simpleDateFormat.parse(getString(R.string.morning_peak_end)));
+                        time.setTime(simpleDateFormat.parse(Constants.MORNING_PEAK_END));
                     }else{
-                        time.setTime(simpleDateFormat.parse(getString(R.string.morning_peak_start)));
+                        time.setTime(simpleDateFormat.parse(Constants.MORNING_PEAK_START));
                     }
 
                 }
@@ -157,6 +191,10 @@ public class JourneyRoutesListActivity extends AppCompatActivity {
         return time;
     }
 
+    /**
+     * Get the time based on which to search for journey
+     * @return calendar with time
+     */
     private Calendar getTime(){
         Calendar time = Common.getNow();
 
@@ -169,31 +207,35 @@ public class JourneyRoutesListActivity extends AppCompatActivity {
             } else {
                 timeString = fullText.trim().substring(Math.min(fullText.length(), getString(R.string.arrive_by).length()));
             }
-            time = Common.parseStringToCal(timeString, "hh:mma, dd MMM yyy (EE)");
+            time = Common.parseStringToCal(timeString, Constants.DATE_FORMAT_HH_MM_AM_DAY_MONTH_YEAR_WEEKDAY);
         }
         return time;
     }
 
+    /**
+     * Continue the data setup after the journeys have been fetched from the DB
+     */
     private void continueSetup() {
         TextView noResults = (TextView) findViewById(R.id.activity_journey_no_results_text);
         if (mJourneys.size() == 0){
             Common.makeViewVisible(noResults, true);
         }else{
-            Common.makeViewVisible(noResults, false);
             RecyclerView stopRecyclerView = (RecyclerView) findViewById(R.id.activity_journey_routes_list_recyclerview);
             final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
             assert stopRecyclerView != null;
+
             stopRecyclerView.setLayoutManager(layoutManager);
-            mJourneyRoutesListAdapter = new JourneyRoutesListAdapter(this, this, mJourneys);
+            JourneyRoutesListAdapter mJourneyRoutesListAdapter = new JourneyRoutesListAdapter(this, this, mJourneys);
             stopRecyclerView.setAdapter(mJourneyRoutesListAdapter);
             mJourneyRoutesListAdapter.notifyDataSetChanged();
+            Common.makeViewVisible(noResults, false);
         }
     }
 
     /**
      * Loads the list of Timetables connecting the 2 stops for the daily commute.
      */
-    private class LoadJourneysAsync extends AsyncTask<Void, Void, Void> {
+    private class LoadJourneysAsync extends AsyncTask<Void, Void, Journey> {
 
         private ProgressDialog mDialog;
         private ArrayList<String> mStops;
@@ -219,17 +261,15 @@ public class JourneyRoutesListActivity extends AppCompatActivity {
         }
 
         @Override
-        protected Void doInBackground(Void... params) {
-            Journey journey = JourneyManager.getJourney(mStops, mDepartAt, mDepartAtOrArriveByTime, mOpalType);
-            if (journey!=null){
-                mJourneys.add(journey);
-            }
-
-            return null;
+        protected Journey doInBackground(Void... params) {
+            return JourneyManager.getJourney(mStops, mDepartAt, mDepartAtOrArriveByTime, mOpalType);
         }
 
         @Override
-        protected void onPostExecute(Void aVoid) {
+        protected void onPostExecute(Journey journey) {
+            if (journey!=null){
+                mJourneys.add(journey);
+            }
             if (mDialog.isShowing()) {
                 mDialog.dismiss();
             }

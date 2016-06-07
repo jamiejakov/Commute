@@ -21,8 +21,8 @@ public class CommuteManager {
 
     public static Commute getCommute(String startStopShortName, String endStopShortName) {
         Commute commute = findCommute(startStopShortName, endStopShortName);
-        ArrayList<Stop> startStops = StopManager.getStopsByName(startStopShortName);
-        ArrayList<Stop> endStops = StopManager.getStopsByName(endStopShortName);
+        ArrayList<Stop> startStops = StopManager.getStopsByName(startStopShortName, true);
+        ArrayList<Stop> endStops = StopManager.getStopsByName(endStopShortName, true);
         ArrayList<Stop> allStops = new ArrayList<>();
         allStops.addAll(startStops);
         allStops.addAll(endStops);
@@ -40,8 +40,8 @@ public class CommuteManager {
                 } while (cursor.moveToNext());
 
                 commute = new Commute(startStopShortName, endStopShortName, tripTimetables);
+                cursor.close();
             }
-            cursor.close();
             mCommutes.add(commute);
         }
 

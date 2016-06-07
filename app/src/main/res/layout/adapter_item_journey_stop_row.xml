@@ -1,29 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/adapter_item_journey_stop_row_relative_layout"
     android:layout_width="match_parent"
     android:layout_height="40dp"
     android:layout_marginEnd="@dimen/fab_margin"
-    android:layout_marginStart="39dp"
+    android:layout_marginStart="@dimen/fab_margin"
     android:layout_marginTop="-2dp">
 
 
     <TextView
         android:id="@+id/adapter_item_stop_row_time"
-        android:layout_width="60dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="1px"
-        android:layout_marginTop="2dp"
-        android:textColor="@color/primary_text"
-        tools:ignore="RtlSymmetry"/>
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="1dp"
+        android:textSize="14sp"
+        android:textColor="@color/primary_text" />
 
     <RelativeLayout
         android:id="@+id/adapter_item_journey_stop_row_line_ll"
-        android:layout_width="wrap_content"
+        android:layout_width="50dp"
         android:layout_height="match_parent"
-        android:layout_marginStart="10dp"
-        android:layout_toEndOf="@+id/adapter_item_stop_row_time"
+        android:layout_marginStart="85dp"
         android:gravity="center"
         android:orientation="vertical">
 
@@ -31,15 +29,16 @@
             android:id="@+id/adapter_item_journey_stop_row_leg_line_fl"
             android:layout_width="8dp"
             android:layout_height="match_parent"
+            android:layout_centerHorizontal="true"
             android:layout_below="@+id/adapter_item_journey_stop_row_stop_indicator_shape_tv"
-            android:layout_centerInParent="true"
             android:layout_marginTop="-2dp"
             android:background="#52A13F"/>
 
         <TextView
             android:id="@+id/adapter_item_journey_stop_row_stop_indicator_shape_tv"
             android:layout_width="wrap_content"
-            android:layout_height="20dp"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
             android:background="@xml/stop_circle" />
 
     </RelativeLayout>
@@ -49,7 +48,6 @@
         android:id="@+id/adapter_item_journey_stop_row_stop_name_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
         android:layout_toEndOf="@+id/adapter_item_journey_stop_row_line_ll"
         android:textColor="@color/primary_text"
         android:textSize="15sp" />

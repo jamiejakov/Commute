@@ -36,9 +36,11 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-
+/**
+ * Class which displays the times for the chosen commute
+ * Commute preferences are in the SettingsActivity
+ */
 public class CommuteFragment extends Fragment implements View.OnClickListener {
-    private View mTabView;
     private ArrayList<Commute> mCommuteLegs;
     private Commute mSelectedCommute;
     private Timetable mSelectedTimetable;
@@ -63,10 +65,6 @@ public class CommuteFragment extends Fragment implements View.OnClickListener {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        /*mTabView = inflater.inflate(R.layout.app_bar_commute, container, false);
-        AppBarLayout appBar = (AppBarLayout) getActivity().findViewById(R.id.app_bar_main_appbar);
-        appBar.addView(mTabView);*/
-
         mCommuteLegs = new ArrayList<>();
         return inflater.inflate(R.layout.fragment_commute, container, false);
     }
@@ -74,13 +72,6 @@ public class CommuteFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
-
-        /*TabLayout tabLayout = (TabLayout) getActivity().findViewById(R.id.app_bar_commute_tab_layout);
-        tabLayout.addTab(tabLayout.newTab().setText("MOSHI MOSHI"));
-        tabLayout.addTab(tabLayout.newTab().setText("DIS IS DOG"));
-        tabLayout.addTab(tabLayout.newTab().setText("such wow"));
-        tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);*/
 
         mSwapFab = (FloatingActionButton) getActivity().findViewById(R.id.fragment_journey_search_fab);
         mSwapFab.setOnClickListener(this);
@@ -98,12 +89,6 @@ public class CommuteFragment extends Fragment implements View.OnClickListener {
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-        setUpData();
-    }
-
-    @Override
     public void onResume() {
         super.onStart();
         setUpData();
@@ -111,7 +96,6 @@ public class CommuteFragment extends Fragment implements View.OnClickListener {
 
     @Override
     public void onStop() {
-        //((ViewGroup) mTabView.getParent()).removeView(mTabView);
         super.onStop();
     }
 
@@ -130,6 +114,11 @@ public class CommuteFragment extends Fragment implements View.OnClickListener {
         }
     }
 
+    /**
+     * Swaps the direction of the commute
+     * Home -> Work
+     * Work -> Home
+     */
     private void swap() {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
         SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -155,6 +144,9 @@ public class CommuteFragment extends Fragment implements View.OnClickListener {
         setUpData();
     }
 
+    /**
+     * Shows the previous services if it exists
+     */
     private void showPrev() {
         Calendar now = Calendar.getInstance();
         now.setTime(mSelectedTimetable.getStopTimes().get(mStopTimeCount - 2).getDepartureTime());
@@ -167,6 +159,9 @@ public class CommuteFragment extends Fragment implements View.OnClickListener {
 
     }
 
+    /**
+     * Shows the next services if it exists
+     */
     private void showNext() {
         Calendar now = Calendar.getInstance();
         now.setTime(mSelectedTimetable.getStopTimes().get(mStopTimeCount - 2).getDepartureTime());
@@ -178,6 +173,13 @@ public class CommuteFragment extends Fragment implements View.OnClickListener {
         }
     }
 
+    /**
+     * Check if the service exists
+     * Changes the opacity of the button appropriately
+     * @param forNext - true: next service; false: previous service
+     * @param button1 - prev button or next button
+     * @param button2 - next button or prev button
+     */
     private void checkIfNextExist(boolean forNext, ImageButton button1, ImageButton button2) {
         Calendar now = Calendar.getInstance();
         now.setTime(mSelectedTimetable.getStopTimes().get(mStopTimeCount - 2).getDepartureTime());
@@ -191,26 +193,34 @@ public class CommuteFragment extends Fragment implements View.OnClickListener {
         }
     }
 
+    /**
+     * Set up ALL the UI elements
+     * Bind data to them
+     */
     private void setUpScreen() {
+        ImageView transportImage = (ImageView) getActivity().findViewById(R.id.fragment_commute_transport_mode_image);
+        RelativeLayout bottomSheet = (RelativeLayout) getActivity().findViewById(R.id.fragment_commute_bottom_sheet_ll);
+        TextView routeLineName = (TextView) getActivity().findViewById(R.id.fragment_commute_line_name_tv);
+        TextView destination = (TextView) getActivity().findViewById(R.id.fragment_commute_commute_destination_tv);
+        FrameLayout routeType = (FrameLayout) getActivity().findViewById(R.id.fragment_commute_line_number_frame);
+        TextView startStop = (TextView) getActivity().findViewById(R.id.fragment_commute_stop_from_name);
+        TextView endStop = (TextView) getActivity().findViewById(R.id.fragment_commute_stop_to_name);
+        TextView departureTime = (TextView) getActivity().findViewById(R.id.fragment_commute_stop_from_time);
+        TextView arrivalTime = (TextView) getActivity().findViewById(R.id.fragment_commute_stop_to_time);
+
+        DateFormat date = new SimpleDateFormat(Constants.DATE_FORMAT_HH_MM_SPACE_AM, Locale.ENGLISH);
         Route selectedRoute = mSelectedTimetable.getTrip().getRoute();
         mStopTimeCount = mSelectedTimetable.getStopTimes().size();
 
-        getActivity().setTitle(getActivity().getString(R.string.commute) + " to " + mSelectedCommute.getEndStopShortName());
+        getActivity().setTitle(getActivity().getString(R.string.commute) + getString(R.string.to_with_spaces) + mSelectedCommute.getEndStopShortName());
 
-        ImageView transportImage = (ImageView) getActivity().findViewById(R.id.fragment_commute_transport_mode_image);
-        transportImage.setImageResource(mSelectedTimetable.getStopTimes().get(mStopTimeCount - 2).getStop().getStopType());
+        transportImage.setImageResource(mSelectedTimetable.getStopTimes().get(mStopTimeCount - 2).getStop().getImage());
         transportImage.setVisibility(View.VISIBLE);
         if (selectedRoute.getAgency().getID().equals(getString(R.string.regional_trains_agency))) {
             transportImage.setImageResource(R.drawable.tnsw_icon_regional_train);
         }
 
-        RelativeLayout bottomSheet = (RelativeLayout) getActivity().findViewById(R.id.fragment_commute_bottom_sheet_ll);
-        TextView routeLineName = (TextView) getActivity().findViewById(R.id.fragment_commute_line_name_tv);
-
-        TextView destination = (TextView) getActivity().findViewById(R.id.fragment_commute_commute_destination_tv);
-
         String line = selectedRoute.getLongName();
-        FrameLayout routeType = (FrameLayout) getActivity().findViewById(R.id.fragment_commute_line_number_frame);
         if (selectedRoute.getAgency().getID().equals(getString(R.string.sydney_trains_agency))) {
             routeType.setVisibility(View.VISIBLE);
             GradientDrawable lineShape = (GradientDrawable) routeType.getBackground();
@@ -225,31 +235,30 @@ public class CommuteFragment extends Fragment implements View.OnClickListener {
             routeType.setVisibility(View.GONE);
         }
 
-        String desString = "for " + mSelectedTimetable.getTrip().getHeadSign();
+        String desString = getString(R.string.for_space) + mSelectedTimetable.getTrip().getHeadSign();
         destination.setText(desString);
 
-        TextView startStop = (TextView) getActivity().findViewById(R.id.fragment_commute_stop_from_name);
         startStop.setText(mSelectedTimetable.getStopTimes().get(mStopTimeCount - 2).getStop().getName());
-        TextView endStop = (TextView) getActivity().findViewById(R.id.fragment_commute_stop_to_name);
         endStop.setText(mSelectedTimetable.getStopTimes().get(mStopTimeCount - 1).getStop().getName());
 
         bottomSheet.setBackgroundColor(selectedRoute.getColor());
-        DateFormat date = new SimpleDateFormat(getString(R.string.am_pm_time_format), Locale.ENGLISH);
-        TextView departureTime = (TextView) getActivity().findViewById(R.id.fragment_commute_stop_from_time);
+
         Date departureTimeDate = mSelectedTimetable.getStopTimes().get(mStopTimeCount - 2).getDepartureTime();
+        Date arrivalTimeDate = mSelectedTimetable.getStopTimes().get(mStopTimeCount - 1).getArrivalTime();
         departureTime.setText(date.format(departureTimeDate));
-        TextView arrivalTime = (TextView) getActivity().findViewById(R.id.fragment_commute_stop_to_time);
-        arrivalTime.setText(date.format(mSelectedTimetable.getStopTimes().get(mStopTimeCount - 1).getArrivalTime()));
+        arrivalTime.setText(date.format(arrivalTimeDate));
 
         checkIfNextExist(false, mPrevButton, mNextButton);
 
-
-
-        setETA(departureTimeDate);
+        setEtd(departureTimeDate);
     }
 
-    private void setETA(Date departureTime) {
-        final TextView etaText = (TextView) getActivity().findViewById(R.id.fragment_commute_bottom_sheet_eta);
+    /**
+     * Set the estimated time of train departure
+     * @param departureTime - time when train departs the station
+     */
+    private void setEtd(Date departureTime) {
+        final TextView etdText = (TextView) getActivity().findViewById(R.id.fragment_commute_bottom_sheet_eta);
         Calendar now = Common.getNow();
         Calendar dep = Calendar.getInstance();
         dep.setTime(departureTime);
@@ -264,7 +273,7 @@ public class CommuteFragment extends Fragment implements View.OnClickListener {
             mNextServiceText.setText(R.string.next_service_departing_in);
             mCountdownTimer = new CountDownTimer(millis, 1000) {
                 public void onTick(long millisUntilFinished) {
-                    etaText.setText(Common.getDurationTime(millisUntilFinished, true, true, true));
+                    etdText.setText(Common.getDurationTime(millisUntilFinished, true, true, true));
                 }
 
                 public void onFinish() {
@@ -272,11 +281,15 @@ public class CommuteFragment extends Fragment implements View.OnClickListener {
                 }
             }.start();
         } else {
-            etaText.setText("");
+            etdText.setText("");
             mNextServiceText.setText(R.string.service_already_departed);
         }
     }
 
+    /**
+     * Set up the data needed to be displayed in the UI
+     * Call the async task to gather data from DB
+     */
     private void setUpData() {
         mCommuteLegs.clear();
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
@@ -292,6 +305,9 @@ public class CommuteFragment extends Fragment implements View.OnClickListener {
         }
     }
 
+    /**
+     * Once async task is done, continue the setup of data and then start setting up the screen.
+     */
     private void continueSetup() {
         mSelectedCommute = mCommuteLegs.get(0);
         Timetable tmp = Common.findClosestTimetable(mSelectedCommute.getTripTimetables(), mSelectedCommute.getStartStopShortName(), Common.getNow(), true, true);
@@ -304,7 +320,7 @@ public class CommuteFragment extends Fragment implements View.OnClickListener {
     /**
      * Loads the list of Timetables connecting the 2 stops for the daily commute.
      */
-    private class LoadCommuteAsync extends AsyncTask<Void, Void, Void> {
+    private class LoadCommuteAsync extends AsyncTask<Void, Void, Commute> {
 
         private ProgressDialog mDialog;
         private String mStartStopShortName;
@@ -325,13 +341,13 @@ public class CommuteFragment extends Fragment implements View.OnClickListener {
         }
 
         @Override
-        protected Void doInBackground(Void... params) {
-            mCommuteLegs.add(CommuteManager.getCommute(mStartStopShortName, mEndStopShortName));
-            return null;
+        protected Commute doInBackground(Void... params) {
+            return CommuteManager.getCommute(mStartStopShortName, mEndStopShortName);
         }
 
         @Override
-        protected void onPostExecute(Void aVoid) {
+        protected void onPostExecute(Commute commute) {
+            mCommuteLegs.add(commute);
             if (this.mDialog.isShowing()) {
                 this.mDialog.dismiss();
             }

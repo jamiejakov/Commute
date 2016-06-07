@@ -19,9 +19,11 @@ import com.id11303765.commute.model.DatabaseHelper;
 import com.id11303765.commute.utils.Common;
 import com.id11303765.commute.utils.Constants;
 import com.id11303765.commute.view.journey.JourneyFragment;
-import com.id11303765.commute.view.timetables.TimetablesFragment;
 
-
+/**
+ * Fragment that is visible only when the application is launched for the very first time.
+ * Also populates the database.
+ */
 public class WelcomeFragment extends Fragment implements View.OnClickListener {
     private Button mButton;
     private TextView mText;
@@ -79,6 +81,9 @@ public class WelcomeFragment extends Fragment implements View.OnClickListener {
         frag.beginTransaction().replace(R.id.activity_main_content_frame, new JourneyFragment()).commit();
     }
 
+    /**
+     * After the database is done importing, enable the button to continue to settings.
+     */
     private void enableButton() {
         mText.setText(getString(R.string.getting_started));
         mButton.setEnabled(true);
@@ -88,9 +93,7 @@ public class WelcomeFragment extends Fragment implements View.OnClickListener {
      * Populates the internal database with the GTFS data from Transport NSW
      */
     private class LaunchPopulateDbAsync extends AsyncTask<Void, Void, Void> {
-
         private DatabaseHelper mDB;
-
 
         LaunchPopulateDbAsync(DatabaseHelper db) {
             mDB = db;

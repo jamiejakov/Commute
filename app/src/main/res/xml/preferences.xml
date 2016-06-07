@@ -12,13 +12,6 @@
         </Preference>
 
         <Preference
-            android:key="@string/transfer_preference"
-            android:summary="@string/transfer_preference_summary"
-            android:title="@string/transfer_preference">
-
-        </Preference>
-
-        <Preference
             android:key="@string/work_preference"
             android:summary="@string/work_preference_summary"
             android:title="@string/work_preference">

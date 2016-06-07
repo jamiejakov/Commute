@@ -43,37 +43,35 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
+/**
+ * Activity displaying the journey selected.
+ * Gives overall info on the top
+ * and a pretty route visualisation below
+ */
 public class JourneyRouteActivity extends AppCompatActivity implements RecyclerViewExpandableItemManager.OnGroupCollapseListener,
         RecyclerViewExpandableItemManager.OnGroupExpandListener, View.OnClickListener {
     private static final String SAVED_STATE_EXPANDABLE_ITEM_MANAGER = "RecyclerViewExpandableItemManager";
-    private Journey mJourney;
-    private RecyclerView mRecyclerView;
-    private RecyclerView.LayoutManager mLayoutManager;
-    private RecyclerView.Adapter mWrappedAdapter;
     private RecyclerViewExpandableItemManager mRecyclerViewExpandableItemManager;
+    private Journey mJourney;
     private Activity mActivity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         String journeyPK = getIntent().getStringExtra(Constants.INTENT_JOURNEY_ROUTE);
         mJourney = JourneyManager.findJourney(journeyPK);
-
         mActivity = this;
 
         if (mJourney != null) {
             setUpScreen(savedInstanceState);
         } else {
-            Log.d(Constants.ERROR_LOG, "Could not find journey");
+            Log.d(Constants.TAG_ERROR_LOG, getString(R.string.could_not_find_journey));
             finish();
         }
-
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.journey_route_menu, menu);
         return true;
     }
@@ -128,6 +126,11 @@ public class JourneyRouteActivity extends AppCompatActivity implements RecyclerV
         }
     }
 
+    /**
+     * Set up screen UI
+     *
+     * @param savedInstanceState -
+     */
     private void setUpScreen(Bundle savedInstanceState) {
         setContentView(R.layout.activity_journey_route);
         Toolbar toolbar = (Toolbar) findViewById(R.id.activity_journey_route_toolbar);
@@ -141,7 +144,11 @@ public class JourneyRouteActivity extends AppCompatActivity implements RecyclerV
         setUpRouteVisualisation(savedInstanceState);
     }
 
+    /**
+     * Bind the data from the Journey to the UI
+     */
     private void setUpTopInfo() {
+        DateFormat date = new SimpleDateFormat(Constants.DATE_FORMAT_HH_MM_SPACE_AM, Locale.ENGLISH);
         TextView fromTime = (TextView) findViewById(R.id.activity_journey_route_from_time_text);
         TextView toTime = (TextView) findViewById(R.id.activity_journey_route_to_time_text);
         TextView durationTextView = (TextView) findViewById(R.id.activity_journey_route_duration_text);
@@ -154,38 +161,32 @@ public class JourneyRouteActivity extends AppCompatActivity implements RecyclerV
         LinearLayout speedLayout = (LinearLayout) findViewById(R.id.activity_journey_route_speed_ll);
         LinearLayout priceLayout = (LinearLayout) findViewById(R.id.activity_journey_route_price_ll);
         LinearLayout convenienceLayout = (LinearLayout) findViewById(R.id.activity_journey_route_convenience_ll);
+        assert fromTime != null;
+        assert toTime != null;
+        assert price != null;
+        assert durationTextView != null;
+        assert transfersTextView != null;
+        assert speedLayout != null;
+        assert priceLayout != null;
+        assert convenienceLayout != null;
 
-        String title = mJourney.getJourneyLegs().get(0).getStartStop().getShortName() + " to " +
-                mJourney.getJourneyLegs().get(mJourney.getJourneyLegs().size() - 1).getEndStop().getShortName() +
-                " - Route " + getIntent().getStringExtra(Constants.INTENT_JOURNEY_ROUTE_NUMBER);
+        String title = mJourney.getStartStop().getShortName() + getString(R.string.to_with_spaces) + mJourney.getEndStop().getShortName() +
+                getString(R.string.dash_route) + getIntent().getStringExtra(Constants.INTENT_JOURNEY_ROUTE_NUMBER);
         setTitle(title);
 
-        DateFormat date = new SimpleDateFormat(getString(R.string.am_pm_time_format), Locale.ENGLISH);
-        StopTime startStopTime = null;
-        for (StopTime st : mJourney.getJourneyLegs().get(0).getTimetable().getStopTimes()) {
-            if (st.getStop().equals(mJourney.getJourneyLegs().get(0).getStartStop())) {
-                startStopTime = st;
-            }
-        }
-        fromTime.setText(date.format(startStopTime.getDepartureTime()));
+        int lastLegPos = mJourney.getJourneyLegs().size() - 1;
 
-        int lastLeg = mJourney.getJourneyLegs().size() - 1;
-        int lastStopPos = mJourney.getJourneyLegs().get(lastLeg).getTimetable().getStopTimes().size() - 1;
-        StopTime endStopTime = null;
-        for (StopTime st : mJourney.getJourneyLegs().get(lastLeg).getTimetable().getStopTimes()) {
-            if (st.getStop().equals(mJourney.getJourneyLegs().get(0).getEndStop())) {
-                endStopTime = st;
-            }
-        }
-        toTime.setText(date.format(endStopTime.getArrivalTime()));
+        fromTime.setText(date.format(mJourney.getDepartureTime()));
+        toTime.setText(date.format(mJourney.getArrivalTime()));
 
         long duration = mJourney.getArrivalTime().getTime() - mJourney.getDepartureTime().getTime();
         String durationText = "(" + Common.getDurationTime(duration, true, true, false).trim() + ")";
+
         durationTextView.setText(durationText);
         price.setText(String.valueOf(mJourney.getmPrice()));
 
-        int transfers = mJourney.getJourneyLegs().size() - 1;
-        String transferText = " " + String.valueOf(transfers);
+        // number of transfers is the same as the size of the array of journeys - 1
+        String transferText = " " + String.valueOf(lastLegPos);
         transfersTextView.setText(transferText);
 
         Common.makeViewVisible(speedLayout, mJourney.isFast());
@@ -194,16 +195,23 @@ public class JourneyRouteActivity extends AppCompatActivity implements RecyclerV
         ((ImageView) speedLayout.getChildAt(0)).getDrawable().setAlpha(Constants.OPAQUE);
         ((ImageView) priceLayout.getChildAt(0)).getDrawable().setAlpha(Constants.OPAQUE);
         ((ImageView) convenienceLayout.getChildAt(0)).getDrawable().setAlpha(Constants.OPAQUE);
-        for (JourneyLeg jl : mJourney.getJourneyLegs()) {
-            int mode = jl.getTimetable().getStopTimes().get(0).getStop().getStopType();
-            Common.setTransportModes(mode, trainImage, busImage, ferryImage, lightRailImage);
+
+        View[] transportViews = new View[]{trainImage, busImage, ferryImage, lightRailImage};
+        for (JourneyLeg journeyLeg : mJourney.getJourneyLegs()) {
+            Common.makeViewVisible(transportViews[journeyLeg.getStartStop().getStopType() - 1], true);
         }
     }
 
-
+    /**
+     * Setup the RecyclerView for the visual journey line between the stops
+     * With collapsable stations.
+     *
+     * @param savedInstanceState -
+     */
     private void setUpRouteVisualisation(Bundle savedInstanceState) {
-        mRecyclerView = (RecyclerView) findViewById(R.id.activity_journey_routes_list_recyclerview);
-        mLayoutManager = new LinearLayoutManager(this);
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.activity_journey_routes_list_recyclerview);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
+        assert recyclerView != null;
 
         final Parcelable eimSavedState = (savedInstanceState != null) ? savedInstanceState.getParcelable(SAVED_STATE_EXPANDABLE_ITEM_MANAGER) : null;
         mRecyclerViewExpandableItemManager = new RecyclerViewExpandableItemManager(eimSavedState);
@@ -211,43 +219,53 @@ public class JourneyRouteActivity extends AppCompatActivity implements RecyclerV
         mRecyclerViewExpandableItemManager.setOnGroupCollapseListener(this);
 
         //adapter
-        final JourneyRouteLegVisualAdapter routeAdapter = new JourneyRouteLegVisualAdapter(this, this, mJourney.getJourneyLegs());
-        mWrappedAdapter = mRecyclerViewExpandableItemManager.createWrappedAdapter(routeAdapter);       // wrap for expanding
+        final JourneyRouteLegVisualAdapter routeAdapter = new JourneyRouteLegVisualAdapter(this, mJourney.getJourneyLegs());
+        RecyclerView.Adapter mWrappedAdapter = mRecyclerViewExpandableItemManager.createWrappedAdapter(routeAdapter);
         final GeneralItemAnimator animator = new RefactoredDefaultItemAnimator();
 
-        // Change animations are enabled by default since support-v7-recyclerview v22.
-        // Need to disable them when using animation indicator.
         animator.setSupportsChangeAnimations(false);
 
-        mRecyclerView.setLayoutManager(mLayoutManager);
-        mRecyclerView.setAdapter(mWrappedAdapter);  // requires *wrapped* adapter
-        mRecyclerView.setItemAnimator(animator);
-        mRecyclerView.setHasFixedSize(false);
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setAdapter(mWrappedAdapter);
+        recyclerView.setItemAnimator(animator);
+        recyclerView.setHasFixedSize(false);
 
-        mRecyclerViewExpandableItemManager.attachRecyclerView(mRecyclerView);
+        mRecyclerViewExpandableItemManager.attachRecyclerView(recyclerView);
 
-        setUpEndStop();
+        setUpEndStopInfo();
     }
 
-    private void setUpEndStop() {
+    /**
+     * Bind the data about the last stop to the UI
+     */
+    private void setUpEndStopInfo() {
         TextView destinationTime = (TextView) findViewById(R.id.activity_journey_route_end_time);
         TextView stopIndicator = (TextView) findViewById(R.id.activity_journey_route_end_stop_indicator);
         TextView stopName = (TextView) findViewById(R.id.activity_journey_route_end_stop_name);
         FrameLayout lineLine = (FrameLayout) findViewById(R.id.activity_journey_stop_row_leg_line_fl);
+        assert destinationTime != null;
+        assert lineLine != null;
+        assert stopName != null;
+        assert stopIndicator != null;
 
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(getString(R.string.am_pm_time_format), Locale.US);
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(Constants.DATE_FORMAT_HH_MM_SPACE_AM, Locale.US);
         destinationTime.setText(simpleDateFormat.format(mJourney.getArrivalTime()));
 
         GradientDrawable stopIndicatorShape = (GradientDrawable) stopIndicator.getBackground();
         JourneyLeg lastLeg = mJourney.getJourneyLegs().get(mJourney.getJourneyLegs().size() - 1);
-        stopIndicatorShape.setColor(lastLeg.getTimetable().getTrip().getRoute().getColor());
 
-        lineLine.setBackgroundColor(lastLeg.getTimetable().getTrip().getRoute().getColor());
+        int color = lastLeg.getTimetable().getTrip().getRoute().getColor();
+        stopIndicatorShape.setColor(color);
+        lineLine.setBackgroundColor(color);
 
         stopName.setText(lastLeg.getEndStop().getShortName());
         stopName.setOnClickListener(this);
     }
 
+    /**
+     * Bottom sheet that allows the users to save to calendar
+     * and set journey as commute.
+     */
     private void createBottomSheet() {
         new BottomSheet.Builder(this, R.style.BottomSheet_Dialog)
                 .sheet(R.menu.journey_route_bottom_sheet_menu)
@@ -266,35 +284,55 @@ public class JourneyRouteActivity extends AppCompatActivity implements RecyclerV
                 }).show();
     }
 
+    /**
+     * Set commute action when clicking on the option in the bottom sheet
+     * Display snackbar when complete
+     */
     private void setCommute() {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor = sharedPreferences.edit();
+        CoordinatorLayout baseView = (CoordinatorLayout) findViewById(R.id.activity_journey_route_coordinator);
+        assert baseView != null;
+
         editor.putString(getString(R.string.home_preference), mJourney.getJourneyLegs().get(0).getStartStop().getShortName());
         editor.putString(getString(R.string.work_preference), mJourney.getJourneyLegs().get(mJourney.getJourneyLegs().size() - 1).getEndStop().getShortName());
         editor.apply();
-        CoordinatorLayout baseView = (CoordinatorLayout) findViewById(R.id.activity_journey_route_coordinator);
+
         Snackbar.make(baseView, R.string.set_commute_success_message, Snackbar.LENGTH_LONG).show();
     }
 
+    /**
+     * Save to calendar action when clicking on the option in the bottom sheet
+     * Display snackbar when complete
+     */
     private void saveToCalendar() {
+        CoordinatorLayout baseView = (CoordinatorLayout) findViewById(R.id.activity_journey_route_coordinator);
+        assert baseView != null;
         Intent intent = new Intent(Intent.ACTION_INSERT);
+
         intent.setType(getString(R.string.calendar_event));
         intent.putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, mJourney.getDepartureTime().getTime());
         intent.putExtra(CalendarContract.EXTRA_EVENT_END_TIME, mJourney.getArrivalTime().getTime());
         intent.putExtra(CalendarContract.Events.TITLE, getString(R.string.journey_from) +
-                mJourney.getJourneyLegs().get(0).getStartStop().getShortName() + " to " +
+                mJourney.getJourneyLegs().get(0).getStartStop().getShortName() + getString(R.string.to_with_spaces) +
                 mJourney.getJourneyLegs().get(mJourney.getJourneyLegs().size() - 1).getEndStop().getShortName());
         intent.putExtra(CalendarContract.Events.DESCRIPTION, createCalendarDescription());
         intent.putExtra(CalendarContract.Events.EVENT_LOCATION, mJourney.getJourneyLegs().get(0).getStartStop().getShortName());
         startActivity(intent);
-        CoordinatorLayout baseView = (CoordinatorLayout) findViewById(R.id.activity_journey_route_coordinator);
+
         Snackbar.make(baseView, R.string.calendar_event_success, Snackbar.LENGTH_LONG).show();
     }
 
-    private String createCalendarDescription(){
-        DateFormat date = new SimpleDateFormat(getString(R.string.am_pm_time_format_no_space), Locale.ENGLISH);
+    /**
+     * Create the amazingly beautiful and meaningful calendar description
+     *
+     * @return the description
+     */
+    private String createCalendarDescription() {
+        DateFormat date = new SimpleDateFormat(Constants.DATE_FORMAT_HH_MM_AM, Locale.ENGLISH);
         long duration = mJourney.getArrivalTime().getTime() - mJourney.getDepartureTime().getTime();
         int transfers = mJourney.getJourneyLegs().size() - 1;
+
         String description = mJourney.getJourneyLegs().get(0).getStartStop().getShortName() + getString(R.string.to_arrow_right) +
                 mJourney.getJourneyLegs().get(mJourney.getJourneyLegs().size() - 1).getEndStop().getShortName() + getString(R.string.enter);
         description += date.format(mJourney.getDepartureTime()) + getString(R.string.to_arrow_right) +
@@ -306,24 +344,27 @@ public class JourneyRouteActivity extends AppCompatActivity implements RecyclerV
         description += getString(R.string.line) + getString(R.string.enter);
         for (JourneyLeg leg : mJourney.getJourneyLegs()) {
             Date departureTime = leg.getTimetable().getStopTimes().get(0).getDepartureTime();
-            Date arrivalTime = leg.getTimetable().getStopTimes().get(leg.getTimetable().getStopTimes().size()-1).getArrivalTime();
+            Date arrivalTime = leg.getTimetable().getStopTimes().get(leg.getTimetable().getStopTimes().size() - 1).getArrivalTime();
             description += getString(R.string.stop_square) + leg.getStartStop().getShortName() + getString(R.string.enter);
             description += getString(R.string.to_stop_arrow_down) + date.format(departureTime) +
                     getString(R.string.tilda) + date.format(arrivalTime) + getString(R.string.enter);
             description += getString(R.string.to_stop_arrow_down) + leg.getTimetable().getTrip().getRoute().getLongName() + getString(R.string.enter);
         }
-        description += getString(R.string.stop_square) + mJourney.getJourneyLegs().get(mJourney.getJourneyLegs().size()-1).getEndStop().getShortName();
-        Log.d("YAY", description);
+        description += getString(R.string.stop_square) + mJourney.getJourneyLegs().get(mJourney.getJourneyLegs().size() - 1).getEndStop().getShortName();
+
+        Log.d(Constants.TAG_ADD_TO_CALENDAR, description);
         return description;
     }
 
+    /**
+     * Adjusts the scroll when the group recyclerView is expanded.
+     *
+     * @param groupPosition -
+     */
     private void adjustScrollPositionOnGroupExpanded(int groupPosition) {
         int childItemHeight = getResources().getDimensionPixelSize(R.dimen.journey_route_visual_stop_height);
-        int topMargin = (int) (getResources().getDisplayMetrics().density * 16); // top-spacing: 16dp
-        int bottomMargin = topMargin; // bottom-spacing: 16dp
+        int margin = (int) (getResources().getDisplayMetrics().density * getResources().getDimensionPixelSize(R.dimen.fab_margin));
 
-        mRecyclerViewExpandableItemManager.scrollToGroup(groupPosition, childItemHeight, topMargin, bottomMargin);
+        mRecyclerViewExpandableItemManager.scrollToGroup(groupPosition, childItemHeight, margin, margin);
     }
-
-
 }

@@ -1,6 +1,5 @@
 package com.id11303765.commute.view;
 
-import android.app.Activity;
 import android.app.FragmentManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -26,10 +25,12 @@ import com.id11303765.commute.model.RouteManager;
 import com.id11303765.commute.model.StopManager;
 import com.id11303765.commute.model.TimetableManager;
 import com.id11303765.commute.model.TripManager;
-import com.id11303765.commute.utils.Common;
 import com.id11303765.commute.view.journey.JourneyFragment;
-import com.id11303765.commute.view.timetables.TimetablesFragment;
 
+/**
+ * Main activity of the application
+ * Handles the drawer and created the database helper
+ */
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -40,9 +41,8 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        setUpDrawer();
-        setUpDatabaseHelpers();
-        Common.setContext(this);
+        setUpScreen();
+        setUpPojoManagers();
         selectLaunchScreen();
     }
 
@@ -56,15 +56,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
         int id = item.getItemId();
         FragmentManager frag = getFragmentManager();
 
@@ -72,8 +64,6 @@ public class MainActivity extends AppCompatActivity
             frag.beginTransaction().replace(R.id.activity_main_content_frame, new JourneyFragment()).commit();
         } else if (id == R.id.nav_commute) {
             frag.beginTransaction().replace(R.id.activity_main_content_frame, new CommuteFragment()).commit();
-        } else if (id == R.id.nav_timetable) {
-            frag.beginTransaction().replace(R.id.activity_main_content_frame, new TimetablesFragment()).commit();
         } else if (id == R.id.nav_settings) {
             startActivity(new Intent(this, SettingsActivity.class));
         } else if (id == R.id.nav_about) {
@@ -84,6 +74,9 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
+    /**
+     * Chooses which fragment to display when opening the application based on the shared preferences.
+     */
     private void selectLaunchScreen() {
         FragmentManager frag = getFragmentManager();
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
@@ -102,15 +95,17 @@ public class MainActivity extends AppCompatActivity
             case "2":
                 frag.beginTransaction().replace(R.id.activity_main_content_frame, new CommuteFragment()).commit();
                 break;
-            case "3":
-                frag.beginTransaction().replace(R.id.activity_main_content_frame, new TimetablesFragment()).commit();
-                break;
         }
     }
 
-    private void setUpDrawer() {
+    /**
+     * Setup for all UI elements for the Activity
+     */
+    private void setUpScreen() {
+        //Setup toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar_main_toolbar);
         setSupportActionBar(toolbar);
+        //Setup drawer
         mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         final NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         assert navigationView != null;
@@ -118,7 +113,6 @@ public class MainActivity extends AppCompatActivity
         final MenuItem item = navMenu.findItem(R.id.nav_commute);
         ActionBarDrawerToggle drawerToggle = new ActionBarDrawerToggle(
                 this, mDrawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
-
             @Override
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
@@ -128,14 +122,16 @@ public class MainActivity extends AppCompatActivity
                 }
             }
         };
-
-
         assert mDrawer != null;
         mDrawer.addDrawerListener(drawerToggle);
         drawerToggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
     }
 
+    /**
+     * Function checks whether the Commute fragemnt is enabled based on shared preferences
+     * @return whether the Commute fragment is enabled
+     */
     private boolean isCommuteEnabled() {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
         String homeStop = sharedPreferences.getString(getString(R.string.home_preference), getString(R.string.default_preference_result));
@@ -143,11 +139,14 @@ public class MainActivity extends AppCompatActivity
         return !homeStop.equals(getString(R.string.default_preference_result)) && !workStop.equals(getString(R.string.default_preference_result));
     }
 
-
-    private void setUpDatabaseHelpers() {
+    /**
+     * Sets up all the POJO manager singletons and gives them access to the database;
+     */
+    private void setUpPojoManagers() {
         DatabaseHelper dbHelper = new DatabaseHelper(this);
         AgencyManager.setDatabaseHelper(dbHelper);
-        RouteManager.setDatabaseHelperAndContext(dbHelper, this);
+        RouteManager.setDatabaseHelper(dbHelper);
+        RouteManager.setLineColors(getResources().getStringArray(R.array.lineColors));
         TripManager.setDatabaseHelper(dbHelper);
         StopManager.setDatabaseHelper(dbHelper);
         TimetableManager.setDatabaseHelper(dbHelper);

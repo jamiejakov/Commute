@@ -78,8 +78,8 @@ public class JourneyManager {
     }
 
     private static JourneyLeg getJourneyLeg(String startStopShortName, String endStopShortName, boolean departAt, Calendar time, int opalCardType) {
-        ArrayList<Stop> startStops = StopManager.getStopsByName(startStopShortName);
-        ArrayList<Stop> endStops = StopManager.getStopsByName(endStopShortName);
+        ArrayList<Stop> startStops = StopManager.getStopsByName(startStopShortName, true);
+        ArrayList<Stop> endStops = StopManager.getStopsByName(endStopShortName, true);
         ArrayList<Stop> allStops = new ArrayList<>();
         allStops.addAll(startStops);
         allStops.addAll(endStops);
@@ -136,7 +136,7 @@ public class JourneyManager {
             arrivingBy.setTime(closestSmallTimetable.getStopTimes().get(closestSmallTimetable.getStopTimes().size() - 1).getDepartureTime());
 
             removeExtraStopTimes(stopSequences, closestTimetable);
-            int type = Common.getTransportModeNumber(endStop.getStopType());
+            int type = endStop.getStopType();
             float distance = calculateDistance(startStop, endStop);
             double price = FareManager.getFare(opalCardType, type, Common.isPeak(Common.getNow()), distance).getValue();
             if (time.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY && price > 2.50){

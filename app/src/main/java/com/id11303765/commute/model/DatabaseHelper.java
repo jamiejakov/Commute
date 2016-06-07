@@ -166,7 +166,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "           AND b." + StopManager.KEY_ID + " IN (" + endSelection + ") \n" +
                 "           AND b." + TimetableManager.KEY_STOP_SEQUENCE + " > a." + TimetableManager.KEY_STOP_SEQUENCE;
 
-        query+= ";";
+        query += ";";
         Cursor cursor = db.rawQuery(query, null);
 
         if (cursor == null) {
@@ -197,7 +197,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return cursor;
     }
 
-    Cursor getAllFares(){
+    Cursor getAllFares() {
         SQLiteDatabase db = getReadableDatabase();
 
         String[] columns = new String[]{FareManager.KEY_DISTANCE, FareManager.KEY_TYPE,
@@ -260,34 +260,36 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             e.printStackTrace();
         }
 
-        BufferedReader buffer = new BufferedReader(new InputStreamReader(inStream));
-        db.beginTransaction();
+        if (inStream != null) {
+            BufferedReader buffer = new BufferedReader(new InputStreamReader(inStream));
+            db.beginTransaction();
 
-        switch (table) {
-            case AgencyManager.KEY_TABLE:
-                populateAgencyTable(db, buffer);
-                break;
-            case Constants.DATABASE_TABLE_CALENDAR:
-                populateCalendarTable(db, buffer);
-                break;
-            case RouteManager.KEY_TABLE:
-                populateRouteTable(db, buffer);
-                break;
-            case StopManager.KEY_TABLE:
-                populateStopTable(db, buffer);
-                break;
-            case TripManager.KEY_TABLE:
-                populateTripTable(db, buffer);
-                break;
-            case TimetableManager.KEY_TABLE:
-                populateStopTimeTable(db, buffer);
-                break;
-            case FareManager.KEY_TABLE:
-                populateOpalFareTable(db, buffer);
+            switch (table) {
+                case AgencyManager.KEY_TABLE:
+                    populateAgencyTable(db, buffer);
+                    break;
+                case Constants.DATABASE_TABLE_CALENDAR:
+                    populateCalendarTable(db, buffer);
+                    break;
+                case RouteManager.KEY_TABLE:
+                    populateRouteTable(db, buffer);
+                    break;
+                case StopManager.KEY_TABLE:
+                    populateStopTable(db, buffer);
+                    break;
+                case TripManager.KEY_TABLE:
+                    populateTripTable(db, buffer);
+                    break;
+                case TimetableManager.KEY_TABLE:
+                    populateStopTimeTable(db, buffer);
+                    break;
+                case FareManager.KEY_TABLE:
+                    populateOpalFareTable(db, buffer);
+            }
+
+            db.setTransactionSuccessful();
+            db.endTransaction();
         }
-
-        db.setTransactionSuccessful();
-        db.endTransaction();
         db.close();
     }
 
@@ -297,7 +299,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             while ((line = buffer.readLine()) != null) {
                 String[] columns = line.split(Constants.CSV_SPLIT);
                 if (columns.length != 6) {
-                    Log.d(Constants.CSV_PARSER_LOG, "Skipping Bad CSV Row in Agency");
+                    Log.d(Constants.TAG_CSV_PARSER_LOG, "Skipping Bad CSV Row in Agency");
                     continue;
                 }
                 ContentValues cv = new ContentValues();
@@ -308,7 +310,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        Log.d(Constants.CSV_PARSER_LOG, "Agencies Added");
+        Log.d(Constants.TAG_CSV_PARSER_LOG, "Agencies Added");
     }
 
     private void populateCalendarTable(SQLiteDatabase db, BufferedReader buffer) {
@@ -317,7 +319,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             while ((line = buffer.readLine()) != null) {
                 String[] columns = line.split(Constants.CSV_SPLIT);
                 if (columns.length != 10) {
-                    Log.d(Constants.CSV_PARSER_LOG, "Skipping Bad CSV Row in Calendar");
+                    Log.d(Constants.TAG_CSV_PARSER_LOG, "Skipping Bad CSV Row in Calendar");
                     continue;
                 }
                 ContentValues cv = new ContentValues();
@@ -334,7 +336,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        Log.d(Constants.CSV_PARSER_LOG, "Calendars Added");
+        Log.d(Constants.TAG_CSV_PARSER_LOG, "Calendars Added");
     }
 
     private void populateRouteTable(SQLiteDatabase db, BufferedReader buffer) {
@@ -343,7 +345,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             while ((line = buffer.readLine()) != null) {
                 String[] columns = line.split(Constants.CSV_SPLIT);
                 if (columns.length != 8) {
-                    Log.d(Constants.CSV_PARSER_LOG, "Skipping Bad CSV Row in Route.");
+                    Log.d(Constants.TAG_CSV_PARSER_LOG, "Skipping Bad CSV Row in Route.");
                     continue;
                 }
                 ContentValues cv = new ContentValues();
@@ -360,7 +362,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        Log.d(Constants.CSV_PARSER_LOG, "Routes Added");
+        Log.d(Constants.TAG_CSV_PARSER_LOG, "Routes Added");
     }
 
     private void populateStopTable(SQLiteDatabase db, BufferedReader buffer) {
@@ -369,7 +371,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             while ((line = buffer.readLine()) != null) {
                 String[] columns = line.split(Constants.CSV_SPLIT);
                 if (columns.length != 9) {
-                    Log.d(Constants.CSV_PARSER_LOG, "Skipping Bad CSV Row in Stop.");
+                    Log.d(Constants.TAG_CSV_PARSER_LOG, "Skipping Bad CSV Row in Stop.");
                     continue;
                 }
                 ContentValues cv = new ContentValues();
@@ -384,7 +386,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        Log.d(Constants.CSV_PARSER_LOG, "Stops Added");
+        Log.d(Constants.TAG_CSV_PARSER_LOG, "Stops Added");
     }
 
     private void populateTripTable(SQLiteDatabase db, BufferedReader buffer) {
@@ -406,7 +408,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        Log.d(Constants.CSV_PARSER_LOG, "Trips Added");
+        Log.d(Constants.TAG_CSV_PARSER_LOG, "Trips Added");
     }
 
     private void populateStopTimeTable(SQLiteDatabase db, BufferedReader buffer) {
@@ -437,16 +439,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        Log.d(Constants.CSV_PARSER_LOG, "Stop Times Added");
+        Log.d(Constants.TAG_CSV_PARSER_LOG, "Stop Times Added");
     }
 
-    private void populateOpalFareTable(SQLiteDatabase db, BufferedReader buffer){
+    private void populateOpalFareTable(SQLiteDatabase db, BufferedReader buffer) {
         String line;
         try {
             while ((line = buffer.readLine()) != null) {
                 String[] columns = line.split(Constants.CSV_SPLIT);
                 if (columns.length != 5) {
-                    Log.d(Constants.CSV_PARSER_LOG, "Skipping Bad CSV Row in Fares");
+                    Log.d(Constants.TAG_CSV_PARSER_LOG, "Skipping Bad CSV Row in Fares");
                     continue;
                 }
                 ContentValues cv = new ContentValues();
@@ -460,12 +462,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        Log.d(Constants.CSV_PARSER_LOG, "Fares Added");
+        Log.d(Constants.TAG_CSV_PARSER_LOG, "Fares Added");
     }
 
     /*-------------- CREATE INDEXES  --------------*/
 
-    public void createIndexes(){
+    public void createIndexes() {
         SQLiteDatabase db = getReadableDatabase();
         createStopIndex(db);
         createTripIndex(db);

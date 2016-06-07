@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/adapter_item_journey_leg_row_relative_layout"
     android:layout_width="match_parent"
-    android:layout_height="180dp"
+    android:layout_height="190dp"
     android:layout_marginEnd="@dimen/fab_margin"
     android:layout_marginStart="@dimen/fab_margin">
 
@@ -58,7 +58,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="30dp"
                 android:src="@drawable/ic_expand_more_black_24dp"
-                android:tint="@color/primary" />
+                android:tint="@color/primary"
+                android:contentDescription="@string/expand_image" />
         </LinearLayout>
 
     </LinearLayout>
@@ -67,9 +68,8 @@
         android:id="@+id/adapter_item_journey_leg_row_line_ll"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_marginStart="10dp"
+        android:layout_marginStart="85dp"
         android:layout_marginTop="5dp"
-        android:layout_toEndOf="@+id/adapter_item_journey_leg_row_left_ll"
         android:gravity="center"
         android:orientation="vertical">
 
@@ -77,18 +77,25 @@
             android:id="@+id/adapter_item_journey_leg_row_leg_line_fl"
             android:layout_width="8dp"
             android:layout_height="match_parent"
-            android:layout_below="@+id/adapter_item_journey_leg_row_stop_indicator_shape_tv"
+            android:layout_below="@+id/adapter_item_journey_leg_row_stop_indicator_shape_ll"
             android:layout_centerInParent="true"
             android:layout_marginTop="-2dp"
             android:background="#52A13F" />
 
-        <TextView
-            android:id="@+id/adapter_item_journey_leg_row_stop_indicator_shape_tv"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:id="@+id/adapter_item_journey_leg_row_stop_indicator_shape_ll"
+            android:layout_width="50dp"
             android:layout_height="wrap_content"
-            android:background="@xml/stop_circle"
-            android:textAlignment="center"
-            android:textColor="@color/white"/>
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/adapter_item_journey_leg_row_stop_indicator_shape_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@xml/stop_circle"
+                android:textAlignment="center"
+                android:textColor="@color/white" />
+        </LinearLayout>
 
     </RelativeLayout>
 
@@ -133,15 +140,15 @@
                     android:background="@xml/rounded_image_border"
                     android:contentDescription="@string/transport_mode_image"
                     android:src="@drawable/tnsw_icon_train"
-                    android:visibility="gone"/>
+                    android:visibility="gone" />
 
                 <FrameLayout
                     android:id="@+id/adapter_item_journey_leg_row_line_number_frame"
                     android:layout_width="@dimen/transport_mode_icon_width_small"
                     android:layout_height="@dimen/transport_mode_icon_width_small"
                     android:layout_marginLeft="5dp"
-                    android:visibility="gone"
-                    android:background="@xml/route_frame">
+                    android:background="@xml/route_frame"
+                    android:visibility="gone">
 
                     <TextView
                         android:id="@+id/adapter_item_journey_leg_row_line_number_tv"
@@ -181,7 +188,7 @@
 
                 <TextView
                     android:id="@+id/adapter_item_journey_leg_row_stop_from_name"
-                    android:layout_width="100dp"
+                    android:layout_width="90dp"
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:textColor="@color/secondary_text"
@@ -201,7 +208,7 @@
 
                 <TextView
                     android:id="@+id/adapter_item_journey_leg_row_stop_to_name"
-                    android:layout_width="100dp"
+                    android:layout_width="90dp"
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:textColor="@color/secondary_text"

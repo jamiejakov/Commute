@@ -58,25 +58,25 @@ public class FareManager {
     }
 
     private static Fare findFare(int type, int transport, boolean peak, float distance) {
-        Fare fare = null;
+        Fare resultFare = null;
         ArrayList<Fare> matchingFares = new ArrayList<>();
-        for (Fare f : mFares) {
-            if (type == f.getType() && transport == f.getTransport() && peak == f.isPeak()) {
-                matchingFares.add(f);
+        for (Fare fare : mFares) {
+            if (type == fare.getType() && transport == fare.getTransport() && peak == fare.isPeak()) {
+                matchingFares.add(fare);
             }
         }
         Collections.sort(matchingFares);
         for (int i = matchingFares.size() - 1; i >= 0; i--) {
             Fare f = matchingFares.get(i);
             if (i==matchingFares.size()-1 && distance > f.getDistance()){
-                fare = f;
+                resultFare = f;
                 break;
             }
             if (distance < f.getDistance()) {
-                fare = f;
+                resultFare = f;
             }
         }
-        return fare;
+        return resultFare;
     }
 
 }

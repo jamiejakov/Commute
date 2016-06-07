@@ -1,12 +1,8 @@
 package com.id11303765.commute.model;
 
 
-import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Color;
-import android.util.Log;
-
-import com.id11303765.commute.R;
 
 import java.util.ArrayList;
 
@@ -14,7 +10,7 @@ public class RouteManager {
     private static RouteManager ourInstance = new RouteManager();
     private static DatabaseHelper mDatabaseHelper;
     private static ArrayList<Route> mRoutes;
-    private static Context mContext;
+    private static String[] mLineColors;
 
     static final String KEY_TABLE = "route";
     static final String KEY_ID = "route_id";
@@ -32,16 +28,16 @@ public class RouteManager {
         mRoutes = new ArrayList<>();
     }
 
-    public static Route getRoute(String id){
+    public static Route getRoute(String id) {
         Route route = findRoute(id);
-        if (route == null){
+        if (route == null) {
             Cursor cursor = mDatabaseHelper.getRoute(id);
             if (cursor.moveToFirst()) {
                 Agency agency = AgencyManager.getAgency(cursor.getString(cursor.getColumnIndex(AgencyManager.KEY_ID)));
-                int color = Color.parseColor("#"+cursor.getString(cursor.getColumnIndex(KEY_COLOR)));
-                if (agency.getID().equals("x0001")){
+                int color = Color.parseColor("#" + cursor.getString(cursor.getColumnIndex(KEY_COLOR)));
+                if (agency.getID().equals("x0001")) {
                     String name = cursor.getString(cursor.getColumnIndex(KEY_LONG_NAME));
-                    int line = Integer.parseInt(name.substring(1,2));
+                    int line = Integer.parseInt(name.substring(1, 2));
                     color = getLineColour(line);
                 }
                 route = new Route(cursor.getString(cursor.getColumnIndex(KEY_ID)), agency,
@@ -57,18 +53,20 @@ public class RouteManager {
     }
 
     private static int getLineColour(int line) {
-        String[] lineColours = mContext.getResources().getStringArray(R.array.lineColors);
-        return Color.parseColor(lineColours[line - 1]);
+        return Color.parseColor(mLineColors[line - 1]);
     }
 
-    public static void setDatabaseHelperAndContext(DatabaseHelper dbHelper, Context context){
+    public static void setLineColors(String[] lineColors){
+        mLineColors = lineColors;
+    }
+
+    public static void setDatabaseHelper(DatabaseHelper dbHelper) {
         mDatabaseHelper = dbHelper;
-        mContext = context;
     }
 
-    private static Route findRoute(String id){
-        for(Route r : mRoutes){
-            if (r.getID() == id){
+    private static Route findRoute(String id) {
+        for (Route r : mRoutes) {
+            if (r.getID().equals(id)) {
                 return r;
             }
         }

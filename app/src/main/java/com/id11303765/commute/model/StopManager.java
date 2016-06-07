@@ -41,12 +41,12 @@ public class StopManager {
         return stop;
     }
 
-    public static ArrayList<Stop> getStopsByName(String name) {
+    public static ArrayList<Stop> getStopsByName(String name, boolean checkSpace) {
         if (mStops.isEmpty()) {
             getAllStops();
         }
         ArrayList<Stop> list = new ArrayList<>();
-        findStopByNameAndAddToList(name, list);
+        findStopByNameAndAddToList(name, list, checkSpace);
         if (list.size() != 0) {
             return list;
         }
@@ -73,11 +73,18 @@ public class StopManager {
                 cursor.getString(cursor.getColumnIndex(KEY_PLATFORM_CODE)));
     }
 
-    private static void findStopByNameAndAddToList(String name, ArrayList<Stop> list) {
+    private static void findStopByNameAndAddToList(String name, ArrayList<Stop> list, boolean checkSpace) {
         for (Stop s : mStops) {
-            if (s.getShortName().toLowerCase().contains(name.toLowerCase()) &&
-                    !s.getShortName().toLowerCase().contains(" " + name.toLowerCase())){
-                list.add(s);
+            if (checkSpace){
+                if (s.getShortName().toLowerCase().contains(name.toLowerCase()) &&
+                        !s.getShortName().toLowerCase().contains(" " + name.toLowerCase())){
+                    list.add(s);
+                }
+            }
+            else{
+                if (s.getShortName().toLowerCase().contains(name.toLowerCase())){
+                    list.add(s);
+                }
             }
         }
     }

@@ -16,6 +16,9 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.id11303765.commute.R;
 import com.id11303765.commute.utils.Constants;
 
+/**
+ * Sets up map with a marker on the station that has been selected
+ */
 public class JourneyStopMapActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
@@ -27,7 +30,6 @@ public class JourneyStopMapActivity extends FragmentActivity implements OnMapRea
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_stop_map);
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.activity_stop_map_fragment);
         mapFragment.getMapAsync(this);
@@ -43,7 +45,7 @@ public class JourneyStopMapActivity extends FragmentActivity implements OnMapRea
         mName = getIntent().getStringExtra(Constants.INTENT_JOURNEY_STOP_NAME);
         mLat = getIntent().getDoubleExtra(Constants.INTENT_JOURNEY_STOP_LAT, 0);
         mLon = getIntent().getDoubleExtra(Constants.INTENT_JOURNEY_STOP_LON, 0);
-        setTitle("Map for " + mName);
+        setTitle(getString(R.string.map_for) + mName);
     }
 
     @Override

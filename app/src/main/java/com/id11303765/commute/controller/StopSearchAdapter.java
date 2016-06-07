@@ -18,7 +18,10 @@ import com.id11303765.commute.utils.Constants;
 
 import java.util.ArrayList;
 
-
+/**
+ * RecyclerView adapter for the StopSearchActivity class
+ * Shows the list of stops available for selection
+ */
 public class StopSearchAdapter extends RecyclerView.Adapter<StopSearchAdapter.StopSearchViewHolder> {
     private LayoutInflater mInflater;
     private ArrayList<Stop> mStopList;
@@ -43,7 +46,7 @@ public class StopSearchAdapter extends RecyclerView.Adapter<StopSearchAdapter.St
         Stop currentStopData = mStopList.get(position);
         String name = currentStopData.getShortName();
         holder.mName.setText(name);
-        int image = currentStopData.getStopType();
+        int image = currentStopData.getImage();
         if (image != 0) {
             holder.mImage.setImageResource(image);
         }
@@ -66,7 +69,7 @@ public class StopSearchAdapter extends RecyclerView.Adapter<StopSearchAdapter.St
         /**
          * Initialising all the UI elements and linking them to the xml layout file
          */
-        public StopSearchViewHolder(View view) {
+        StopSearchViewHolder(View view) {
             super(view);
             view.setOnClickListener(this);
             mLayout = (RelativeLayout) view.findViewById(R.id.adapter_item_station_search_relative_layout);
@@ -80,7 +83,6 @@ public class StopSearchAdapter extends RecyclerView.Adapter<StopSearchAdapter.St
 
         @Override
         public void onClick(View v) {
-            Context context = itemView.getContext();
             Intent intent = new Intent();
             intent.putExtra(Constants.INTENT_SELECTED_STOP_NAME, mName.getText());
             mActivity.setResult(mIntentRequest, intent);

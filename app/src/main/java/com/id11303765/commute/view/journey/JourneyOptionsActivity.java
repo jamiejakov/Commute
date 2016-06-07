@@ -17,6 +17,22 @@ import com.id11303765.commute.view.SettingsActivity;
 import com.id11303765.commute.view.StopSearchActivity;
 
 public class JourneyOptionsActivity extends AppCompatPreferenceActivity {
+    private static Preference.OnPreferenceChangeListener sBindPreferenceSummaryToValueListener = new Preference.OnPreferenceChangeListener() {
+
+        @Override
+        public boolean onPreferenceChange(Preference preference, Object value) {
+            String stringValue = value.toString();
+            if (preference instanceof ListPreference) {
+
+                ListPreference listPreference = (ListPreference) preference;
+                int index = listPreference.findIndexOfValue(stringValue);
+                preference.setSummary(index >= 0 ? listPreference.getEntries()[index] : null);
+            } else {
+                preference.setSummary(stringValue);
+            }
+            return true;
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,57 +58,35 @@ public class JourneyOptionsActivity extends AppCompatPreferenceActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private static Preference.OnPreferenceChangeListener sBindPreferenceSummaryToValueListener = new Preference.OnPreferenceChangeListener() {
-        @Override
-        public boolean onPreferenceChange(Preference preference, Object value) {
-            String stringValue = value.toString();
-            if (preference instanceof ListPreference) {
-                // For list preferences, look up the correct display value in
-                // the preference's 'entries' list.
-                ListPreference listPreference = (ListPreference) preference;
-                int index = listPreference.findIndexOfValue(stringValue);
 
-                // Set the summary to reflect the new value.
-                preference.setSummary(
-                        index >= 0
-                                ? listPreference.getEntries()[index]
-                                : null);
-
-            } else {
-                // For all other preferences, set the summary to the value's
-                // simple string representation.
-                preference.setSummary(stringValue);
-            }
-            return true;
-        }
-    };
-
+    /**
+     * Binds the preference summary to the selected value
+     *
+     * @param preference - preference item to use
+     */
     private static void bindPreferenceSummaryToValue(Preference preference) {
-        // Set the listener to watch for value changes.
         preference.setOnPreferenceChangeListener(sBindPreferenceSummaryToValueListener);
-
-        // Trigger the listener immediately with the preference's
-        // current value.
         sBindPreferenceSummaryToValueListener.onPreferenceChange(preference,
                 PreferenceManager
                         .getDefaultSharedPreferences(preference.getContext())
                         .getString(preference.getKey(), ""));
     }
 
+    /**
+     * Preference fragment class
+     * Necessary for preferences to function.
+     */
     public static class JourneyOptionsFragment extends PreferenceFragment {
 
         @Override
         public void onCreate(final Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.journey_preferences);
-
+            bindPreferenceSummaryToValue(findPreference(getString(R.string.default_search_pref)));
         }
 
         @Override
         public void onActivityResult(int requestCode, int resultCode, Intent data) {
-            String value;
-            SharedPreferences.Editor editor;
-
         }
     }
 }

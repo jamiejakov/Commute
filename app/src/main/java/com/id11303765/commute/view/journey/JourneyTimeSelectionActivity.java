@@ -35,41 +35,12 @@ public class JourneyTimeSelectionActivity extends AppCompatActivity implements V
     private TabLayout mTabLayout;
     private Button mDateButton;
     private TimePicker mTimePicker;
-    private Button mLeaveNowButton;
-    private Button mDoneButton;
-    private Button mCancelButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_journey_time_selection);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setDisplayHomeAsUpEnabled(true);
-        }
 
-        setTitle(getString(R.string.time_options));
-
-        mTabLayout = (TabLayout) findViewById(R.id.activity_journey_time_selection_tab_layout);
-        TabLayout.Tab departAtTab = mTabLayout.newTab().setText(R.string.depart_at);
-        mTabLayout.addTab(departAtTab);
-        TabLayout.Tab arriveByTab = mTabLayout.newTab().setText(R.string.arrive_by);
-        mTabLayout.addTab(arriveByTab);
-        mTabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
-
-        mDateButton = (Button) findViewById(R.id.activity_journey_time_selection_date_button);
-        mDateButton.setOnClickListener(this);
-        mLeaveNowButton = (Button) findViewById(R.id.activity_journey_time_selection_leave_now_button);
-        mLeaveNowButton.setOnClickListener(this);
-        mCancelButton = (Button) findViewById(R.id.activity_journey_time_selection_cancel_button);
-        mCancelButton.setOnClickListener(this);
-        mDoneButton = (Button) findViewById(R.id.activity_journey_time_selection_done_button);
-        mDoneButton.setOnClickListener(this);
-
-        mTimePicker = (TimePicker) findViewById(R.id.activity_journey_time_selection_time_picker);
-
+        setupScreen();
         setTime();
     }
 
@@ -102,43 +73,52 @@ public class JourneyTimeSelectionActivity extends AppCompatActivity implements V
         }
     }
 
-    private Intent prepareIntent(){
-        Intent intent = new Intent();
-        String tabString = mTabLayout.getTabAt(mTabLayout.getSelectedTabPosition()).getText().toString() + " ";
-        String timeHour = String.valueOf(mTimePicker.getCurrentHour());
-        String timeMinute = String.valueOf(mTimePicker.getCurrentMinute());
-        boolean departAt = tabString.trim().equals(getString(R.string.depart_at));
+    /**
+     * Setup the UI elements
+     */
+    private void setupScreen() {
+        setContentView(R.layout.activity_journey_time_selection);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
 
-        if (mTimePicker.getCurrentMinute() < 10) {
-            timeMinute = "0" + mTimePicker.getCurrentMinute();
-        }
-        if (mTimePicker.getCurrentHour() >= 12) {
-            if (mTimePicker.getCurrentHour() > 12) {
-                timeHour = String.valueOf(mTimePicker.getCurrentHour() - 12);
-            }
-            timeMinute += "pm";
-        } else {
-            timeMinute += "am";
-        }
-        String timeString = timeHour + ":" + timeMinute + ", ";
-        intent.putExtra(Constants.INTENT_TIME_OPTION, tabString + timeString + mDateButton.getText());
-        intent.putExtra(Constants.INTENT_TIME_DEPART_AT_BOOL, departAt);
-        return intent;
+        setTitle(getString(R.string.time_options));
+
+        mTabLayout = (TabLayout) findViewById(R.id.activity_journey_time_selection_tab_layout);
+        mDateButton = (Button) findViewById(R.id.activity_journey_time_selection_date_button);
+        mTimePicker = (TimePicker) findViewById(R.id.activity_journey_time_selection_time_picker);
+        Button leaveNowButton = (Button) findViewById(R.id.activity_journey_time_selection_leave_now_button);
+        Button cancelButton = (Button) findViewById(R.id.activity_journey_time_selection_cancel_button);
+        Button doneButton = (Button) findViewById(R.id.activity_journey_time_selection_done_button);
+        assert leaveNowButton != null;
+        assert doneButton != null;
+        assert cancelButton != null;
+
+        TabLayout.Tab departAtTab = mTabLayout.newTab().setText(R.string.depart_at);
+        TabLayout.Tab arriveByTab = mTabLayout.newTab().setText(R.string.arrive_by);
+        mTabLayout.addTab(departAtTab);
+        mTabLayout.addTab(arriveByTab);
+        mTabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
+
+        mDateButton.setOnClickListener(this);
+
+        leaveNowButton.setOnClickListener(this);
+        cancelButton.setOnClickListener(this);
+        doneButton.setOnClickListener(this);
     }
 
-
-    private void leaveNow(){
-        Intent intent = new Intent();
-        intent.putExtra(Constants.INTENT_TIME_OPTION, getString(R.string.leave_now));
-        intent.putExtra(Constants.INTENT_TIME_DEPART_AT_BOOL, true);
-        setResult(Constants.JOURNEY_TIME_OPTIONS_TO_ACTIVITY_REQUEST, intent);
-        finish();
-    }
-
+    /**
+     * Set up the time elements of the Activity
+     * Change the timepicker hour and minute
+     * Change the date picker button text
+     */
     private void setTime() {
         String fullText = getIntent().getStringExtra(Constants.INTENT_TIME_OPTION);
         if (!fullText.equals(getString(R.string.leave_now))) {
-            String[] columns = fullText.split(",");
+            String[] columns = fullText.split(Constants.COMMA_SPLIT);
 
             String timeString;
             if (columns[0].contains(mTabLayout.getTabAt(0).getText())) {
@@ -153,21 +133,41 @@ public class JourneyTimeSelectionActivity extends AppCompatActivity implements V
         }
     }
 
+    /**
+     * Set the timepicker time based on a time string
+     *
+     * @param string - time in string format
+     */
     private void setTimeFromString(String string) {
-        Calendar c = Common.parseStringToCal(string, getString(R.string.am_pm_time_format_no_space));
+        Calendar c = Common.parseStringToCal(string, Constants.DATE_FORMAT_HH_MM_AM);
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             mTimePicker.setCurrentHour(c.get(Calendar.HOUR_OF_DAY));
             mTimePicker.setCurrentMinute(c.get(Calendar.MINUTE));
-        }else {
+        } else {
             mTimePicker.setHour(c.get(Calendar.HOUR_OF_DAY));
             mTimePicker.setMinute(c.get(Calendar.MINUTE));
         }
 
     }
 
+    /**
+     * On leave now click.
+     * Set text to leave now and finish
+     */
+    private void leaveNow() {
+        Intent intent = new Intent();
+        intent.putExtra(Constants.INTENT_TIME_OPTION, getString(R.string.leave_now));
+        intent.putExtra(Constants.INTENT_TIME_DEPART_AT_BOOL, true);
+        setResult(Constants.JOURNEY_TIME_OPTIONS_TO_ACTIVITY_REQUEST, intent);
+        finish();
+    }
+
+    /**
+     * Open up date picker dialog on datepicker button press.
+     */
     private void showDatePicker() {
-        final SimpleDateFormat dateFormatter = new SimpleDateFormat(getString(R.string.day_month_year_weekday_date_format), Locale.US);
+        final SimpleDateFormat dateFormatter = new SimpleDateFormat(Constants.DATE_FORMAT_DAY_MONTH_YEAR_WEEKDAY, Locale.US);
         Date selected;
         Calendar newCalendar = Calendar.getInstance();
         try {
@@ -178,7 +178,6 @@ public class JourneyTimeSelectionActivity extends AppCompatActivity implements V
         } catch (ParseException e) {
             e.printStackTrace();
         }
-
 
         DatePickerDialog toDatePickerDialog = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
 
@@ -196,6 +195,36 @@ public class JourneyTimeSelectionActivity extends AppCompatActivity implements V
         }, newCalendar.get(Calendar.YEAR), newCalendar.get(Calendar.MONTH), newCalendar.get(Calendar.DAY_OF_MONTH));
 
         toDatePickerDialog.show();
+    }
+
+    /**
+     * When returning back after pressing done, need to prepare the intent with all info from
+     * timepicker and date picker button
+     *
+     * @return - intent
+     */
+    private Intent prepareIntent() {
+        Intent intent = new Intent();
+        String tabString = mTabLayout.getTabAt(mTabLayout.getSelectedTabPosition()).getText().toString() + " ";
+        String timeHour = String.valueOf(mTimePicker.getCurrentHour());
+        String timeMinute = String.valueOf(mTimePicker.getCurrentMinute());
+        boolean departAt = tabString.trim().equals(getString(R.string.depart_at));
+
+        if (mTimePicker.getCurrentMinute() < 10) {
+            timeMinute = "0" + mTimePicker.getCurrentMinute();
+        }
+        if (mTimePicker.getCurrentHour() >= 12) {
+            if (mTimePicker.getCurrentHour() > 12) {
+                timeHour = String.valueOf(mTimePicker.getCurrentHour() - 12);
+            }
+            timeMinute += getString(R.string.pm);
+        } else {
+            timeMinute += getString(R.string.am);
+        }
+        String timeString = timeHour + getString(R.string.time_colon) + timeMinute + getString(R.string.comma_space);
+        intent.putExtra(Constants.INTENT_TIME_OPTION, tabString + timeString + mDateButton.getText());
+        intent.putExtra(Constants.INTENT_TIME_DEPART_AT_BOOL, departAt);
+        return intent;
     }
 
 }

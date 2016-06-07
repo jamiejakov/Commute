@@ -27,7 +27,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Locale;
 
-
+/**
+ * RecyclerView adapter for the JourneyRoutesListActivity class
+ * Shows the list of routes available for selection
+ */
 public class JourneyRoutesListAdapter extends RecyclerView.Adapter<JourneyRoutesListAdapter.StopSearchViewHolder> {
     private LayoutInflater mInflater;
     private ArrayList<Journey> mJourneyList;
@@ -46,27 +49,28 @@ public class JourneyRoutesListAdapter extends RecyclerView.Adapter<JourneyRoutes
     }
 
     @Override
+    public int getItemCount() {
+        return mJourneyList.size();
+    }
+
+    /**
+     * Binds all the elements of the row to the data from the position in the array
+     *
+     * @param holder   - ViewHolder pointer
+     * @param position - position in the mJourneyList array
+     */
+    @Override
     public void onBindViewHolder(StopSearchViewHolder holder, int position) {
         Journey currentJourneyData = mJourneyList.get(position);
         holder.mPosition.setText(String.valueOf(position + 1));
+        DateFormat date = new SimpleDateFormat(Constants.DATE_FORMAT_HH_MM_SPACE_AM, Locale.ENGLISH);
 
-        DateFormat date = new SimpleDateFormat(mActivity.getString(R.string.am_pm_time_format), Locale.ENGLISH);
-        StopTime startStopTime = null;
-        for (StopTime st : currentJourneyData.getJourneyLegs().get(0).getTimetable().getStopTimes()) {
-            if (st.getStop().equals(currentJourneyData.getStartStop())) {
-                startStopTime = st;
-            }
-        }
-        holder.mFromTime.setText(date.format(startStopTime.getDepartureTime()));
-
-        int lastLeg = currentJourneyData.getJourneyLegs().size() - 1;
-        StopTime endStopTime = null;
-        for (StopTime st : currentJourneyData.getJourneyLegs().get(lastLeg).getTimetable().getStopTimes()) {
-            if (st.getStop().equals(currentJourneyData.getEndStop())) {
-                endStopTime = st;
-            }
-        }
-        holder.mToTime.setText(date.format(endStopTime.getArrivalTime()));
+        StopTime startStopTime = Common.getStopTime(currentJourneyData.getStartStop(),
+                currentJourneyData.getJourneyLegs().get(0).getTimetable());
+        holder.mFromTime.setText(date.format(startStopTime != null ? startStopTime.getDepartureTime() : ""));
+        StopTime endStopTime = Common.getStopTime(currentJourneyData.getEndStop(),
+                currentJourneyData.getJourneyLegs().get(currentJourneyData.getJourneyLegs().size() - 1).getTimetable());
+        holder.mToTime.setText(date.format(endStopTime != null ? endStopTime.getArrivalTime() : ""));
 
         long duration = currentJourneyData.getArrivalTime().getTime() - currentJourneyData.getDepartureTime().getTime();
         String durationText = "(" + Common.getDurationTime(duration, true, true, false).trim() + ")";
@@ -82,12 +86,12 @@ public class JourneyRoutesListAdapter extends RecyclerView.Adapter<JourneyRoutes
             holder.mTransfers.setTypeface(holder.mTransfers.getTypeface(), Typeface.NORMAL);
         }
 
-        String transferLocs = startStopTime.getStop().getShortName() + mActivity.getString(R.string.arrow_right);
+        String transferLocs = (startStopTime != null ? startStopTime.getStop().getShortName() : "") + mActivity.getString(R.string.arrow_right);
         for (int i = 1; i < currentJourneyData.getJourneyLegs().size() - 1; i++) {
             Timetable t = currentJourneyData.getJourneyLegs().get(i).getTimetable();
             transferLocs += t.getStopTimes().get(0).getStop().getShortName() + mActivity.getString(R.string.arrow_right);
         }
-        transferLocs += endStopTime.getStop().getShortName();
+        transferLocs += endStopTime != null ? endStopTime.getStop().getShortName() : "";
         holder.mTransferLocations.setText(transferLocs);
 
         Common.makeViewVisible(holder.mSpeedCircle, currentJourneyData.isFast());
@@ -97,15 +101,10 @@ public class JourneyRoutesListAdapter extends RecyclerView.Adapter<JourneyRoutes
         holder.mPriceCircle.getDrawable().setAlpha(Constants.OPAQUE);
         holder.mConvenienceCircle.getDrawable().setAlpha(Constants.OPAQUE);
 
-        for (JourneyLeg jl : currentJourneyData.getJourneyLegs()) {
-            Common.setTransportModes(jl.getStartStop().getStopType(), holder.mTrain, holder.mBus, holder.mFerry, holder.mLightRail);
+        View[] transportViews = new View[]{holder.mTrain, holder.mBus, holder.mFerry, holder.mLightRail};
+        for (JourneyLeg journeyLeg : currentJourneyData.getJourneyLegs()) {
+            Common.makeViewVisible(transportViews[journeyLeg.getStartStop().getStopType() - 1], true);
         }
-
-    }
-
-    @Override
-    public int getItemCount() {
-        return mJourneyList.size();
     }
 
     /**
@@ -158,11 +157,10 @@ public class JourneyRoutesListAdapter extends RecyclerView.Adapter<JourneyRoutes
 
         @Override
         public void onClick(View v) {
-            Context context = itemView.getContext();
             Intent intent = new Intent(mActivity, JourneyRouteActivity.class);
             intent.putExtra(Constants.INTENT_JOURNEY_ROUTE, mJourneyList.get(getAdapterPosition()).getPK());
             intent.putExtra(Constants.INTENT_JOURNEY_ROUTE_NUMBER, mPosition.getText());
-            mActivity.startActivityForResult(intent,Constants.JOURNEY_ROUTE_LIST_TO_ROUTE_REQUEST);
+            mActivity.startActivityForResult(intent, Constants.JOURNEY_ROUTE_LIST_TO_ROUTE_REQUEST);
         }
     }
 }

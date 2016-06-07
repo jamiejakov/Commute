@@ -18,19 +18,19 @@ public class Stop {
         this.mLat = mLat;
         this.mLon = mLon;
         this.mPlatformCode = mPlatformCode;
-        mStopType = getImage();
         mShortName = shortenName();
+        setStopType();
     }
 
-    private int getImage() {
+    private void setStopType(){
         if (mName.toLowerCase().contains("wharf")) {
-            return R.drawable.tnsw_icon_ferry;
+            mStopType = 3;
         } else if (mName.toLowerCase().contains("light rail")) {
-            return R.drawable.tnsw_icon_light_rail;
+            mStopType = 4;
         } else if (mName.toLowerCase().contains("platform")) {
-            return R.drawable.tnsw_icon_train;
+            mStopType = 1;
         } else {
-            return R.drawable.tnsw_icon_bus;
+            mStopType = 2;
         }
     }
 
@@ -56,8 +56,13 @@ public class Stop {
     }
 
     public String getID() {
-
         return mID;
+    }
+
+    public int getImage() {
+        int[] images = new int[]{R.drawable.tnsw_icon_train, R.drawable.tnsw_icon_bus,
+                R.drawable.tnsw_icon_ferry, R.drawable.tnsw_icon_light_rail};
+        return images[mStopType-1];
     }
 
     public String getName() {

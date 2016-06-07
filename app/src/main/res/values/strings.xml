@@ -70,9 +70,7 @@
     <string name="price">Price</string>
     <string name="convenience">Convenience</string>
     <string name="loading_timetable">Loading Timetable</string>
-    <string name="am_pm_time_format">hh:mm a</string>
-    <string name="am_pm_time_format_no_space">hh:mma</string>
-    <string name="day_month_year_weekday_date_format">dd MMM yyyy (EE)</string>
+
     <string name="arrow_right">→</string>
     <string name="dollar_sign">$</string>
     <string name="loading_routes">Loading Routes…</string>
@@ -93,17 +91,14 @@
     <string name="add_to_calendar">Add to Calendar</string>
     <string name="save_route">Save Route</string>
     <string name="no_routes_found">No Routes were found, please try a different search.</string>
-    <string name="morning_peak_start">07:00</string>
-    <string name="morning_peak_end">09:00</string>
-    <string name="evening_peak_start">16:00</string>
-    <string name="evening_peak_end">18:30</string>
     <string name="title_activity_journey_time_selection">JourneyTimeSelectionActivity</string>
     <string name="reset_time_button">Reset Time Button</string>
     <string name="depart_at">Depart At</string>
     <string name="arrive_by">Arrive by</string>
     <string name="time_options">Time Options</string>
     <string name="today">Today</string>
-    <string name="airport">Airport</string>
+    <string name="domestic_airport">Domestic Airport</string>
+    <string name="international_airport">International Airport</string>
     <string name="cancel">Cancel</string>
     <string name="done">Done</string>
     <string name="start">Start</string>
@@ -123,6 +118,18 @@
     <string name="fast">Fast</string>
     <string name="cheap">Cheap</string>
     <string name="convenient">Convenient</string>
+    <string name="to_with_spaces">" to "</string>
+    <string name="for_space">"for "</string>
+    <string name="could_not_find_journey">Could not find journey</string>
+    <string name="dash_route">" - Route "</string>
+    <string name="routes_to_space">"Routes to "</string>
+    <string name="map_for">"Map for "</string>
+    <string name="pm">pm</string>
+    <string name="am">am</string>
+    <string name="time_colon">:</string>
+    <string name="comma_space">", "</string>
+    <string name="enter_stops">\nstops</string>
+    <string name="expand_image">expand image</string>
 
 
 </resources>

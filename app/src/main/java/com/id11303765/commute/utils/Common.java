@@ -1,20 +1,11 @@
 package com.id11303765.commute.utils;
 
-import android.app.Activity;
-import android.app.FragmentManager;
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.View;
 
-import com.id11303765.commute.R;
+import com.id11303765.commute.model.Stop;
 import com.id11303765.commute.model.StopTime;
 import com.id11303765.commute.model.Timetable;
-import com.id11303765.commute.view.CommuteFragment;
-import com.id11303765.commute.view.SavedRoutesFragment;
-import com.id11303765.commute.view.WelcomeFragment;
-import com.id11303765.commute.view.journey.JourneyFragment;
-import com.id11303765.commute.view.timetables.TimetablesFragment;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -25,59 +16,74 @@ import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 
+/**
+ * Class that contains commonly used procedures and function.
+ * Is static
+ * Can be accessed from any class within the app.
+ */
 public class Common {
     private static Common ourInstance = new Common();
-    private static Context mContext;
 
     public static Common getInstance() {
         return ourInstance;
     }
 
-    private Common() {
-    }
-
-    public static void setContext(Context context) {
-        mContext = context;
-    }
-
+    /**
+     * Function that formats a duration and returns a string.
+     *
+     * @param millis      - duration in milliseconds
+     * @param showHours   - option to show hours duration
+     * @param showMinutes - option to show minutes duration
+     * @param showSeconds - option to show seconds duration
+     * @return - the duration formatted in a string: 1hr 10min 35sec
+     */
     public static String getDurationTime(long millis, boolean showHours, boolean showMinutes, boolean showSeconds) {
         String time = "";
         if (millis > Constants.ONE_MINUTE * 60) {
             if (showHours) {
-                time = String.format(Locale.ENGLISH, "%2dhr ", TimeUnit.MILLISECONDS.toHours(millis));
+                time = String.format(Locale.ENGLISH, Constants.TIME_FORMAT_HR, TimeUnit.MILLISECONDS.toHours(millis));
             }
             if (showMinutes) {
-                time += String.format(Locale.ENGLISH, "%02dmin ",
+                time += String.format(Locale.ENGLISH, Constants.TIME_FORMAT_MIN,
                         TimeUnit.MILLISECONDS.toMinutes(millis) - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(millis))
                 );
             }
             if (showSeconds) {
-                time += String.format(Locale.ENGLISH, "%02dsec",
+                time += String.format(Locale.ENGLISH, Constants.TIME_FORMAT_SEC,
                         TimeUnit.MILLISECONDS.toSeconds(millis) -
                                 TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis)) -
                                 TimeUnit.MINUTES.toMinutes(TimeUnit.MILLISECONDS.toHours(millis))
                 );
             }
 
-
         } else if (millis > Constants.ONE_MINUTE) {
             if (showMinutes) {
-                time = String.format(Locale.ENGLISH, "%02dmin ",
+                time = String.format(Locale.ENGLISH, Constants.TIME_FORMAT_MIN,
                         TimeUnit.MILLISECONDS.toMinutes(millis));
             }
             if (showSeconds) {
-                time += String.format(Locale.ENGLISH, "%02dsec",
+                time += String.format(Locale.ENGLISH, Constants.TIME_FORMAT_SEC,
                         TimeUnit.MILLISECONDS.toSeconds(millis) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis)));
             }
         } else {
-            time = String.format(Locale.ENGLISH, "%02dsec",
+            time = String.format(Locale.ENGLISH, Constants.TIME_FORMAT_SEC,
                     TimeUnit.MILLISECONDS.toSeconds(millis)
             );
         }
         return time;
     }
 
-    public static Timetable findClosestTimetable(ArrayList<Timetable> timetables, String stopName, Calendar now, boolean forNext, boolean forDeparture) {
+    /**
+     * Function that takes the below criteria and finds the timetable matching them.
+     *
+     * @param timetables   - list of timetables to search through
+     * @param stopName     - the stop which to check against
+     * @param time         - the time to check against
+     * @param forNext      - true: check after current time (next timetable); false: check before current time (previous timetable)
+     * @param forDeparture - true: find timetable for time when departing from stop; false: for time when arriving to stop
+     * @return - timetable matching the criteria
+     */
+    public static Timetable findClosestTimetable(ArrayList<Timetable> timetables, String stopName, Calendar time, boolean forNext, boolean forDeparture) {
         Timetable timetable = null;
         Calendar currentTimetableTime = Calendar.getInstance();
         for (Timetable t : timetables) {
@@ -93,58 +99,33 @@ public class Common {
             boolean correctStop = st.getStop().getShortName().equals(stopName);
 
             if (forNext) {
-                if (correctStop && departureOrArrivalTime.after(now)) {
+                if (correctStop && departureOrArrivalTime.after(time)) {
                     if (timetable == null || departureOrArrivalTime.before(currentTimetableTime)) {
+                        Log.d(Constants.TAG_COMMON_FIND_TIMETABLE_NEXT_SET, String.valueOf(departureOrArrivalTime.getTime()));
                         timetable = t;
                         currentTimetableTime.setTime(st.getDepartureTime());
                     }
 
                 }
             } else {
-                if (correctStop && departureOrArrivalTime.before(now)) {
+                if (correctStop && departureOrArrivalTime.before(time)) {
                     if (timetable == null || departureOrArrivalTime.after(currentTimetableTime)) {
+                        Log.d(Constants.TAG_COMMON_FIND_TIMETABLE_PREV_SET, String.valueOf(departureOrArrivalTime.getTime()));
                         timetable = t;
                         currentTimetableTime.setTime(st.getDepartureTime());
                     }
                 }
             }
-
         }
         return timetable;
     }
 
-    public static void setTransportModes(int mode, View train, View bus, View ferry, View lightRail) {
-        int num = getTransportModeNumber(mode);
-        switch (num) {
-            case 1:
-                Common.makeViewVisible(train, true);
-                break;
-            case 2:
-                Common.makeViewVisible(bus, true);
-                break;
-            case 3:
-                Common.makeViewVisible(ferry, true);
-                break;
-            case 4:
-                Common.makeViewVisible(lightRail, true);
-                break;
-        }
-    }
-
-    public static int getTransportModeNumber(int mode) {
-        switch (mode) {
-            case R.drawable.tnsw_icon_train:
-                return 1;
-            case R.drawable.tnsw_icon_bus:
-                return 2;
-            case R.drawable.tnsw_icon_ferry:
-                return 3;
-            case R.drawable.tnsw_icon_light_rail:
-                return 4;
-        }
-        return 1;
-    }
-
+    /**
+     * Make the view visible or gone
+     *
+     * @param view    - view, which to change the visibility of
+     * @param enabled - true: visible; false: gone
+     */
     public static void makeViewVisible(View view, boolean enabled) {
         if (enabled) {
             view.setVisibility(View.VISIBLE);
@@ -153,23 +134,35 @@ public class Common {
         }
     }
 
+    /**
+     * Gets the time now, resets the date to default.
+     * Used for comparing time with peak hour and such.
+     *
+     * @return - calendar with time now and date at default
+     */
     public static Calendar getNow() {
         Calendar now = Calendar.getInstance();
         now.set(1970, 0, 1);
         return now;
     }
 
+    /**
+     * Check whether the time passed in is within Sydney Trains peak hour
+     *
+     * @param time - time to check
+     * @return whether time is during Sydney Trains peak hour or not
+     */
     public static boolean isPeak(Calendar time) {
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm", Locale.US);
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(Constants.DATE_FORMAT_HH24_MM, Locale.US);
         Calendar justTimeNoDate = Common.getNow();
         justTimeNoDate.set(Calendar.HOUR_OF_DAY, time.get(Calendar.HOUR_OF_DAY));
         justTimeNoDate.set(Calendar.MINUTE, time.get(Calendar.MINUTE));
         boolean result = false;
         try {
-            Date morningPeakStart = simpleDateFormat.parse(mContext.getString(R.string.morning_peak_start));
-            Date morningPeakEnd = simpleDateFormat.parse(mContext.getString(R.string.morning_peak_end));
-            Date eveningPeakStart = simpleDateFormat.parse(mContext.getString(R.string.evening_peak_start));
-            Date eveningPeakEnd = simpleDateFormat.parse(mContext.getString(R.string.evening_peak_end));
+            Date morningPeakStart = simpleDateFormat.parse(Constants.MORNING_PEAK_START);
+            Date morningPeakEnd = simpleDateFormat.parse(Constants.MORNING_PEAK_END);
+            Date eveningPeakStart = simpleDateFormat.parse(Constants.EVENING_PEAK_START);
+            Date eveningPeakEnd = simpleDateFormat.parse(Constants.EVENING_PEAK_END);
             result = justTimeNoDate.getTime().after(morningPeakStart) && justTimeNoDate.getTime().before(morningPeakEnd) ||
                     justTimeNoDate.getTime().after(eveningPeakStart) && justTimeNoDate.getTime().before(eveningPeakEnd);
         } catch (ParseException e) {
@@ -178,11 +171,24 @@ public class Common {
         return result;
     }
 
-    public static boolean isWorkday(Calendar time) {
-        int dayOfWeek = time.get(Calendar.DAY_OF_WEEK);
+    /**
+     * Checks whether the passed in day is a workday or weekend
+     *
+     * @param date - date to check
+     * @return - whether date is a workday
+     */
+    public static boolean isWorkday(Calendar date) {
+        int dayOfWeek = date.get(Calendar.DAY_OF_WEEK);
         return dayOfWeek != Calendar.SATURDAY && dayOfWeek != Calendar.SUNDAY;
     }
 
+    /**
+     * Parse the passed in string based on the format and convert it into a calendar object
+     *
+     * @param string - string to process
+     * @param format - the format the string is in
+     * @return - calendar object with correct date and time
+     */
     public static Calendar parseStringToCal(String string, String format) {
         SimpleDateFormat sdf = new SimpleDateFormat(format, Locale.US);
         Date date = null;
@@ -191,9 +197,27 @@ public class Common {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        Calendar c = Calendar.getInstance();
-        c.setTime(date);
-        return c;
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        return cal;
+    }
+
+    /**
+     * Function that finds the StopTime for a stop in a timetable
+     * Get the stopTime for the passed in stop
+     *
+     * @param stop      - stop to look for
+     * @param timetable - place to look for it
+     * @return - the StopTime
+     */
+    public static StopTime getStopTime(Stop stop, Timetable timetable) {
+        StopTime stopTime = null;
+        for (StopTime st : timetable.getStopTimes()) {
+            if (st.getStop().equals(stop)) {
+                stopTime = st;
+            }
+        }
+        return stopTime;
     }
 
 }

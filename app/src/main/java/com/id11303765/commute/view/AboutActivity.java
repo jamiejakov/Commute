@@ -14,6 +14,9 @@ import android.widget.Button;
 
 import com.id11303765.commute.R;
 
+/**
+ * Activity display information about the app and its creator - ME!
+ */
 public class AboutActivity extends AppCompatActivity implements View.OnClickListener{
 
     @Override
@@ -21,6 +24,8 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_about);
         Toolbar toolbar = (Toolbar) findViewById(R.id.activity_about_toolbar);
+        Button button = (Button) findViewById(R.id.fragment_about_visit_web_button);
+        assert button != null;
 
         setTitle(R.string.about);
         setSupportActionBar(toolbar);
@@ -29,7 +34,6 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
-        Button button = (Button) findViewById(R.id.fragment_about_visit_web_button);
         button.setOnClickListener(this);
     }
 

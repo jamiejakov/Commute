@@ -3,6 +3,9 @@ package com.id11303765.commute.model;
 import com.id11303765.commute.R;
 import com.id11303765.commute.utils.Constants;
 
+/**
+ * POJO for the stop table in the DB
+ */
 public class Stop {
     private String mID;
     private String mName;
@@ -10,7 +13,7 @@ public class Stop {
     private Double mLon;
     private String mPlatformCode;
     private int mStopType;
-    private String mShortName;
+    String mShortName;
 
     public Stop(String mID, String mName, Double mLat, Double mLon, String mPlatformCode) {
         this.mID = mID;
@@ -18,11 +21,14 @@ public class Stop {
         this.mLat = mLat;
         this.mLon = mLon;
         this.mPlatformCode = mPlatformCode;
-        mShortName = shortenName();
         setStopType();
+        mShortName = shortenName();
     }
 
-    private void setStopType(){
+    /**
+     * Sets the stop type based on the string found in the name
+     */
+    private void setStopType() {
         if (mName.toLowerCase().contains("wharf")) {
             mStopType = 3;
         } else if (mName.toLowerCase().contains("light rail")) {
@@ -34,20 +40,24 @@ public class Stop {
         }
     }
 
-    private String shortenName(){
-        if (mName.toLowerCase().contains("wharf")) {
-            String[] columns = mName.split(",");
-            return columns[0].trim();
-        } else if (mName.toLowerCase().contains("light rail")) {
-            return mName.replaceAll("(?i)light rail", "").replaceAll("(?i)station", "").trim();
-        } else if (mName.toLowerCase().contains("platform")) {
-            String[] columns = mName.split(",");
-            return columns[0].replaceAll("(?i)station", "").trim();
+    /**
+     * Get the short name for the stop based on stopType
+     * @return short name
+     */
+    private String shortenName() {
+        String[] columns = mName.split(Constants.COMMA_SPLIT);
+        switch(mStopType){
+            case 3:
+                return columns[0].trim();
+            case 4:
+                return mName.replaceAll("(?i)light rail", "").replaceAll("(?i)station", "").trim();
+            case 1:
+                return columns[0].replaceAll("(?i)station", "").trim();
         }
         return null;
     }
 
-    public String getShortName(){
+    public String getShortName() {
         return mShortName;
     }
 
@@ -59,10 +69,14 @@ public class Stop {
         return mID;
     }
 
+    /**
+     *
+     * @return the correct Transport NSW image corresponding to the type of stop
+     */
     public int getImage() {
         int[] images = new int[]{R.drawable.tnsw_icon_train, R.drawable.tnsw_icon_bus,
                 R.drawable.tnsw_icon_ferry, R.drawable.tnsw_icon_light_rail};
-        return images[mStopType-1];
+        return images[mStopType - 1];
     }
 
     public String getName() {

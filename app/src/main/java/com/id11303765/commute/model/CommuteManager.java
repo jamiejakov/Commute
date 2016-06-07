@@ -6,6 +6,9 @@ import android.database.Cursor;
 import java.util.ArrayList;
 import java.util.Calendar;
 
+/**
+ * Manger singleton for the commute POJO and data
+ */
 public class CommuteManager {
     private static CommuteManager ourInstance = new CommuteManager();
     private static DatabaseHelper mDatabaseHelper;
@@ -19,6 +22,12 @@ public class CommuteManager {
         mCommutes = new ArrayList<>();
     }
 
+    /**
+     *
+     * @param startStopShortName - short name of start stop
+     * @param endStopShortName - short name of end stop
+     * @return - Commute matching the criteria: from DB or memory
+     */
     public static Commute getCommute(String startStopShortName, String endStopShortName) {
         Commute commute = findCommute(startStopShortName, endStopShortName);
         ArrayList<Stop> startStops = StopManager.getStopsByName(startStopShortName, true);
@@ -34,7 +43,7 @@ public class CommuteManager {
                 do {
                     String tripID = cursor.getString(cursor.getColumnIndex(TripManager.KEY_ID));
                     Trip trip = TripManager.getTrip(tripID);
-                    if (trip.getCalendar()[Calendar.getInstance().get(Calendar.DAY_OF_WEEK)-1]){
+                    if (trip.getCalendar()[Calendar.getInstance().get(Calendar.DAY_OF_WEEK) - 1]) {
                         tripTimetables.add(TimetableManager.getTimetable(trip, allStops));
                     }
                 } while (cursor.moveToNext());
@@ -48,6 +57,11 @@ public class CommuteManager {
         return commute;
     }
 
+    /**
+     * @param startShortName - short name of start stop
+     * @param endShortName - short name of end stop
+     * @return - Commute from memory matching the criteria
+     */
     private static Commute findCommute(String startShortName, String endShortName) {
         for (Commute commute : mCommutes) {
             if (commute.getStartStopShortName().equals(startShortName) &&
@@ -58,6 +72,11 @@ public class CommuteManager {
         return null;
     }
 
+    /**
+     * Set the db helper to use for queries
+     *
+     * @param dbHelper -
+     */
     public static void setDatabaseHelper(DatabaseHelper dbHelper) {
         mDatabaseHelper = dbHelper;
     }

@@ -8,6 +8,9 @@ import com.id11303765.commute.utils.Constants;
 import java.text.ParseException;
 import java.util.ArrayList;
 
+/**
+ * Manger singleton for the stop time POJO and the DB object
+ */
 public class StopManager {
     private static StopManager ourInstance = new StopManager();
     private static DatabaseHelper mDatabaseHelper;
@@ -45,8 +48,8 @@ public class StopManager {
         if (mStops.isEmpty()) {
             getAllStops();
         }
-        ArrayList<Stop> list = new ArrayList<>();
-        findStopByNameAndAddToList(name, list, checkSpace);
+        ArrayList<Stop> list = findStopByNameAndAddToList(name, checkSpace);
+
         if (list.size() != 0) {
             return list;
         }
@@ -65,6 +68,11 @@ public class StopManager {
         cursor.close();
     }
 
+    /**
+     * Create a Stop object from a cursor
+     * @param cursor
+     * @return
+     */
     private static Stop makeStop(Cursor cursor) {
         return new Stop(cursor.getString(cursor.getColumnIndex(KEY_ID)),
                 cursor.getString(cursor.getColumnIndex(KEY_NAME)),
@@ -73,7 +81,13 @@ public class StopManager {
                 cursor.getString(cursor.getColumnIndex(KEY_PLATFORM_CODE)));
     }
 
-    private static void findStopByNameAndAddToList(String name, ArrayList<Stop> list, boolean checkSpace) {
+    /**
+     * Find stops matching criteria in local list and return a list with them
+     * @param name of stop to check for
+     * @param checkSpace - check for whether the string can be the second word in the string or not
+     */
+    private static ArrayList<Stop> findStopByNameAndAddToList(String name, boolean checkSpace) {
+        ArrayList<Stop> list = new ArrayList<>();
         for (Stop s : mStops) {
             if (checkSpace){
                 if (s.getShortName().toLowerCase().contains(name.toLowerCase()) &&
@@ -87,8 +101,14 @@ public class StopManager {
                 }
             }
         }
+        return list;
     }
 
+    /**
+     * Find stop in local list and return it if found
+     * @param id - id to search stop by
+     * @return stop if found
+     */
     private static Stop findStopById(String id) {
         for (Stop s : mStops) {
             if (s.getID().equals(id)) {
@@ -98,6 +118,11 @@ public class StopManager {
         return null;
     }
 
+    /**
+     * Set the db helper to use for queries
+     *
+     * @param dbHelper -
+     */
     public static void setDatabaseHelper(DatabaseHelper dbHelper) {
         mDatabaseHelper = dbHelper;
     }

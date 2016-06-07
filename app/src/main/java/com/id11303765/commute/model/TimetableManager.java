@@ -9,6 +9,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Locale;
 
+/**
+ * Manger singleton for the timetable POJO and data
+ */
 public class TimetableManager {
     private static TimetableManager ourInstance = new TimetableManager();
     private static DatabaseHelper mDatabaseHelper;
@@ -30,10 +33,6 @@ public class TimetableManager {
         mTripTimetables = new ArrayList<>();
         mStopTimetables = new ArrayList<>();
         mSmallTripTimetables = new ArrayList<>();
-    }
-
-    public static void setDatabaseHelper(DatabaseHelper dbHelper) {
-        mDatabaseHelper = dbHelper;
     }
 
     static Timetable getTimetable(Trip trip) {
@@ -168,5 +167,13 @@ public class TimetableManager {
         return null;
     }
 
+    /**
+     * Set the db helper to use for queries
+     *
+     * @param dbHelper -
+     */
+    public static void setDatabaseHelper(DatabaseHelper dbHelper) {
+        mDatabaseHelper = dbHelper;
+    }
 
 }

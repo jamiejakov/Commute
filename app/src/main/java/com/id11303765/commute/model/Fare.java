@@ -1,6 +1,9 @@
 package com.id11303765.commute.model;
 
-class Fare implements Comparable<Fare>{
+/**
+ * POJO for the Fare table in the DB
+ */
+class Fare implements Comparable<Fare> {
     private double mValue;
     private double mDistance;
     private int mType;

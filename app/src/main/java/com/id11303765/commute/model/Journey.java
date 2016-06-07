@@ -4,6 +4,10 @@ package com.id11303765.commute.model;
 import java.util.ArrayList;
 import java.util.Date;
 
+/**
+ * POJO for a single journey
+ * ex: Mascot->Central->Chatswood is 1 journey
+ */
 public class Journey {
     private Date mDepartureTime;
     private Date mArrivalTime;
@@ -58,11 +62,11 @@ public class Journey {
         return mPK;
     }
 
-    public Stop getStartStop(){
+    public Stop getStartStop() {
         return mJourneyLegs.get(0).getStartStop();
     }
 
-    public Stop getEndStop(){
-        return mJourneyLegs.get(mJourneyLegs.size()-1).getEndStop();
+    public Stop getEndStop() {
+        return mJourneyLegs.get(mJourneyLegs.size() - 1).getEndStop();
     }
 }

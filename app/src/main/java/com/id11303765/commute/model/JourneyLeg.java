@@ -2,6 +2,10 @@ package com.id11303765.commute.model;
 
 import java.util.Calendar;
 
+/**
+ * POJO for a leg of a single journey
+ * ex: Mascot -> Chatswood
+ */
 public class JourneyLeg{
     private Timetable mTimetable;
     private Stop mStartStop;

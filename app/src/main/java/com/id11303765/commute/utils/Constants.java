@@ -29,7 +29,7 @@ public class Constants {
     public static final String COMMUTE_TO_OR_FROM_PREF = "COMMUTE_TO_OR_FROM_PREF";
 
     public static final String CSV_SPLIT = "\",\"";
-    public static final String COMMA_SPLIT = "\",\"";
+    public static final String COMMA_SPLIT = ",";
 
     public static final int OPAQUE = 255;
     public static final int DESELECTED = 160;

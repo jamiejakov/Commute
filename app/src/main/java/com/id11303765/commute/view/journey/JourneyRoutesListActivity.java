@@ -165,8 +165,12 @@ public class JourneyRoutesListActivity extends AppCompatActivity {
      * @return calendar with adjusted time.
      */
     private Calendar getTimeWithPeakAdjust(boolean departAt){
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+        boolean avoidPeakHour = sharedPreferences.getBoolean(getString(R.string.avoid_peak_hour), false);
+
         Calendar time = getTime();
-        if (Common.isPeak(time) && Common.isWorkday(time)){
+
+        if (avoidPeakHour && Common.isPeak(time) && Common.isWorkday(time)){
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat(Constants.DATE_FORMAT_HH24_MM, Locale.US);
             try {
                 if (time.getTime().after(simpleDateFormat.parse(Constants.EVENING_PEAK_START))){
@@ -206,6 +210,11 @@ public class JourneyRoutesListActivity extends AppCompatActivity {
                 timeString = fullText.trim().substring(Math.min(fullText.length(), getString(R.string.depart_at).length()));
             } else {
                 timeString = fullText.trim().substring(Math.min(fullText.length(), getString(R.string.arrive_by).length()));
+            }
+            if (timeString.contains(getString(R.string.today))){
+                SimpleDateFormat date = new SimpleDateFormat(Constants.DATE_FORMAT_DAY_MONTH_YEAR_WEEKDAY, Locale.US);
+                timeString = timeString.substring(0, timeString.length() - getString(R.string.today).length());
+                timeString += date.format(Calendar.getInstance().getTime());
             }
             time = Common.parseStringToCal(timeString, Constants.DATE_FORMAT_HH_MM_AM_DAY_MONTH_YEAR_WEEKDAY);
         }

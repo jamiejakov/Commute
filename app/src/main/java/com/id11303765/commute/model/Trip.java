@@ -1,5 +1,8 @@
 package com.id11303765.commute.model;
 
+/**
+ * POJO for the trip table in the DB
+ */
 public class Trip {
     private Route mRoute;
     private boolean[] mCalendar;

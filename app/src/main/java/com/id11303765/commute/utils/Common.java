@@ -220,4 +220,18 @@ public class Common {
         return stopTime;
     }
 
+
+    /**
+     * Converts string values to booleans
+     * @param value -
+     * @return true or false
+     */
+    public static boolean convertToBoolean(String value) {
+        boolean returnValue = false;
+        if ("1".equalsIgnoreCase(value) || "yes".equalsIgnoreCase(value) ||
+                "true".equalsIgnoreCase(value) || "on".equalsIgnoreCase(value))
+            returnValue = true;
+        return returnValue;
+    }
+
 }

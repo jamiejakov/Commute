@@ -15,6 +15,9 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.UUID;
 
+/**
+ * Manger singleton for the journey POJO and data
+ */
 public class JourneyManager {
     private static JourneyManager ourInstance = new JourneyManager();
     private static DatabaseHelper mDatabaseHelper;
@@ -198,9 +201,12 @@ public class JourneyManager {
         return null;
     }
 
+    /**
+     * Set the db helper to use for queries
+     *
+     * @param dbHelper -
+     */
     public static void setDatabaseHelper(DatabaseHelper dbHelper) {
         mDatabaseHelper = dbHelper;
     }
-
-
 }

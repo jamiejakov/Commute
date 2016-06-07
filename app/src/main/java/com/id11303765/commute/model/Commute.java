@@ -3,12 +3,15 @@ package com.id11303765.commute.model;
 
 import java.util.ArrayList;
 
+/**
+ * POJO for a single commute
+ */
 public class Commute {
     private String mStartStop;
     private String mEndStop;
     private ArrayList<Timetable> mTripTimetables;
 
-    public Commute(String start, String end, ArrayList<Timetable> tripTimetables) {
+    Commute(String start, String end, ArrayList<Timetable> tripTimetables) {
         mStartStop = start;
         mEndStop = end;
         mTripTimetables = tripTimetables;

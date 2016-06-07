@@ -3,6 +3,9 @@ package com.id11303765.commute.model;
 
 import java.util.Date;
 
+/**
+ * POJO for the stopTime table of the DB
+ */
 public class StopTime implements Comparable<StopTime>{
     private Trip mTrip;
     private Date mArrivalTime;
@@ -19,7 +22,6 @@ public class StopTime implements Comparable<StopTime>{
     }
 
     public Trip getTrip() {
-
         return mTrip;
     }
 

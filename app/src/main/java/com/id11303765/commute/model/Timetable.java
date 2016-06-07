@@ -3,6 +3,11 @@ package com.id11303765.commute.model;
 import java.util.ArrayList;
 import java.util.Comparator;
 
+/**
+ * POJO for a saved timetable
+ * a Timetable can be saved for a Trip (all stopTimes of a trip)
+ * or for a Stop (all stoptimes stopping at this stop).
+ */
 public class Timetable implements Comparable<Timetable>{
 
     private Trip mTrip;
@@ -20,7 +25,6 @@ public class Timetable implements Comparable<Timetable>{
     }
 
     public Trip getTrip() {
-
         return mTrip;
     }
 

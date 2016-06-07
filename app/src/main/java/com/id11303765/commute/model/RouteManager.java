@@ -6,6 +6,9 @@ import android.graphics.Color;
 
 import java.util.ArrayList;
 
+/**
+ * Manger singleton for the route POJO and the DB object
+ */
 public class RouteManager {
     private static RouteManager ourInstance = new RouteManager();
     private static DatabaseHelper mDatabaseHelper;
@@ -56,12 +59,8 @@ public class RouteManager {
         return Color.parseColor(mLineColors[line - 1]);
     }
 
-    public static void setLineColors(String[] lineColors){
+    public static void setLineColors(String[] lineColors) {
         mLineColors = lineColors;
-    }
-
-    public static void setDatabaseHelper(DatabaseHelper dbHelper) {
-        mDatabaseHelper = dbHelper;
     }
 
     private static Route findRoute(String id) {
@@ -72,4 +71,15 @@ public class RouteManager {
         }
         return null;
     }
+
+    /**
+     * Set the db helper to use for queries
+     *
+     * @param dbHelper -
+     */
+    public static void setDatabaseHelper(DatabaseHelper dbHelper) {
+        mDatabaseHelper = dbHelper;
+    }
+
+
 }

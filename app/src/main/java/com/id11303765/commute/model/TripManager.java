@@ -3,10 +3,14 @@ package com.id11303765.commute.model;
 import android.database.Cursor;
 import android.graphics.Color;
 
+import com.id11303765.commute.utils.Common;
 import com.id11303765.commute.utils.Constants;
 
 import java.util.ArrayList;
 
+/**
+ * Manger singleton for the trip POJO and the DB object
+ */
 public class TripManager {
     private static TripManager ourInstance = new TripManager();
     private static DatabaseHelper mDatabaseHelper;
@@ -25,26 +29,29 @@ public class TripManager {
         mTrips = new ArrayList<>();
     }
 
-    public static void setDatabaseHelper(DatabaseHelper dbHelper){
-        mDatabaseHelper = dbHelper;
-    }
-
-    static Trip getTrip(String id){
+    /**
+     * Gets the trip based on the ID passed
+     * if not in memory, query the db and then save as a POJO in memory
+     *
+     * @param id - id to check
+     * @return trip POJO
+     */
+    static Trip getTrip(String id) {
         Trip trip = findTrip(id);
 
-        if (trip == null){
+        if (trip == null) {
             Cursor cursor = mDatabaseHelper.getTrip(id);
             Route route = RouteManager.getRoute(cursor.getString(cursor.getColumnIndex(RouteManager.KEY_ID)));
             Cursor calCurs = mDatabaseHelper.getCalendar(cursor.getString(cursor.getColumnIndex(Constants.DATABASE_TABLE_SERVICE_ID)));
             if (cursor.moveToFirst() && calCurs.moveToFirst()) {
                 boolean[] calendar = {
-                        convertToBoolean(calCurs.getString(calCurs.getColumnIndex(Constants.DATABASE_TABLE_CALENDAR_SUNDAY))),
-                        convertToBoolean(calCurs.getString(calCurs.getColumnIndex(Constants.DATABASE_TABLE_CALENDAR_MONDAY))),
-                        convertToBoolean(calCurs.getString(calCurs.getColumnIndex(Constants.DATABASE_TABLE_CALENDAR_TUESDAY))),
-                        convertToBoolean(calCurs.getString(calCurs.getColumnIndex(Constants.DATABASE_TABLE_CALENDAR_WEDNESDAY))),
-                        convertToBoolean(calCurs.getString(calCurs.getColumnIndex(Constants.DATABASE_TABLE_CALENDAR_THURSDAY))),
-                        convertToBoolean(calCurs.getString(calCurs.getColumnIndex(Constants.DATABASE_TABLE_CALENDAR_FRIDAY))),
-                        convertToBoolean(calCurs.getString(calCurs.getColumnIndex(Constants.DATABASE_TABLE_CALENDAR_SATURDAY)))
+                        Common.convertToBoolean(calCurs.getString(calCurs.getColumnIndex(Constants.DATABASE_TABLE_CALENDAR_SUNDAY))),
+                        Common.convertToBoolean(calCurs.getString(calCurs.getColumnIndex(Constants.DATABASE_TABLE_CALENDAR_MONDAY))),
+                        Common.convertToBoolean(calCurs.getString(calCurs.getColumnIndex(Constants.DATABASE_TABLE_CALENDAR_TUESDAY))),
+                        Common.convertToBoolean(calCurs.getString(calCurs.getColumnIndex(Constants.DATABASE_TABLE_CALENDAR_WEDNESDAY))),
+                        Common.convertToBoolean(calCurs.getString(calCurs.getColumnIndex(Constants.DATABASE_TABLE_CALENDAR_THURSDAY))),
+                        Common.convertToBoolean(calCurs.getString(calCurs.getColumnIndex(Constants.DATABASE_TABLE_CALENDAR_FRIDAY))),
+                        Common.convertToBoolean(calCurs.getString(calCurs.getColumnIndex(Constants.DATABASE_TABLE_CALENDAR_SATURDAY)))
                 };
 
 
@@ -60,20 +67,28 @@ public class TripManager {
         return trip;
     }
 
-    private static Trip findTrip(String id){
-        for(Trip t : mTrips){
-            if (t.getID().equals(id)){
+    /**
+     * find trip in local list and return it if found
+     *
+     * @param id - id to check
+     * @return trip pojo from memory
+     */
+    private static Trip findTrip(String id) {
+        for (Trip t : mTrips) {
+            if (t.getID().equals(id)) {
                 return t;
             }
         }
         return null;
     }
 
-    private static boolean convertToBoolean(String value) {
-        boolean returnValue = false;
-        if ("1".equalsIgnoreCase(value) || "yes".equalsIgnoreCase(value) ||
-                "true".equalsIgnoreCase(value) || "on".equalsIgnoreCase(value))
-            returnValue = true;
-        return returnValue;
+
+    /**
+     * Set the db helper to use for queries
+     *
+     * @param dbHelper -
+     */
+    public static void setDatabaseHelper(DatabaseHelper dbHelper) {
+        mDatabaseHelper = dbHelper;
     }
 }

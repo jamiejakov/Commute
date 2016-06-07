@@ -1,8 +1,9 @@
 package com.id11303765.commute.model;
 
 
-import android.graphics.Color;
-
+/**
+ * POJO for the route table in the DB.
+ */
 public class Route {
     private String mID;
     private Agency mAgency;

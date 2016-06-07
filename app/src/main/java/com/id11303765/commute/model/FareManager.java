@@ -2,9 +2,13 @@ package com.id11303765.commute.model;
 
 
 import android.database.Cursor;
+
 import java.util.ArrayList;
 import java.util.Collections;
 
+/**
+ * Manger singleton for the fare POJO and DB table
+ */
 public class FareManager {
     private static FareManager ourInstance = new FareManager();
     private static ArrayList<Fare> mFares;
@@ -25,10 +29,14 @@ public class FareManager {
         mFares = new ArrayList<>();
     }
 
-    public static void setDatabaseHelper(DatabaseHelper dbHelper) {
-        mDatabaseHelper = dbHelper;
-    }
-
+    /**
+     *
+     * @param type opal card type
+     * @param transport transport mode
+     * @param peak isPeakHour?
+     * @param distance distance between stops
+     * @return correct fare from loaded fares (DB -> local)
+     */
     static Fare getFare(int type, int transport, boolean peak, float distance) {
         Fare fare = findFare(type, transport, peak, distance);
 
@@ -40,6 +48,9 @@ public class FareManager {
         return fare;
     }
 
+    /**
+     * loads up list of all fares from DB
+     */
     private static void makeAllFaresList() {
         Cursor cursor = mDatabaseHelper.getAllFares();
         if (cursor != null && cursor.moveToFirst()) {
@@ -57,6 +68,14 @@ public class FareManager {
         }
     }
 
+    /**
+     *
+     * @param type opal card type
+     * @param transport transport mode
+     * @param peak isPeakHour?
+     * @param distance distance between stops
+     * @return correct fare
+     */
     private static Fare findFare(int type, int transport, boolean peak, float distance) {
         Fare resultFare = null;
         ArrayList<Fare> matchingFares = new ArrayList<>();
@@ -68,7 +87,7 @@ public class FareManager {
         Collections.sort(matchingFares);
         for (int i = matchingFares.size() - 1; i >= 0; i--) {
             Fare f = matchingFares.get(i);
-            if (i==matchingFares.size()-1 && distance > f.getDistance()){
+            if (i == matchingFares.size() - 1 && distance > f.getDistance()) {
                 resultFare = f;
                 break;
             }
@@ -77,6 +96,15 @@ public class FareManager {
             }
         }
         return resultFare;
+    }
+
+    /**
+     * Set the db helper to use for queries
+     *
+     * @param dbHelper -
+     */
+    public static void setDatabaseHelper(DatabaseHelper dbHelper) {
+        mDatabaseHelper = dbHelper;
     }
 
 }

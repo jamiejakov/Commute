@@ -17,10 +17,11 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 /**
- * SQL query class for accessing the DataBase
- * Should I put exception handling here?
- * Maybe
- * But I think I gotta catch them all
+ * SQL query class for creating the tables
+ * populating said tables
+ * then accessing their data
+ * <p>
+ * Exceptions! Gotta catch 'em all!
  * and be the very best
  * the best there ever was
  */
@@ -54,6 +55,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     /*-------------- GET POJOs --------------*/
 
+    /**
+     * Get the row from the agency table where ID matches
+     *
+     * @param id - id to check
+     * @return cursor with row data
+     */
     Cursor getAgency(String id) {
         SQLiteDatabase db = getReadableDatabase();
 
@@ -71,18 +78,24 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return cursor;
     }
 
+    /**
+     * Get the row from the calendar table where ID matches
+     *
+     * @param id - id to check
+     * @return cursor with row data
+     */
     Cursor getCalendar(String id) {
         SQLiteDatabase db = getReadableDatabase();
 
-        String[] columns = new String[]{Constants.DATABASE_TABLE_CALENDAR_MONDAY,
-                Constants.DATABASE_TABLE_CALENDAR_TUESDAY,
-                Constants.DATABASE_TABLE_CALENDAR_WEDNESDAY,
-                Constants.DATABASE_TABLE_CALENDAR_THURSDAY,
-                Constants.DATABASE_TABLE_CALENDAR_FRIDAY,
-                Constants.DATABASE_TABLE_CALENDAR_SATURDAY,
-                Constants.DATABASE_TABLE_CALENDAR_SUNDAY};
-        String selection = Constants.DATABASE_TABLE_SERVICE_ID + " = '" + id + "'";
-        Cursor cursor = db.query(Constants.DATABASE_TABLE_CALENDAR, columns, selection, null, null, null, null);
+        String[] columns = new String[]{TripManager.KEY_CAL_MONDAY,
+                TripManager.KEY_CAL_TUESDAY,
+                TripManager.KEY_CAL_WEDNESDAY,
+                TripManager.KEY_CAL_THURSDAY,
+                TripManager.KEY_CAL_FRIDAY,
+                TripManager.KEY_CAL_SATURDAY,
+                TripManager.KEY_CAL_SUNDAY};
+        String selection = TripManager.KEY_CAL_SERVICE_ID + " = '" + id + "'";
+        Cursor cursor = db.query(TripManager.KEY_CAL_TABLE, columns, selection, null, null, null, null);
 
         if (cursor == null) {
             return null;
@@ -94,6 +107,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return cursor;
     }
 
+    /**
+     * Get all the stops from the stop table
+     *
+     * @return cursor with data for all rows
+     */
     Cursor getAllStops() {
         SQLiteDatabase db = getReadableDatabase();
 
@@ -111,6 +129,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return cursor;
     }
 
+    /**
+     * Get the row from the route table where ID matches
+     *
+     * @param id - id to check
+     * @return cursor with row data
+     */
     Cursor getRoute(String id) {
         SQLiteDatabase db = getReadableDatabase();
 
@@ -129,10 +153,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return cursor;
     }
 
+    /**
+     * Get the row from the trip table where ID matches
+     *
+     * @param id - id to check
+     * @return cursor with row data
+     */
     Cursor getTrip(String id) {
         SQLiteDatabase db = getReadableDatabase();
 
-        String[] columns = new String[]{RouteManager.KEY_ID, Constants.DATABASE_TABLE_SERVICE_ID, TripManager.KEY_ID, TripManager.KEY_HEADSIGN};
+        String[] columns = new String[]{RouteManager.KEY_ID, TripManager.KEY_CAL_SERVICE_ID, TripManager.KEY_ID, TripManager.KEY_HEADSIGN};
         String selection = TripManager.KEY_ID + " = '" + id + "'";
         Cursor cursor = db.query(TripManager.KEY_TABLE, columns, selection, null, null, null, null);
 
@@ -146,6 +176,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return cursor;
     }
 
+    /**
+     * Get all the trips from the stopTimes where a single trip contains both the passed in start stop and end stop
+     * @param startStops - array of start stops to check
+     * @param endStops - array of end stops to check
+     * @return cursor with the trip id data from the stopTime table
+     */
     Cursor getTripsContainingStops(ArrayList<Stop> startStops, ArrayList<Stop> endStops) {
         SQLiteDatabase db = getReadableDatabase();
         String startSelection = "";
@@ -179,6 +215,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return cursor;
     }
 
+    /**
+     * Get stoptime for a stop or a trip based from the stopTime table where id of idType matches
+     * @param idType Stop or Trip
+     * @param id id to check
+     * @return cursor with data for rows matching criteria
+     */
     Cursor getStopTimes(String idType, String id) {
         SQLiteDatabase db = getReadableDatabase();
 
@@ -197,6 +239,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return cursor;
     }
 
+    /**
+     * Get all the fares from the fare table
+     *
+     * @return cursor with data for all rows
+     */
     Cursor getAllFares() {
         SQLiteDatabase db = getReadableDatabase();
 
@@ -214,6 +261,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return cursor;
     }
 
+    /**
+     * Get the stoptimes for the timetable creation for a particular trip
+     * and where only the stops in the array exist
+     * @param tripId - trip id to check
+     * @param stops - make sure it has these stops
+     * @return cursor with data for rows matching said criteria
+     */
     Cursor getStopTimesForTripAndStop(String tripId, ArrayList<Stop> stops) {
         SQLiteDatabase db = getReadableDatabase();
 
@@ -240,9 +294,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     /*-------------- POPULATE TABLES --------------*/
 
+    /**
+     * Populate all the tables from the txt files in the assets
+     */
     public void populateTables() {
         readCSV(AgencyManager.KEY_TABLE, "agency.txt");
-        readCSV(Constants.DATABASE_TABLE_CALENDAR, "calendar.txt");
+        readCSV(TripManager.KEY_CAL_TABLE, "calendar.txt");
         readCSV(RouteManager.KEY_TABLE, "routes.txt");
         readCSV(StopManager.KEY_TABLE, "stops.txt");
         readCSV(TripManager.KEY_TABLE, "trips.txt");
@@ -250,6 +307,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         readCSV(FareManager.KEY_TABLE, "fares.txt");
     }
 
+    /**
+     * Parse the files with cvs notation, make a buffer reader, populate the tables
+     *
+     * @param table table to populate
+     * @param file  file to parse
+     */
     private void readCSV(String table, String file) {
         SQLiteDatabase db = getReadableDatabase();
         AssetManager manager = mContext.getAssets();
@@ -268,7 +331,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 case AgencyManager.KEY_TABLE:
                     populateAgencyTable(db, buffer);
                     break;
-                case Constants.DATABASE_TABLE_CALENDAR:
+                case TripManager.KEY_CAL_TABLE:
                     populateCalendarTable(db, buffer);
                     break;
                 case RouteManager.KEY_TABLE:
@@ -323,15 +386,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     continue;
                 }
                 ContentValues cv = new ContentValues();
-                cv.put(Constants.DATABASE_TABLE_SERVICE_ID, columns[0].replaceAll("\"", "").trim());
-                cv.put(Constants.DATABASE_TABLE_CALENDAR_MONDAY, Integer.parseInt(columns[1].replaceAll("\"", "").trim()));
-                cv.put(Constants.DATABASE_TABLE_CALENDAR_TUESDAY, Integer.parseInt(columns[2].replaceAll("\"", "").trim()));
-                cv.put(Constants.DATABASE_TABLE_CALENDAR_WEDNESDAY, Integer.parseInt(columns[3].replaceAll("\"", "").trim()));
-                cv.put(Constants.DATABASE_TABLE_CALENDAR_THURSDAY, Integer.parseInt(columns[4].replaceAll("\"", "").trim()));
-                cv.put(Constants.DATABASE_TABLE_CALENDAR_FRIDAY, Integer.parseInt(columns[5].replaceAll("\"", "").trim()));
-                cv.put(Constants.DATABASE_TABLE_CALENDAR_SATURDAY, Integer.parseInt(columns[6].replaceAll("\"", "").trim()));
-                cv.put(Constants.DATABASE_TABLE_CALENDAR_SUNDAY, Integer.parseInt(columns[7].replaceAll("\"", "").trim()));
-                db.insert(Constants.DATABASE_TABLE_CALENDAR, null, cv);
+                cv.put(TripManager.KEY_CAL_SERVICE_ID, columns[0].replaceAll("\"", "").trim());
+                cv.put(TripManager.KEY_CAL_MONDAY, Integer.parseInt(columns[1].replaceAll("\"", "").trim()));
+                cv.put(TripManager.KEY_CAL_TUESDAY, Integer.parseInt(columns[2].replaceAll("\"", "").trim()));
+                cv.put(TripManager.KEY_CAL_WEDNESDAY, Integer.parseInt(columns[3].replaceAll("\"", "").trim()));
+                cv.put(TripManager.KEY_CAL_THURSDAY, Integer.parseInt(columns[4].replaceAll("\"", "").trim()));
+                cv.put(TripManager.KEY_CAL_FRIDAY, Integer.parseInt(columns[5].replaceAll("\"", "").trim()));
+                cv.put(TripManager.KEY_CAL_SATURDAY, Integer.parseInt(columns[6].replaceAll("\"", "").trim()));
+                cv.put(TripManager.KEY_CAL_SUNDAY, Integer.parseInt(columns[7].replaceAll("\"", "").trim()));
+                db.insert(TripManager.KEY_CAL_TABLE, null, cv);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -400,7 +463,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 }
                 ContentValues cv = new ContentValues();
                 cv.put(RouteManager.KEY_ID, columns[0].replaceAll("\"", "").trim());
-                cv.put(Constants.DATABASE_TABLE_SERVICE_ID, columns[1].replaceAll("\"", "").trim());
+                cv.put(TripManager.KEY_CAL_SERVICE_ID, columns[1].replaceAll("\"", "").trim());
                 cv.put(TripManager.KEY_ID, columns[2].replaceAll("\"", "").trim());
                 cv.put(TripManager.KEY_HEADSIGN, columns[4].replaceAll("\"", "").trim());
                 db.insert(TripManager.KEY_TABLE, null, cv);
@@ -467,6 +530,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     /*-------------- CREATE INDEXES  --------------*/
 
+    /**
+     * Index the tables that are constantly being accessed
+     */
+
     public void createIndexes() {
         SQLiteDatabase db = getReadableDatabase();
         createStopIndex(db);
@@ -492,6 +559,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     /*-------------- CREATE TABLES --------------*/
 
+    /**
+     * Create all the DB tables for the application
+     */
+
     private void createAgencyTable(SQLiteDatabase db) {
         db.execSQL("DROP TABLE IF EXISTS " + AgencyManager.KEY_TABLE);
         db.execSQL("CREATE TABLE " + AgencyManager.KEY_TABLE + "( " +
@@ -501,16 +572,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     private void createCalendarTable(SQLiteDatabase db) {
-        db.execSQL("DROP TABLE IF EXISTS " + Constants.DATABASE_TABLE_CALENDAR);
-        db.execSQL("CREATE TABLE " + Constants.DATABASE_TABLE_CALENDAR + "( " +
-                Constants.DATABASE_TABLE_SERVICE_ID + " TEXT PRIMARY KEY," +
-                Constants.DATABASE_TABLE_CALENDAR_MONDAY + " INTEGER NOT NULL," +
-                Constants.DATABASE_TABLE_CALENDAR_TUESDAY + " INTEGER NOT NULL," +
-                Constants.DATABASE_TABLE_CALENDAR_WEDNESDAY + " INTEGER NOT NULL," +
-                Constants.DATABASE_TABLE_CALENDAR_THURSDAY + " INTEGER NOT NULL," +
-                Constants.DATABASE_TABLE_CALENDAR_FRIDAY + " INTEGER NOT NULL," +
-                Constants.DATABASE_TABLE_CALENDAR_SATURDAY + " INTEGER NOT NULL," +
-                Constants.DATABASE_TABLE_CALENDAR_SUNDAY + " INTEGER NOT NULL);"
+        db.execSQL("DROP TABLE IF EXISTS " + TripManager.KEY_CAL_TABLE);
+        db.execSQL("CREATE TABLE " + TripManager.KEY_CAL_TABLE + "( " +
+                TripManager.KEY_CAL_SERVICE_ID + " TEXT PRIMARY KEY," +
+                TripManager.KEY_CAL_MONDAY + " INTEGER NOT NULL," +
+                TripManager.KEY_CAL_TUESDAY + " INTEGER NOT NULL," +
+                TripManager.KEY_CAL_WEDNESDAY + " INTEGER NOT NULL," +
+                TripManager.KEY_CAL_THURSDAY + " INTEGER NOT NULL," +
+                TripManager.KEY_CAL_FRIDAY + " INTEGER NOT NULL," +
+                TripManager.KEY_CAL_SATURDAY + " INTEGER NOT NULL," +
+                TripManager.KEY_CAL_SUNDAY + " INTEGER NOT NULL);"
         );
     }
 
@@ -545,13 +616,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + TripManager.KEY_TABLE);
         db.execSQL("CREATE TABLE " + TripManager.KEY_TABLE + "( " +
                 RouteManager.KEY_ID + " TEXT NOT NULL," +
-                Constants.DATABASE_TABLE_SERVICE_ID + " TEXT NOT NULL," +
+                TripManager.KEY_CAL_SERVICE_ID + " TEXT NOT NULL," +
                 TripManager.KEY_ID + " TEXT PRIMARY KEY," +
                 TripManager.KEY_HEADSIGN + " TEXT NOT NULL," +
                 " FOREIGN KEY (" + RouteManager.KEY_ID + ") REFERENCES " +
                 RouteManager.KEY_TABLE + "(" + RouteManager.KEY_ID + ")" +
-                " FOREIGN KEY (" + Constants.DATABASE_TABLE_SERVICE_ID + ") REFERENCES " +
-                Constants.DATABASE_TABLE_CALENDAR + "(" + Constants.DATABASE_TABLE_SERVICE_ID + ")" +
+                " FOREIGN KEY (" + TripManager.KEY_CAL_SERVICE_ID + ") REFERENCES " +
+                TripManager.KEY_CAL_TABLE + "(" + TripManager.KEY_CAL_SERVICE_ID + ")" +
                 ");"
         );
     }

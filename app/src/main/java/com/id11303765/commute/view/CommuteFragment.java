@@ -216,12 +216,12 @@ public class CommuteFragment extends Fragment implements View.OnClickListener {
 
         transportImage.setImageResource(mSelectedTimetable.getStopTimes().get(mStopTimeCount - 2).getStop().getImage());
         transportImage.setVisibility(View.VISIBLE);
-        if (selectedRoute.getAgency().getID().equals(getString(R.string.regional_trains_agency))) {
+        if (selectedRoute.getAgency().getID().equals(Constants.REGIONAL_TRAINS_AGENCY)) {
             transportImage.setImageResource(R.drawable.tnsw_icon_regional_train);
         }
 
         String line = selectedRoute.getLongName();
-        if (selectedRoute.getAgency().getID().equals(getString(R.string.sydney_trains_agency))) {
+        if (selectedRoute.getAgency().getID().equals(Constants.SYDNEY_TRAINS_AGENCY)) {
             routeType.setVisibility(View.VISIBLE);
             GradientDrawable lineShape = (GradientDrawable) routeType.getBackground();
             lineShape.setColor(selectedRoute.getColor());

@@ -6,6 +6,7 @@ import android.location.Location;
 
 import com.id11303765.commute.R;
 import com.id11303765.commute.utils.Common;
+import com.id11303765.commute.utils.Constants;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -33,6 +34,15 @@ public class JourneyManager {
         mJourneyLegs = new ArrayList<>();
     }
 
+    /**
+     * Make journey based on the passed in parameters
+     *
+     * @param stops        - the stops which to get the journey for
+     * @param departAt     - true: depart at? false: arrive by?
+     * @param time         - time to leave
+     * @param opalCardType - opal card type gathered from preferences
+     * @return Journey POJO
+     */
     public static Journey getJourney(ArrayList<String> stops, boolean departAt, Calendar time, int opalCardType) {
         mJourneyLegs.clear();
         Journey journey = findJourney(stops, departAt, time);
@@ -80,6 +90,16 @@ public class JourneyManager {
         return journey;
     }
 
+    /**
+     * Make a Journey Leg POJO based on the passed in parameters
+     *
+     * @param startStopShortName -
+     * @param endStopShortName   -
+     * @param departAt           - true: depart at? false: arrive by?
+     * @param time               - time to leave
+     * @param opalCardType       - opal card type gathered from preferences
+     * @return JourneyLeg POJO
+     */
     private static JourneyLeg getJourneyLeg(String startStopShortName, String endStopShortName, boolean departAt, Calendar time, int opalCardType) {
         ArrayList<Stop> startStops = StopManager.getStopsByName(startStopShortName, true);
         ArrayList<Stop> endStops = StopManager.getStopsByName(endStopShortName, true);
@@ -87,21 +107,25 @@ public class JourneyManager {
         allStops.addAll(startStops);
         allStops.addAll(endStops);
         Cursor cursor = mDatabaseHelper.getTripsContainingStops(startStops, endStops);
+
         if (cursor != null && cursor.moveToFirst()) {
             ArrayList<Timetable> smallTripTimetables = new ArrayList<>();
             ArrayList<Timetable> smallTripTimetablesNextDay = new ArrayList<>();
+
+            // Make a timetable list that can be used to find the best journey leg
             do {
                 String tripID = cursor.getString(cursor.getColumnIndex(TripManager.KEY_ID));
                 Trip trip = TripManager.getTrip(tripID);
                 if (trip.getCalendar()[time.get(Calendar.DAY_OF_WEEK) - 1]) {
                     smallTripTimetables.add(TimetableManager.getTimetable(trip, allStops));
                 }
-                if (trip.getCalendar()[time.get(Calendar.DAY_OF_WEEK)]){
+                if (trip.getCalendar()[time.get(Calendar.DAY_OF_WEEK)]) {
                     smallTripTimetablesNextDay.add(TimetableManager.getTimetable(trip, allStops));
                 }
 
             } while (cursor.moveToNext());
 
+            // find the closest small (only start and end stops in it) timetable to chosen time, with chosen settings
             Calendar justTimeNoDate = Common.getNow();
             justTimeNoDate.set(Calendar.HOUR_OF_DAY, time.get(Calendar.HOUR_OF_DAY));
             justTimeNoDate.set(Calendar.MINUTE, time.get(Calendar.MINUTE));
@@ -112,14 +136,16 @@ public class JourneyManager {
                 closestSmallTimetable = Common.findClosestTimetable(smallTripTimetables, endStopShortName, justTimeNoDate, false, false);
             }
             if (closestSmallTimetable == null) {
-                Calendar cal = Common.parseStringToCal("01:00", "HH:mm");
+                Calendar cal = Common.parseStringToCal(Constants.NEXT_MORNING_1AM, Constants.DATE_FORMAT_HH24_MM);
                 closestSmallTimetable = Common.findClosestTimetable(smallTripTimetablesNextDay, startStopShortName, cal, true, true);
             }
+
+            //Create a proper timetable with all the stops in between
             Timetable closestTimetable = TimetableManager.getTimetable(TripManager.getTrip(closestSmallTimetable.getTrip().getID()));
 
+            // Get all the stops in a list and the find the Start stop POJO and end stop POJO for this Timetable
             ArrayList<Stop> stops = new ArrayList<>();
             ArrayList<Integer> stopSequences = new ArrayList<>();
-
             for (StopTime stopTime : closestTimetable.getStopTimes()) {
                 if (stopTime.getStop().getShortName().equals(startStopShortName)) {
                     stops.add(stopTime.getStop());
@@ -133,16 +159,18 @@ public class JourneyManager {
             Stop startStop = stops.get(stops.size() - 2);
             Stop endStop = stops.get(stops.size() - 1);
 
+            // get the departure and arrival times
             Calendar departingAt = Calendar.getInstance();
-            departingAt.setTime(closestSmallTimetable.getStopTimes().get(closestSmallTimetable.getStopTimes().size() - 2).getDepartureTime());
             Calendar arrivingBy = Calendar.getInstance();
+            departingAt.setTime(closestSmallTimetable.getStopTimes().get(closestSmallTimetable.getStopTimes().size() - 2).getDepartureTime());
             arrivingBy.setTime(closestSmallTimetable.getStopTimes().get(closestSmallTimetable.getStopTimes().size() - 1).getDepartureTime());
 
+            // make the other calculations (price, distance, etc) and create the JourneyLeg
             removeExtraStopTimes(stopSequences, closestTimetable);
             int type = endStop.getStopType();
             float distance = calculateDistance(startStop, endStop);
             double price = FareManager.getFare(opalCardType, type, Common.isPeak(Common.getNow()), distance).getValue();
-            if (time.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY && price > 2.50){
+            if (time.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY && price > 2.50) {
                 price = 2.50;
             }
             String uniqueID = UUID.randomUUID().toString();
@@ -151,6 +179,13 @@ public class JourneyManager {
         return null;
     }
 
+    /**
+     * Calculate the distance between the two stops
+     *
+     * @param startStop -
+     * @param endStop   -
+     * @return distance in km
+     */
     private static float calculateDistance(Stop startStop, Stop endStop) {
         Location startLoc = new Location("");
         startLoc.setLatitude(startStop.getLat());
@@ -162,29 +197,45 @@ public class JourneyManager {
         return startLoc.distanceTo(endLoc) / 1000;
     }
 
-    private static void removeExtraStopTimes(ArrayList<Integer> stopSequences, Timetable closestTimetable) {
+    /**
+     * Removes the StopTimes before departure stop and after arrival stop
+     * ex: Int Airport -> Mascot - everything before Airport, and after Mascot removed
+     * Saves space and simplifies calculations later on
+     *
+     * @param stopSequences - sequence number of this stop
+     * @param timetable     to go through and do the removal
+     */
+    private static void removeExtraStopTimes(ArrayList<Integer> stopSequences, Timetable timetable) {
         int startStopSequence = stopSequences.get(stopSequences.size() - 2);
         int endStopSequence = stopSequences.get(stopSequences.size() - 1);
 
         ArrayList<StopTime> stopTimesToRemove = new ArrayList<>();
-        for (StopTime stopTime : closestTimetable.getStopTimes()) {
+        for (StopTime stopTime : timetable.getStopTimes()) {
             if (stopTime.getStopSequence() < startStopSequence || stopTime.getStopSequence() > endStopSequence) {
                 stopTimesToRemove.add(stopTime);
             }
         }
-        closestTimetable.getStopTimes().removeAll(stopTimesToRemove);
+        timetable.getStopTimes().removeAll(stopTimesToRemove);
     }
 
+    /**
+     * Find journeys from local based on the passed in values
+     *
+     * @param stops    list of stops
+     * @param departAt whether its deptart at or arrive by
+     * @param time     time to leave/arrive
+     * @return Journey POJO if found
+     */
     private static Journey findJourney(ArrayList<String> stops, boolean departAt, Calendar time) {
         for (Journey journey : mJourneys) {
             if (departAt) {
                 if (journey.getJourneyLegs().size() == stops.size() &&
-                        journey.getJourneyLegs().get(0).getDepartAt().after(time.getTime())) {
+                        journey.getDepartureTime().after(time.getTime())) {
                     return journey;
                 }
             } else {
                 if (journey.getJourneyLegs().size() == stops.size() &&
-                        journey.getJourneyLegs().get(journey.getJourneyLegs().size() - 1).getArriveBy().before(time.getTime())) {
+                        journey.getArrivalTime().before(time.getTime())) {
                     return journey;
                 }
             }
@@ -192,6 +243,12 @@ public class JourneyManager {
         return null;
     }
 
+    /**
+     * Find journeys from local based on the PK (unique ID)
+     *
+     * @param PK to search by
+     * @return Journey POJO
+     */
     public static Journey findJourney(String PK) {
         for (Journey journey : mJourneys) {
             if (journey.getPK().equals(PK)) {

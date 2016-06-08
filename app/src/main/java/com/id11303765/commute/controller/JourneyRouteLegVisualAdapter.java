@@ -133,14 +133,14 @@ public class JourneyRouteLegVisualAdapter extends AbstractExpandableItemAdapter<
         holder.mLineLine.setBackgroundColor(currentJourneyLeg.getTimetable().getTrip().getRoute().getColor());
         holder.mTransportMode.setImageResource(currentJourneyLeg.getStartStop().getImage());
         holder.mTransportMode.setVisibility(View.VISIBLE);
-        if (currentJourneyLeg.getTimetable().getTrip().getRoute().getAgency().getID().equals(mActivity.getString(R.string.regional_trains_agency))) {
+        if (currentJourneyLeg.getTimetable().getTrip().getRoute().getAgency().getID().equals(Constants.REGIONAL_TRAINS_AGENCY)) {
             holder.mTransportMode.setImageResource(R.drawable.tnsw_icon_regional_train);
         }
 
         Route selectedRoute = currentJourneyLeg.getTimetable().getTrip().getRoute();
 
         String line = selectedRoute.getLongName();
-        if (selectedRoute.getAgency().getID().equals(mActivity.getString(R.string.sydney_trains_agency))) {
+        if (selectedRoute.getAgency().getID().equals(Constants.SYDNEY_TRAINS_AGENCY)) {
             holder.mLineIdFrame.setVisibility(View.VISIBLE);
             GradientDrawable lineShape = (GradientDrawable) holder.mLineIdFrame.getBackground();
             lineShape.setColor(selectedRoute.getColor());

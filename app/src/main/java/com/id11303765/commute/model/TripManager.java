@@ -21,6 +21,16 @@ public class TripManager {
     static final String KEY_HEADSIGN = "trip_headsign";
     static final String KEY_INDEX = "trip_id_index";
 
+    static final String KEY_CAL_TABLE = "calendar";
+    static final String KEY_CAL_SERVICE_ID = "service_id";
+    static final String KEY_CAL_MONDAY = "monday";
+    static final String KEY_CAL_TUESDAY = "tuesday";
+    static final String KEY_CAL_WEDNESDAY = "wednesday";
+    static final String KEY_CAL_THURSDAY = "thursday";
+    static final String KEY_CAL_FRIDAY = "friday";
+    static final String KEY_CAL_SATURDAY = "saturday";
+    static final String KEY_CAL_SUNDAY = "sunday";
+
     public static TripManager getInstance() {
         return ourInstance;
     }
@@ -41,29 +51,43 @@ public class TripManager {
 
         if (trip == null) {
             Cursor cursor = mDatabaseHelper.getTrip(id);
-            Route route = RouteManager.getRoute(cursor.getString(cursor.getColumnIndex(RouteManager.KEY_ID)));
-            Cursor calCurs = mDatabaseHelper.getCalendar(cursor.getString(cursor.getColumnIndex(Constants.DATABASE_TABLE_SERVICE_ID)));
-            if (cursor.moveToFirst() && calCurs.moveToFirst()) {
-                boolean[] calendar = {
-                        Common.convertToBoolean(calCurs.getString(calCurs.getColumnIndex(Constants.DATABASE_TABLE_CALENDAR_SUNDAY))),
-                        Common.convertToBoolean(calCurs.getString(calCurs.getColumnIndex(Constants.DATABASE_TABLE_CALENDAR_MONDAY))),
-                        Common.convertToBoolean(calCurs.getString(calCurs.getColumnIndex(Constants.DATABASE_TABLE_CALENDAR_TUESDAY))),
-                        Common.convertToBoolean(calCurs.getString(calCurs.getColumnIndex(Constants.DATABASE_TABLE_CALENDAR_WEDNESDAY))),
-                        Common.convertToBoolean(calCurs.getString(calCurs.getColumnIndex(Constants.DATABASE_TABLE_CALENDAR_THURSDAY))),
-                        Common.convertToBoolean(calCurs.getString(calCurs.getColumnIndex(Constants.DATABASE_TABLE_CALENDAR_FRIDAY))),
-                        Common.convertToBoolean(calCurs.getString(calCurs.getColumnIndex(Constants.DATABASE_TABLE_CALENDAR_SATURDAY)))
-                };
-
-
-                trip = new Trip(route, calendar,
-                        cursor.getString(cursor.getColumnIndex(KEY_ID)),
-                        cursor.getString(cursor.getColumnIndex(KEY_HEADSIGN))
-                );
+            trip = makeTrip(cursor);
+            if (trip != null) {
+                mTrips.add(trip);
             }
+        }
+        return trip;
+    }
+
+    /**
+     * Makes a trip object from the cursor
+     *
+     * @param cursor - db cursor to get data from
+     * @return a created trip
+     */
+    private static Trip makeTrip(Cursor cursor) {
+        Trip trip = null;
+        Cursor calCurs = mDatabaseHelper.getCalendar(cursor.getString(cursor.getColumnIndex(KEY_CAL_SERVICE_ID)));
+        Route route = RouteManager.getRoute(cursor.getString(cursor.getColumnIndex(RouteManager.KEY_ID)));
+
+        if (cursor.moveToFirst() && calCurs.moveToFirst()) {
+            boolean[] calendar = {
+                    Common.convertToBoolean(calCurs.getString(calCurs.getColumnIndex(KEY_CAL_SUNDAY))),
+                    Common.convertToBoolean(calCurs.getString(calCurs.getColumnIndex(KEY_CAL_MONDAY))),
+                    Common.convertToBoolean(calCurs.getString(calCurs.getColumnIndex(KEY_CAL_TUESDAY))),
+                    Common.convertToBoolean(calCurs.getString(calCurs.getColumnIndex(KEY_CAL_WEDNESDAY))),
+                    Common.convertToBoolean(calCurs.getString(calCurs.getColumnIndex(KEY_CAL_THURSDAY))),
+                    Common.convertToBoolean(calCurs.getString(calCurs.getColumnIndex(KEY_CAL_FRIDAY))),
+                    Common.convertToBoolean(calCurs.getString(calCurs.getColumnIndex(KEY_CAL_SATURDAY)))
+            };
+
+            trip = new Trip(route, calendar,
+                    cursor.getString(cursor.getColumnIndex(KEY_ID)),
+                    cursor.getString(cursor.getColumnIndex(KEY_HEADSIGN))
+            );
             calCurs.close();
             cursor.close();
         }
-
         return trip;
     }
 

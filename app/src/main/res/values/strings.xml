@@ -64,8 +64,6 @@
     <string name="key_journey_option_train">journey_option_train</string>
 
     <string name="next_service_departing_in">Next Service:</string>
-    <string name="regional_trains_agency">X0000</string>
-    <string name="sydney_trains_agency">x0001</string>
     <string name="service_already_departed">Service has already departed</string>
     <string name="price">Price</string>
     <string name="convenience">Convenience</string>

@@ -57,6 +57,9 @@ public class StopManager {
         return mStops;
     }
 
+    /**
+     * gets all stops from the DB makes them and saves to list
+     */
     private static void getAllStops() {
         Cursor cursor = mDatabaseHelper.getAllStops();
 
@@ -70,8 +73,8 @@ public class StopManager {
 
     /**
      * Create a Stop object from a cursor
-     * @param cursor
-     * @return
+     * @param cursor the DB cursor
+     * @return the Stop object
      */
     private static Stop makeStop(Cursor cursor) {
         return new Stop(cursor.getString(cursor.getColumnIndex(KEY_ID)),

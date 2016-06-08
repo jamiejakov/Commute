@@ -3,6 +3,8 @@ package com.id11303765.commute.model;
 import android.database.Cursor;
 import android.util.Log;
 
+import com.id11303765.commute.utils.Constants;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -35,6 +37,12 @@ public class TimetableManager {
         mSmallTripTimetables = new ArrayList<>();
     }
 
+    /**
+     * Gets the timetable from local or DB based on the trip (trip ID)
+     *
+     * @param trip - trip to look for
+     * @return the Timetable POJO
+     */
     static Timetable getTimetable(Trip trip) {
         Timetable timetable = findTripTimetable(trip.getID());
 
@@ -42,7 +50,7 @@ public class TimetableManager {
             Cursor cursor = mDatabaseHelper.getStopTimes(TripManager.KEY_ID, trip.getID());
 
             ArrayList<StopTime> stopTimes = new ArrayList<>();
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss", Locale.US);
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat(Constants.DATE_FORMAT_HH24_MM_SS, Locale.US);
 
             if (cursor.moveToFirst()) {
                 do {
@@ -70,6 +78,13 @@ public class TimetableManager {
         return timetable;
     }
 
+    /**
+     * Get timetable from local or DB based on Stop
+     * To be used in the Timetable module in V2 of the app
+     *
+     * @param stop to check by
+     * @return the created Timetable
+     */
     public static Timetable getTimetable(Stop stop) {
         Timetable timetable = findStopTimetable(stop.getID());
 
@@ -77,7 +92,7 @@ public class TimetableManager {
             Cursor cursor = mDatabaseHelper.getStopTimes(StopManager.KEY_ID, stop.getID());
 
             ArrayList<StopTime> stopTimes = new ArrayList<>();
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss", Locale.US);
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat(Constants.DATE_FORMAT_HH24_MM_SS, Locale.US);
 
             if (cursor.moveToFirst()) {
                 do {
@@ -105,6 +120,13 @@ public class TimetableManager {
         return timetable;
     }
 
+    /**
+     * Gets the timetable from local or DB based on the Trip but must only have the StopTimes for the passed in Stops
+     *
+     * @param trip  to check by
+     * @param stops to find StopTimes for
+     * @return created Timetable
+     */
     static Timetable getTimetable(Trip trip, ArrayList<Stop> stops) {
         Timetable timetable = findSmallTripTimetable(trip.getID());
 
@@ -112,7 +134,7 @@ public class TimetableManager {
             Cursor cursor = mDatabaseHelper.getStopTimesForTripAndStop(trip.getID(), stops);
 
             ArrayList<StopTime> stopTimes = new ArrayList<>();
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss", Locale.US);
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat(Constants.DATE_FORMAT_HH24_MM_SS, Locale.US);
 
             if (cursor != null && cursor.moveToFirst()) {
                 do {
@@ -140,6 +162,12 @@ public class TimetableManager {
         return timetable;
     }
 
+    /**
+     * Find the timetable based on trip locally
+     *
+     * @param id to search for
+     * @return the found timetable if exists
+     */
     private static Timetable findTripTimetable(String id) {
         for (Timetable t : mTripTimetables) {
             if (t.getTrip().getID().equals(id)) {
@@ -149,6 +177,12 @@ public class TimetableManager {
         return null;
     }
 
+    /**
+     * Find the timetable based on stop locally
+     *
+     * @param id to search for
+     * @return the found timetable if exists
+     */
     private static Timetable findStopTimetable(String id) {
         for (Timetable t : mStopTimetables) {
             if (t.getStop().getID().equals(id)) {
@@ -158,6 +192,12 @@ public class TimetableManager {
         return null;
     }
 
+    /**
+     * Find the timetable based on trip but only with the smaller set StopTimes locally
+     *
+     * @param id to search for
+     * @return the found timetable if exists
+     */
     private static Timetable findSmallTripTimetable(String id) {
         for (Timetable t : mSmallTripTimetables) {
             if (t.getTrip().getID().equals(id)) {

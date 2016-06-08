@@ -46,8 +46,12 @@ public class Constants {
     public static final String MORNING_PEAK_END = "09:00";
     public static final String EVENING_PEAK_START = "16:00";
     public static final String EVENING_PEAK_END = "18:30";
+    public static final String NEXT_MORNING_1AM = "01:00";
+    public static final String SYDNEY_TRAINS_AGENCY = "x0001";
+    public static final String REGIONAL_TRAINS_AGENCY = "X0000";
 
     public static final String DATE_FORMAT_HH24_MM = "HH:mm";
+    public static final String DATE_FORMAT_HH24_MM_SS = "HH:mm:ss";
     public static final String DATE_FORMAT_HH_MM_SPACE_AM = "hh:mm a";
     public static final String DATE_FORMAT_HH_MM_AM = "hh:mma";
     public static final String DATE_FORMAT_DAY_MONTH_YEAR_WEEKDAY = "dd MMM yyyy (EE)";
@@ -58,14 +62,6 @@ public class Constants {
     public static final String TIME_FORMAT_SEC = "%02dsec";
 
     /*          DATABASE STUFF                */
-    public static final String DATABASE_TABLE_CALENDAR = "calendar";
-    public static final String DATABASE_TABLE_SERVICE_ID = "service_id";
-    public static final String DATABASE_TABLE_CALENDAR_MONDAY = "monday";
-    public static final String DATABASE_TABLE_CALENDAR_TUESDAY = "tuesday";
-    public static final String DATABASE_TABLE_CALENDAR_WEDNESDAY = "wednesday";
-    public static final String DATABASE_TABLE_CALENDAR_THURSDAY = "thursday";
-    public static final String DATABASE_TABLE_CALENDAR_FRIDAY = "friday";
-    public static final String DATABASE_TABLE_CALENDAR_SATURDAY = "saturday";
-    public static final String DATABASE_TABLE_CALENDAR_SUNDAY = "sunday";
+
 
 }

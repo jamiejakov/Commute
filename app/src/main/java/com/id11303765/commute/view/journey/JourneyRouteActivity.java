@@ -40,6 +40,7 @@ import com.id11303765.commute.utils.Constants;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
@@ -311,8 +312,15 @@ public class JourneyRouteActivity extends AppCompatActivity implements RecyclerV
         Intent intent = new Intent(Intent.ACTION_INSERT);
 
         intent.setType(getString(R.string.calendar_event));
-        intent.putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, mJourney.getDepartureTime().getTime());
-        intent.putExtra(CalendarContract.EXTRA_EVENT_END_TIME, mJourney.getArrivalTime().getTime());
+        Calendar departTime = Calendar.getInstance();
+        Calendar arriveTime = Calendar.getInstance();
+        Calendar cal = Calendar.getInstance();
+        departTime.setTime(mJourney.getDepartureTime());
+        arriveTime.setTime(mJourney.getArrivalTime());
+        departTime.set(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_WEEK));
+        arriveTime.set(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_WEEK));
+        intent.putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, departTime.getTimeInMillis());
+        intent.putExtra(CalendarContract.EXTRA_EVENT_END_TIME, arriveTime.getTimeInMillis());
         intent.putExtra(CalendarContract.Events.TITLE, getString(R.string.journey_from) +
                 mJourney.getJourneyLegs().get(0).getStartStop().getShortName() + getString(R.string.to_with_spaces) +
                 mJourney.getJourneyLegs().get(mJourney.getJourneyLegs().size() - 1).getEndStop().getShortName());

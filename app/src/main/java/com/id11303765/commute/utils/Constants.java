@@ -1,5 +1,8 @@
 package com.id11303765.commute.utils;
 
+/**
+ * Constants class, containing all the values persisant throughout the application
+ */
 public class Constants {
     public static final int JOURNEY_FAB_TO_LIST_REQUEST = 10;
     public static final int JOURNEY_DEPARTURE_TO_SEARCH_REQUEST = 11;

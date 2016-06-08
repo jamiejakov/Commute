@@ -128,6 +128,11 @@
     <string name="comma_space">", "</string>
     <string name="enter_stops">\nstops</string>
     <string name="expand_image">expand image</string>
+    <string name="thank_you">Thank you for using Commute.</string>
+    <string name="build_date">Build Date:</string>
+    <string name="build_date_text">06th June 2016</string>
+    <string name="version">1.0</string>
+    <string name="version_label">Version:</string>
 
 
 </resources>

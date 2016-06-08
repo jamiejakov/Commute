@@ -40,12 +40,12 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Version:" />
+            android:text="@string/version_label" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="1.0"
+            android:text="@string/version"
             android:textStyle="bold" />
     </LinearLayout>
 
@@ -64,12 +64,12 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Build Date:" />
+            android:text="@string/build_date" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="20th May 2016"
+            android:text="@string/build_date_text"
             android:textStyle="bold" />
     </LinearLayout>
 
@@ -79,7 +79,7 @@
         android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="20dp"
-        android:text="Thank you for using Commute."
+        android:text="@string/thank_you"
         android:textAlignment="center"
         android:textColor="@color/primary_text"
         android:textSize="18sp"
